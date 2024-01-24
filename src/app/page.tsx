@@ -1,6 +1,5 @@
 import { AreaChart } from "@/components/Charts/AreaChart";
 import Header from "@/components/Header";
-import SuggestionInput from "@/components/SuggestionInput";
 import {
   metricsMessages,
   metricsModules,
