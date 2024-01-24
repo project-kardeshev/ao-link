@@ -8,9 +8,9 @@ import HighchartsReact from "highcharts-react-official";
 
 import { defaultOptions } from "@/components/Charts/defaultOptions";
 
-AccessibilityModule(Highcharts);
-
 if (typeof Highcharts === "object") {
+  AccessibilityModule(Highcharts);
+
   HighchartsExporting(Highcharts);
   AnnotationsModule(Highcharts);
 }
