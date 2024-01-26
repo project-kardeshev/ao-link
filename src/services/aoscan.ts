@@ -2,7 +2,7 @@
 
 import { supabase } from "@/lib/supabase";
 
-interface IAOEvents {
+export interface IAOEvents {
   owner: string;
   id: string;
   tags_flat: Record<string, any>;
@@ -17,7 +17,8 @@ export const aoEvents = async (): Promise<IAOEvents[] | null> => {
     const { data } = await supabase
       .from("ao_events")
       .select("owner,id,tags_flat,target,owner_address,height,created_at")
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .range(0, 20);
 
     if (data) {
       return data as IAOEvents[];
