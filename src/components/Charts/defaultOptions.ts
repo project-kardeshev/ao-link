@@ -47,16 +47,14 @@ export const defaultOptions = ({
     shadow: true,
     shared: true,
     pointFormatter: function () {
-      const month = this.x.toLocaleString("default", {
+      const originalDate = new Date(this.x);
+      const formattedDateString = originalDate.toLocaleDateString("en-GB", {
+        day: "numeric",
         month: "short",
-      } as Record<never, never>);
-      const year = new Date(this.x).getFullYear();
-      const day = new Date(this.x).getDay();
-      const value = Intl.NumberFormat("en", {
-        maximumSignificantDigits: 3,
-        notation: "compact",
-      }).format(this.y!);
-      return `${day} ${month} ${year} <br /><strong>${value}</strong>`;
+        year: "numeric",
+      });
+
+      return `<strong>${formattedDateString}</strong><br /><strong>${this.y}</strong`;
     }!,
     headerFormat: "",
   },

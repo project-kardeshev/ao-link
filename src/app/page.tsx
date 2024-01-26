@@ -1,5 +1,6 @@
 import { AreaChart } from "@/components/Charts/AreaChart";
 import Header from "@/components/Header";
+import Table from "@/components/Table";
 import {
   metricsMessages,
   metricsModules,
@@ -9,8 +10,6 @@ import {
 import { aoEvents } from "@/services/aoscan";
 
 export default async function Home() {
-  const events = await aoEvents();
-
   const messages = await metricsMessages();
 
   const modules = await metricsModules();
@@ -23,7 +22,6 @@ export default async function Home() {
     <main>
       <Header />
 
-      {/* <div className="grid grid-cols-1 tablet:grid-cols-2 lg:grid-cols-4 gap-14 mt-[64px]"> */}
       <div className="flex justify-between flex-wrap mt-[64px]">
         <div className="container w-1/2 lg:w-1/4 relative px-4">
           {/* Content for the first container */}
@@ -46,7 +44,7 @@ export default async function Home() {
           <AreaChart data={processes} titleText="PROCESSES" />
         </div>
       </div>
-      {/* </div> */}
+      <Table />
     </main>
   );
 }
