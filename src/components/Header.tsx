@@ -1,28 +1,31 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
 const Header = () => {
   return (
     <div className="navbar !bg-[#FAF7F3]">
       <div className="navbar-start">
-        <div className="flex items-center gap-1">
-          <Image
-            alt="aoscan"
-            width={20}
-            height={20}
-            src="aoscan.svg"
-            className="inline-block h-[20px]"
-          />
-          <Image
-            alt="ao"
-            width={20}
-            height={20}
-            src="ao.svg"
-            className="inline-block h-[20px]"
-          />
-        </div>
-        <ul className="menu menu-horizontal px-[24px] nav-bar-button flex gap-[32px]">
+        <Link href='/'>
+          <div className="flex items-center gap-1">
+            <Image
+              alt="aoscan"
+              width={20}
+              height={20}
+              src="aoscan.svg"
+              className="inline-block h-[20px]"
+            />
+            <Image
+              alt="ao"
+              width={20}
+              height={20}
+              src="ao.svg"
+              className="inline-block h-[20px]"
+            />
+          </div>
+        </Link>
+        <ul className="menu menu-horizontal px-[24px] nav-bar-button flex gap-[32px] ml-2">
           <li>
             <a>Scan</a>
           </li>

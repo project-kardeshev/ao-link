@@ -44,12 +44,16 @@ export const AreaChart = ({ data, titleText }: any) => {
             formatter: function () {
               const series = this.series.chart.series[0];
               if (series?.data.length) {
-                return `<p className="chart-label" style="font-family: Roboto Mono; color: #color: #222326;">${titleText}</p>
+                return `<p>${titleText}</p>
                         <br /><br />
                         <br /><br />
-                      <p style="font-size: 32px; color: #222326; font-family: Inter; font-weight: 500;">${formatNumber(
-                        data.count
-                      )}</p>
+                      <p style="font-size: 32px">${
+                          data.latest ? 
+                              data.latest : 
+                              formatNumber(
+                                data.count
+                      )}
+                      </p>
                       `;
               }
               return "";
