@@ -3,6 +3,8 @@ import { aoEvents } from "@/services/aoscan";
 import { transformArrayElements } from "@/utils/transformEvents";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { transformLongText } from "@/utils/transformLongText";
+import { Loader } from './Loader'
 
 const DataTable = () => {
   const [data, setData] = useState<
@@ -25,38 +27,83 @@ const DataTable = () => {
       const events = await aoEvents();
       if (events) setData(transformArrayElements(events));
     };
-    getUserInfo();
+    setInterval(() => getUserInfo(), 5000);
   }, []);
 
-  return (
-    <div className="overflow-x-auto mt-[70px] p-10">
-      <table className="min-w-full">
-        <thead className="table-headers">
-          <tr>
-            <th className="text-start p-2">Type</th>
-            <th className="text-start p-2">Message ID</th>
-            <th className="text-start p-2">Process ID</th>
-            <th className="text-start p-2">Scheduler ID</th>
-            <th className="text-start p-2">Created</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item) => (
-            <tr className="table-row" key={item.id}>
-              <td>
-                <div className="flex gap-2">
-                  <p>{item.type}</p>
-                </div>
-              </td>
-              <td className="text-start p-2 ">{item.messageId}</td>
-              <td className="text-start p-2 ">{item.processId}</td>
-              <td className="text-start p-2 ">{item.schedulerId}</td>
-              <td className="text-start p-2 ">{item.created}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    return (
+        <>
+            {data.length ? <div className="overflow-x-auto">
+              <table className="min-w-full">
+                <thead className="table-headers">
+                  <tr>
+                    <th className="text-start p-2">Type</th>
+                    <th className="text-start p-2">Message ID</th>
+                    <th className="text-start p-2">Process ID</th>
+                    <th className="text-start p-2">Owner</th>
+                    <th className="text-start p-2">Nonce</th>
+                    <th className="text-start p-2">Block Height</th>
+                    <th className="text-start p-2">Scheduler ID</th>
+                    <th className="text-start p-2">Created</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((item) => (
+                    <tr
+                      className="table-row"
+                      key={item.messageId}
+                      // @ts-ignore
+                      onClick={() => (window.location = `/${item.messageId}`)}
+                    >
+                      <td
+                        className='text-start p-2'
+                      >
+                        <div className={`gap-2 inline-flex px-2 py-1 ${
+                            item.type === "Process" ? "bg-[#FEEEE5]" : "bg-[#E2F0DC]"
+                        }`}>
+                          <p>{item.type}</p>
+                          <Image
+                            alt="icon"
+                            width={8}
+                            height={8}
+                            src={
+                              item.type === "Process" ? "process.svg" : "message.svg"
+                            }
+                          />
+                        </div>
+                      </td>
+                      <td className="text-start p-2 ">
+                        <p style={{ fontFamily: "DM Sans, sans-serif" }}>
+                          {transformLongText(item.messageId)}
+                        </p>
+                      </td>
+                      <td className="text-start p-2">
+                        <p style={{ fontFamily: "DM Sans, sans-serif" }}>
+                          {item.processId}
+                        </p>
+                      </td>
+                      <td className="text-start p-2 ">
+                        <p style={{ fontFamily: "DM Sans, sans-serif" }}>
+                          {item.owner}
+                        </p>
+                      </td>
+                      <td className="text-start p-2 ">{item.nonce}</td>
+                      <td className="text-start p-2 ">{item.blockHeight}</td>
+                      <td className="text-start p-2 ">
+                        <p style={{ fontFamily: "DM Sans, sans-serif" }}>
+                          {item.schedulerId}
+                        </p>
+                      </td>
+                      <td className="text-start p-2 ">
+                        <p style={{ fontFamily: "DM Sans, sans-serif" }}>
+                          {item.created}{" "}
+                        </p>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div> : <Loader />}
+        </>
   );
 };
 

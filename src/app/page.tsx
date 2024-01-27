@@ -1,5 +1,6 @@
 import { AreaChart } from "@/components/Charts/AreaChart";
 import Header from "@/components/Header";
+import SuggestionInput from "@/components/SuggestionInput";
 import Table from "@/components/Table";
 import {
   metricsMessages,
@@ -10,6 +11,7 @@ import {
 import { aoEvents } from "@/services/aoscan";
 
 export default async function Home() {
+  const events = await aoEvents();
   const messages = await metricsMessages();
 
   const modules = await metricsModules();
@@ -21,7 +23,11 @@ export default async function Home() {
   return (
     <main>
       <Header />
-
+      <div className="mt-4">
+        <SuggestionInput
+          eventsIds={events?.map((event) => event.id) as string[]}
+        />
+      </div>
       <div className="flex justify-between flex-wrap mt-[64px]">
         <div className="container w-1/2 lg:w-1/4 relative px-4">
           {/* Content for the first container */}
@@ -44,6 +50,7 @@ export default async function Home() {
           <AreaChart data={processes} titleText="PROCESSES" />
         </div>
       </div>
+      <div className="text-main-dark-color uppercase mt-[2.75rem] mb-8">Latest Messages</div>
       <Table />
     </main>
   );

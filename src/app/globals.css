@@ -7,41 +7,20 @@
   --font-color: 0, 0, 0;
   --gradient-start-color: 84, 91, 255;
   --gradient-stop-color: 168, 171, 255;
+  background: rgb(var(--background-color));
+  color: rgb(var(--font-color))
 }
-
-/* @media (prefers-color-scheme: light) {
-  :root {
-    --foreground-rgb: 0, 0, 0;
-    --background-start-rgb: 214, 219, 220;
-    --background-end-rgb: 255, 255, 255;
-  }
-} */
 
 .highcharts-credits {
   @apply hidden;
 }
 
- body {
-  background: rgb(var(--background-color));
-  color: rgb(var(--font-color))
-}
-
 .nav-bar-button {
   color: #000;
-  font-family: "Roboto Mono";
   font-weight: 400;
   text-transform: uppercase;
   cursor: pointer;
   letter-spacing: 2px;
-  font-weight: 500;
-}
-.navbar, .nav-bar-button {
-  margin: 0 !important;
-  padding: 0;
-}
-
-* {
-  font-family: "Roboto Mono";
 }
 
 .separator {
@@ -52,5 +31,52 @@
   height: 50%;
   border-right: 0.25px solid #222326; /* Adjust the border style as needed */
   opacity: 0.5;
+}
+
+.table-headers {
+  color:#9EA2AA;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.12px;
+}
+
+.table-row {
+  color: #222326;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.12px;
+  cursor: pointer;
+  height: 50px;
+}
+
+.table-row:hover {
+  background-color: #DDD;
+}
+
+.chart-label {
+  color: #222326;
+  font-family: "Roboto Mono";
+  font-size: 12px;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.12px;
+  text-transform: uppercase;
+}
+
+
+.loader {
+  animation: bounce 2s infinite;
+}
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-200%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
 }
 

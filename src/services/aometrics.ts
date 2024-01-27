@@ -29,11 +29,34 @@ const normalize = (data) => {
     }
     return data;
   });
+
+  getLatestModulesRunning(data);
   return {
     data: mapedData,
     count,
+    latest: getLatestModulesRunning(data),
   };
 };
+
+// @ts-ignore
+function getLatestModulesRunning(data) {
+  // Sort the data based on the 'created_date' in descending order
+  const sortedData = data.sort(
+      // @ts-ignore
+      (a, b) => new Date(b.created_date) - new Date(a.created_date)
+  );
+  if (data[0].modules_running) {
+    return sortedData[0].modules_running;
+  }
+
+  if (data[0].users) {
+    return sortedData[0].users;
+  }
+
+  if (data[0].processes) {
+    return sortedData[0].processes;
+  }
+}
 
 export const metricsMessages = async (): Promise<any> => {
   try {
