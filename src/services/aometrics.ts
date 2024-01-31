@@ -60,7 +60,7 @@ function getLatestModulesRunning(data) {
 
 export const metricsMessages = async (): Promise<any> => {
   try {
-    const { data } = await supabase.from("ao_metrics_messages").select("*");
+    const { data } = await supabase.from("ao_metrics_messages").select("*").order("created_at", { ascending: false }).limit(30);
 
     if (data) {
       return normalize(data);
