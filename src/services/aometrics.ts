@@ -60,7 +60,7 @@ function getLatestModulesRunning(data) {
 
 export const metricsMessages = async (): Promise<any> => {
   try {
-    const { data } = await supabase.from("ao_metrics_messages").select("*").order("created_at", { ascending: false }).limit(30);
+    const { data } = await supabase.from("ao_metrics_messages").select("*").order("created_date", { ascending: false }).limit(30);
 
     if (data) {
       return normalize(data);
@@ -74,7 +74,7 @@ export const metricsMessages = async (): Promise<any> => {
 
 export const metricsModules = async (): Promise<any> => {
   try {
-    const { data } = await supabase.from("ao_metrics_modules").select("*");
+    const { data } = await supabase.from("ao_metrics_modules").select("*").order("created_date", { ascending: false }).limit(30);;
 
     if (data) {
       return normalize(data);
@@ -88,7 +88,7 @@ export const metricsModules = async (): Promise<any> => {
 
 export const metricsUsers = async (): Promise<any> => {
   try {
-    const { data } = await supabase.from("ao_metrics_users").select("*");
+    const { data } = await supabase.from("ao_metrics_users").select("*").order("created_date", { ascending: false }).limit(30);;
 
     if (data) {
       return normalize(data);
@@ -102,7 +102,7 @@ export const metricsUsers = async (): Promise<any> => {
 
 export const metricsProcesses = async (): Promise<any> => {
   try {
-    const { data } = await supabase.from("ao_metrics_processes ").select("*");
+    const { data } = await supabase.from("ao_metrics_processes ").select("*").order("created_date", { ascending: false }).limit(30);;
 
     if (data) {
       return normalize(data);
