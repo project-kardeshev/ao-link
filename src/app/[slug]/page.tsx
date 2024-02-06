@@ -1,8 +1,9 @@
 import Header from "@/components/Header";
 import {aoEvent} from "@/services/aoscan";
-import {getTimeMarginFromDate} from "@/utils/calcPeriod";
-import {transformLongText} from "@/utils/transformLongText";
+import {formatRelative, parseUtcString} from "@/utils/date-utils";
+import {truncateId} from "@/utils/data-utils";
 import {Graph} from "@/components/Graph";
+import { IdBlock } from "@/components/IdBlock";
 
 const Diamonds = () => (
     <svg
@@ -95,7 +96,7 @@ const Asterics = () => (
     </svg>
 );
 
-const SectionInfo = ({ title, value }: { title: string; value: string }) => (
+const SectionInfo = ({ title, value }: { title: string; value: React.ReactNode }) => (
     <div className="flex flex-row items-baseline w-full mb-12">
         <div className="flex w-56 items-center">
             <p className="table-headers">{title}</p>
@@ -176,7 +177,7 @@ export default async function Page({
             <div className="flex gap-2 items-center text-sm mt-12 mb-11">
                 <p className="text-[#9EA2AA] ">MESSAGE</p>
                 <p className="font-bold">/</p>
-                <p className="">{transformLongText(id)}</p>
+                <p className="">{truncateId(id)}</p>
             </div>
 
             <div className="flex w-full">
@@ -187,19 +188,19 @@ export default async function Page({
                     <div>
                         <SectionInfo
                             title="Owner"
-                            value={transformLongText(owner_address)}
+                            value={<IdBlock  value={owner_address}/>}
                         />
                         <SectionInfo
                             title="Message ID"
-                            value={transformLongText(id)}
+                            value={<IdBlock  value={id}/>}
                         />
                         <SectionInfo
                             title="Process ID"
-                            value={transformLongText(target)}
+                            value={<IdBlock  value={target}/>}
                         />
                         <SectionInfo
                             title="Created"
-                            value={getTimeMarginFromDate(created_at)}
+                            value={created_at? formatRelative(parseUtcString(created_at)): ''}
                         />
                     </div>
                 </div>
