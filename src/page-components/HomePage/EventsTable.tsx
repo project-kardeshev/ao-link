@@ -1,37 +1,32 @@
 "use client"
-import { AoEvent, aoEvents, subscribeToEvents } from "@/services/aoscan"
-import { NormalizedAoEvent, normalizeAoEvent } from "@/utils/ao-event-utils"
-import React, { useEffect, useState } from "react"
 import Image from "next/image"
-import { truncateId } from "@/utils/data-utils"
-import { Loader } from "./Loader"
-import { formatFullDate, formatRelative } from "@/utils/date-utils"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+import React, { useEffect, useState } from "react"
 
-type DataTableProps = {
+import { type AoEvent, subscribeToEvents } from "@/services/aoscan"
+import {
+  type NormalizedAoEvent,
+  normalizeAoEvent,
+} from "@/utils/ao-event-utils"
+
+import { truncateId } from "@/utils/data-utils"
+
+import { formatFullDate, formatRelative } from "@/utils/date-utils"
+
+import { IdBlock } from "../../components/IdBlock"
+import { Loader } from "../../components/Loader"
+
+type EventTablesProps = {
   initialData: NormalizedAoEvent[]
 }
 
-const DataTable = (props: DataTableProps) => {
+const EventsTable = (props: EventTablesProps) => {
   const { initialData } = props
 
   const [data, setData] = useState<NormalizedAoEvent[]>(initialData)
 
   useEffect(() => {
-    const getUserInfo = async () => {
-      const events = await aoEvents()
-      if (events) {
-        const parsed = events.map(normalizeAoEvent)
-        setData(parsed)
-      }
-    }
-
-    setInterval(() => getUserInfo(), 5000)
-  }, [])
-
-  useEffect(() => {
     const unsubscribe = subscribeToEvents((event: AoEvent) => {
+      console.log("📜 LOG > unsubscribe > event:", event)
       setData((prevData) => {
         const parsed = normalizeAoEvent(event)
         return [parsed, ...prevData.slice(0, 29)]
@@ -41,8 +36,6 @@ const DataTable = (props: DataTableProps) => {
     return unsubscribe
   }, [])
 
-  const router = useRouter()
-
   return (
     <>
       {data.length ? (
@@ -50,11 +43,11 @@ const DataTable = (props: DataTableProps) => {
           <table className="min-w-full">
             <thead className="table-headers">
               <tr>
-                <th className="text-start p-2">Type</th>
-                <th className="text-start p-2">Action</th>
-                <th className="text-start p-2">Message ID</th>
-                <th className="text-start p-2">Process ID</th>
-                <th className="text-start p-2">Owner</th>
+                <th className="text-start p-2 w-[120px]">Type</th>
+                <th className="text-start p-2 w-[160px]">Action</th>
+                <th className="text-start p-2 w-[180px]">Message ID</th>
+                <th className="text-start p-2 w-[180px]">Process ID</th>
+                <th className="text-start p-2 w-[180px]">Owner</th>
                 <th className="text-start p-2">Block Height</th>
                 <th className="text-start p-2">Scheduler ID</th>
                 <th className="text-start p-2">Created</th>
@@ -64,10 +57,14 @@ const DataTable = (props: DataTableProps) => {
               {data.map((item) => (
                 <tr
                   className="table-row"
-                  key={item.messageId || item.processId}
-                  onClick={() => {
-                    router.push(`/${item.messageId}`)
-                  }}
+                  key={item.id}
+                  // onClick={() => {
+                  //   router.push(
+                  //     item.type === "Message"
+                  //       ? `/message/${item.id}`
+                  //       : `/process/${item.id}`,
+                  //   )
+                  // }}
                 >
                   <td className="text-start p-2">
                     <div
@@ -77,52 +74,46 @@ const DataTable = (props: DataTableProps) => {
                           : "bg-[#E2F0DC]"
                       }`}
                     >
-                      <p>{item.type}</p>
+                      <p className="uppercase">{item.type}</p>
                       <Image
                         alt="icon"
                         width={8}
                         height={8}
                         src={
                           item.type === "Process"
-                            ? "process.svg"
-                            : "message.svg"
+                            ? "/process.svg"
+                            : "/message.svg"
                         }
                       />
                     </div>
                   </td>
+                  <td className="text-start p-2 ">{item.action}</td>
                   <td className="text-start p-2 ">
-                    <p style={{ fontFamily: "DM Sans, sans-serif" }}>
-                      {item.action}
-                    </p>
-                  </td>
-                  <td className="text-start p-2 ">
-                    <p style={{ fontFamily: "DM Sans, sans-serif" }}>
-                      {truncateId(item.messageId)}
-                    </p>
+                    <IdBlock
+                      value={item.messageId}
+                      href={`/message/${item.messageId}`}
+                    />
                   </td>
                   <td className="text-start p-2">
-                    <p style={{ fontFamily: "DM Sans, sans-serif" }}>
-                      {truncateId(item.processId)}
-                    </p>
+                    <IdBlock
+                      value={item.processId}
+                      href={`/process/${item.processId}`}
+                    />
                   </td>
                   <td className="text-start p-2 ">
-                    <p style={{ fontFamily: "DM Sans, sans-serif" }}>
-                      {truncateId(item.owner)}
-                    </p>
+                    <IdBlock value={item.owner} />
                   </td>
                   <td className="text-start p-2 ">{item.blockHeight}</td>
                   <td className="text-start p-2 ">
-                    <p style={{ fontFamily: "DM Sans, sans-serif" }}>
-                      {truncateId(item.schedulerId)}
-                    </p>
+                    {truncateId(item.schedulerId)}
                   </td>
-                  <td
-                    className="text-start p-2 tooltip"
-                    data-tip={formatFullDate(item.created)}
-                  >
-                    <p style={{ fontFamily: "DM Sans, sans-serif" }}>
+                  <td className="text-start p-2">
+                    <span
+                      className="tooltip"
+                      data-tip={formatFullDate(item.created)}
+                    >
                       {formatRelative(item.created)}
-                    </p>
+                    </span>
                   </td>
                 </tr>
               ))}
@@ -136,4 +127,4 @@ const DataTable = (props: DataTableProps) => {
   )
 }
 
-export default DataTable
+export default EventsTable
