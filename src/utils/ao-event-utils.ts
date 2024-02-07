@@ -40,3 +40,15 @@ export function normalizeAoEvent(event: AoEvent): NormalizedAoEvent {
     action,
   }
 }
+
+export function normalizeTags(tags: Record<string, any>): Record<string, any> {
+  const { Tags, ...rest } = tags
+
+  try {
+    if (Tags) {
+      return { ...rest, ...JSON.parse(Tags) }
+    }
+  } catch {}
+
+  return tags
+}

@@ -19,7 +19,6 @@
   color: #000;
   font-weight: 400;
   text-transform: uppercase;
-  cursor: pointer;
   letter-spacing: 2px;
 }
 
@@ -47,7 +46,6 @@
   font-weight: 400;
   line-height: normal;
   letter-spacing: -0.12px;
-  /* cursor: pointer; */
   height: 50px;
 }
 

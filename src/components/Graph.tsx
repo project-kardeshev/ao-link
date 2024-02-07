@@ -1,10 +1,15 @@
 // @ts-nocheck
 
 "use client"
-import React, { useEffect, useState, useRef } from "react"
-import { supabase } from "@/lib/supabase"
 import * as d3 from "d3"
-import { Simulation, SimulationNodeDatum, SimulationLinkDatum } from "d3-force"
+import {
+  type Simulation,
+  type SimulationNodeDatum,
+  SimulationLinkDatum,
+} from "d3-force"
+import React, { useEffect, useState, useRef } from "react"
+
+import { supabase } from "@/lib/supabase"
 
 interface Link {
   source: { x: number; y: number }
@@ -75,7 +80,10 @@ interface CustomLink extends SimulationNodeDatum {
   action: string
 }
 
-export const Graph: React.FC<GraphProps> = ({ messageId, isProcess = false }) => {
+export const Graph: React.FC<GraphProps> = ({
+  messageId,
+  isProcess = false,
+}) => {
   const [chartData, setChartData] = useState<ChartDataItem[]>([])
 
   // Function to call the Supabase RPC
@@ -106,7 +114,7 @@ export const Graph: React.FC<GraphProps> = ({ messageId, isProcess = false }) =>
   const svgRef = useRef(null)
 
   useEffect(() => {
-    if (chartData.length === 0) return
+    if (!chartData || chartData.length === 0) return
 
     // Initialize chart only once and update it on data changes
     const svg = d3.select(svgRef.current)

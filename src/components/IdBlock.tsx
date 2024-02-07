@@ -1,37 +1,43 @@
 "use client"
 
-import { truncateId } from "@/utils/data-utils"
 import Link from "next/link"
 import React from "react"
+
+import { cn } from "@/utils/tailwind-utils"
+
 import { CopyToClipboard } from "./CopyToClipboard"
 
 type IdBlockProps = {
-  value: string
+  label: string
+  value?: string
   href?: string
 }
 
 export function IdBlock(props: IdBlockProps) {
-  const { value, href } = props
+  const { label, value, href } = props
+
+  const tooltip = !!value
+  const copyValue = value || label
 
   if (href) {
     return (
-      <div>
+      <div className="fill-[#7d7d7d00] hover:fill-[#7d7d7d]">
         <Link href={href}>
-          <span className="tooltip hover:underline" data-tip={value}>
-            {truncateId(value)}
+          <span className={cn({ tooltip }, "hover:underline")} data-tip={value}>
+            {label}
           </span>
         </Link>
-        <CopyToClipboard value={value} />
+        <CopyToClipboard value={copyValue} />
       </div>
     )
   }
 
   return (
-    <div>
-      <span className="tooltip" data-tip={value}>
-        {truncateId(value)}
+    <div className="fill-[#7d7d7d00] hover:fill-[#7d7d7d]">
+      <span className={cn({ tooltip })} data-tip={value}>
+        {label}
       </span>
-      <CopyToClipboard value={value} />
+      <CopyToClipboard value={copyValue} />
     </div>
   )
 }
