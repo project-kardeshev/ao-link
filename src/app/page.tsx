@@ -34,23 +34,22 @@ export default async function Home() {
         />
       </div>
       <div className="flex justify-between flex-wrap mt-[64px]">
-        <div className="container w-1/2 lg:w-1/4 relative px-4">
+        <div className="container w-1/2 lg:w-1/4 px-4 min-h-[150px] relative">
           {/* Content for the first container */}
           <AreaChart data={messages} titleText="TOTAL MESSAGES" />
           <div className="separator"></div>
         </div>
-
-        <div className="container w-1/2 lg:w-1/4 relative px-4">
+        <div className="container w-1/2 lg:w-1/4 px-4 min-h-[150px] relative">
           {/* Content for the second container */}
           <AreaChart data={modules} titleText="MODULES" />
           <div className="separator hidden lg:block"></div>
         </div>
-        <div className="container w-1/2 lg:w-1/4 px-4 relative">
+        <div className="container w-1/2 lg:w-1/4 px-4 min-h-[150px] relative">
           {/* Content for the third container */}
           <AreaChart data={users} titleText="USERS" />
           <div className="separator"></div>
         </div>
-        <div className="container w-1/2 lg:w-1/4 px-4">
+        <div className="container w-1/2 lg:w-1/4 px-4 min-h-[150px] relative">
           {/* Content for the fourth container */}
           <AreaChart data={processes} titleText="PROCESSES" />
         </div>
