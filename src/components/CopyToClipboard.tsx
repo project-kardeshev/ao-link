@@ -1,3 +1,5 @@
+"use client"
+
 import { Check, Copy } from "@phosphor-icons/react"
 import React from "react"
 
@@ -10,12 +12,12 @@ export function CopyToClipboard(props: CopyToClipboardProps) {
 
   const [copied, setCopied] = React.useState(false)
 
-  if(!value) return null
+  if (!value) return null
 
   return (
     <span
       data-tip={copied ? "Copied" : "Copy to clipboard"}
-      className="hover:fill-[#000] cursor-pointer fill-[#7d7d7d] tooltip"
+      className="hover:fill-[#000] cursor-pointer fill-inherit tooltip"
       onClick={() => {
         navigator.clipboard.writeText(value)
 

@@ -7,7 +7,7 @@ export function formatRelative(date: Date) {
 
 export function parseUtcString(dateString: string): Date {
   const date = new Date(dateString)
-  
+
   const utcTimezoneOffsetHours = -(date.getTimezoneOffset() / 60)
   date.setHours(date.getHours() + utcTimezoneOffsetHours)
 
@@ -15,6 +15,6 @@ export function parseUtcString(dateString: string): Date {
 }
 
 export function formatFullDate(date: Date) {
-  const formattedDate = format(date, 'MM/dd/yyyy HH:mm:ss');
+  const formattedDate = format(date, "MM/dd/yyyy HH:mm:ss")
   return formattedDate
 }

@@ -1,45 +1,46 @@
-"use client";
+"use client"
 
-import { truncateId } from "@/utils/data-utils";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { ChangeEvent, SyntheticEvent, useState } from "react";
+import Image from "next/image"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import React, { type ChangeEvent, SyntheticEvent, useState } from "react"
+
+import { truncateId } from "@/utils/data-utils"
 
 const SuggestionInput = ({ eventsIds }: { eventsIds: string[] }) => {
-  const [isInputFocused, setIsInputFocused] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const { push } = useRouter();
+  const [isInputFocused, setIsInputFocused] = useState(false)
+  const [inputValue, setInputValue] = useState("")
+  const { push } = useRouter()
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value);
-  };
+    setInputValue(event.target.value)
+  }
 
   const handleSelectChange = (newValue: string) => {
-    setInputValue(newValue);
-  };
+    setInputValue(newValue)
+  }
 
   const handleInputFocus = () => {
-    setIsInputFocused(true);
-  };
+    setIsInputFocused(true)
+  }
 
   const handleInputBlur = () => {
     setTimeout(() => {
-      setIsInputFocused(false);
-    }, 300);
-  };
+      setIsInputFocused(false)
+    }, 0)
+  }
 
   const handleKeyDown = (e: any) => {
     if (e.code === "Enter") {
-      push(`/${inputValue}`);
+      push(`/${inputValue}`)
     }
-  };
+  }
   return (
     <div>
       <div className="relative">
         <input
           placeholder="Search...."
-          className="bg-background border border-[#222326] w-full py-[28px] px-[32px] outline-none focus:border-none z-50 relative"
+          className="bg-background border border-[#222326] w-full py-[28px] px-[32px] outline-none focus:border-transparent z-50 relative"
           value={inputValue}
           onChange={handleInputChange}
           onFocus={handleInputFocus}
@@ -56,7 +57,7 @@ const SuggestionInput = ({ eventsIds }: { eventsIds: string[] }) => {
           />
         </Link>
       </div>
-      {isInputFocused && inputValue !== "" && (
+      {/* {isInputFocused && inputValue !== "" && (
         <ul className="mt-[10px] z-50 relative max-h-[200px] overflow-y-scroll">
           {eventsIds
             .filter((item) => item.includes(inputValue))
@@ -77,15 +78,14 @@ const SuggestionInput = ({ eventsIds }: { eventsIds: string[] }) => {
               </li>
             ))}
         </ul>
-      )}
-
+      )} */}
       {isInputFocused && (
         <div
           className={`fixed top-0 left-0 w-full h-full bg-[#0000004d] z-[1]`}
         ></div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default SuggestionInput;
+export default SuggestionInput

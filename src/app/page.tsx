@@ -14,15 +14,14 @@ import { normalizeAoEvent } from "@/utils/ao-event-utils"
 export const dynamic = "force-dynamic"
 
 export default async function Home() {
-  const events = (await getLatestAoEvents()) || []
   const messages = await metricsMessages()
-
   const modules = await metricsModules()
-
   const users = await metricsUsers()
-
   const processes = await metricsProcesses()
 
+  const pageLimit = 30
+
+  const events = (await getLatestAoEvents(pageLimit)) || []
   const initialTableData = events.map(normalizeAoEvent)
 
   return (
@@ -57,7 +56,7 @@ export default async function Home() {
       <div className="text-main-dark-color uppercase mt-[2.75rem] mb-8">
         Latest
       </div>
-      <EventsTable initialData={initialTableData} />
+      <EventsTable initialData={initialTableData} pageLimit={pageLimit} />
     </main>
   )
 }

@@ -1,8 +1,10 @@
 "use client"
 
-import { truncateId } from "@/utils/data-utils"
 import Link from "next/link"
 import React from "react"
+
+import { truncateId } from "@/utils/data-utils"
+
 import { CopyToClipboard } from "./CopyToClipboard"
 
 type IdBlockProps = {
@@ -15,7 +17,7 @@ export function IdBlock(props: IdBlockProps) {
 
   if (href) {
     return (
-      <div>
+      <div className="fill-[#7d7d7d00] hover:fill-[#7d7d7d]">
         <Link href={href}>
           <span className="tooltip hover:underline" data-tip={value}>
             {truncateId(value)}
@@ -27,7 +29,7 @@ export function IdBlock(props: IdBlockProps) {
   }
 
   return (
-    <div>
+    <div className="fill-[#7d7d7d00] hover:fill-[#7d7d7d]">
       <span className="tooltip" data-tip={value}>
         {truncateId(value)}
       </span>

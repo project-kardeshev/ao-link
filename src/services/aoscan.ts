@@ -10,7 +10,9 @@ export interface AoEvent {
   created_at: string
 }
 
-export async function getLatestAoEvents(): Promise<AoEvent[] | null> {
+export async function getLatestAoEvents(
+  pageLimit: number,
+): Promise<AoEvent[] | null> {
   try {
     let supabaseRq
 
@@ -18,7 +20,30 @@ export async function getLatestAoEvents(): Promise<AoEvent[] | null> {
       .from("ao_events")
       .select("owner,id,tags_flat,target,owner_address,height,created_at")
       .order("created_at", { ascending: false })
-      .range(0, 30)
+      .range(0, pageLimit - 1)
+
+    const { data } = await supabaseRq
+    if (data) {
+      return data as AoEvent[]
+    }
+
+    return null
+  } catch (error) {
+    return null
+  }
+}
+
+export async function getAoEventsForBlock(
+  blockHeight: string,
+): Promise<AoEvent[] | null> {
+  try {
+    let supabaseRq
+
+    supabaseRq = supabase
+      .from("ao_events")
+      .select("owner,id,tags_flat,target,owner_address,height,created_at")
+      .order("created_at", { ascending: false })
+      .eq("height", blockHeight)
 
     const { data } = await supabaseRq
     if (data) {
@@ -42,7 +67,7 @@ export async function getLatestMessagesForProcess(
       .select("owner,id,tags_flat,target,owner_address,height,created_at")
       .order("created_at", { ascending: false })
       .eq("target", processId)
-      .range(0, 10)
+      .range(0, 9)
 
     const { data } = await supabaseRq
 

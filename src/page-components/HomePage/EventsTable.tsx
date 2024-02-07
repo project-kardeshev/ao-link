@@ -1,5 +1,6 @@
 "use client"
 import Image from "next/image"
+import Link from "next/link"
 import React, { useEffect, useState } from "react"
 
 import { type AoEvent, subscribeToEvents } from "@/services/aoscan"
@@ -12,29 +13,40 @@ import { truncateId } from "@/utils/data-utils"
 
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
 
+import { formatNumber } from "@/utils/number-utils"
+
 import { IdBlock } from "../../components/IdBlock"
 import { Loader } from "../../components/Loader"
 
 type EventTablesProps = {
   initialData: NormalizedAoEvent[]
+  blockHeight?: number
+  pageLimit?: number
 }
 
 const EventsTable = (props: EventTablesProps) => {
-  const { initialData } = props
+  const { initialData, blockHeight, pageLimit } = props
 
   const [data, setData] = useState<NormalizedAoEvent[]>(initialData)
 
   useEffect(() => {
     const unsubscribe = subscribeToEvents((event: AoEvent) => {
+      if (event.height !== blockHeight) return
+
       console.log("📜 LOG > unsubscribe > event:", event)
       setData((prevData) => {
         const parsed = normalizeAoEvent(event)
-        return [parsed, ...prevData.slice(0, 29)]
+
+        if (pageLimit === undefined) {
+          return [parsed, ...prevData]
+        }
+
+        return [parsed, ...prevData.slice(0, pageLimit - 1)]
       })
     })
 
     return unsubscribe
-  }, [])
+  }, [blockHeight, pageLimit])
 
   return (
     <>
@@ -48,7 +60,9 @@ const EventsTable = (props: EventTablesProps) => {
                 <th className="text-start p-2 w-[180px]">Message ID</th>
                 <th className="text-start p-2 w-[180px]">Process ID</th>
                 <th className="text-start p-2 w-[180px]">Owner</th>
-                <th className="text-start p-2">Block Height</th>
+                {!blockHeight && (
+                  <th className="text-start p-2">Block Height</th>
+                )}
                 <th className="text-start p-2">Scheduler ID</th>
                 <th className="text-start p-2">Created</th>
               </tr>
@@ -103,7 +117,15 @@ const EventsTable = (props: EventTablesProps) => {
                   <td className="text-start p-2 ">
                     <IdBlock value={item.owner} />
                   </td>
-                  <td className="text-start p-2 ">{item.blockHeight}</td>
+                  {!blockHeight && (
+                    <td className="text-start p-2 ">
+                      <Link href={`/block/${item.blockHeight}`}>
+                        <span className="hover:underline">
+                          {formatNumber(item.blockHeight)}
+                        </span>
+                      </Link>
+                    </td>
+                  )}
                   <td className="text-start p-2 ">
                     {truncateId(item.schedulerId)}
                   </td>
