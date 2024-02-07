@@ -1,5 +1,6 @@
 "use client"
 import Image from "next/image"
+import Link from "next/link"
 import React, { useEffect, useState } from "react"
 
 import { type AoEvent, subscribeToEvents } from "@/services/aoscan"
@@ -11,6 +12,8 @@ import {
 import { truncateId } from "@/utils/data-utils"
 
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
+
+import { formatNumber } from "@/utils/number-utils"
 
 import { IdBlock } from "../../components/IdBlock"
 import { Loader } from "../../components/Loader"
@@ -96,9 +99,15 @@ const MessagesTable = (props: MessagesTableProps) => {
                     />
                   </td>
                   <td className="text-start p-2 ">
-                    <IdBlock value={item.owner} />
+                    <IdBlock value={item.owner} href={`/owner/${item.owner}`} />
                   </td>
-                  <td className="text-start p-2 ">{item.blockHeight}</td>
+                  <td className="text-start p-2 ">
+                    <Link href={`/block/${item.blockHeight}`}>
+                      <span className="hover:underline">
+                        {formatNumber(item.blockHeight)}
+                      </span>
+                    </Link>
+                  </td>
                   <td className="text-start p-2 ">
                     {truncateId(item.schedulerId)}
                   </td>

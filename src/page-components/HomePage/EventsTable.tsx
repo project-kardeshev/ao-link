@@ -21,17 +21,19 @@ import { Loader } from "../../components/Loader"
 type EventTablesProps = {
   initialData: NormalizedAoEvent[]
   blockHeight?: number
+  ownerId?: string
   pageLimit?: number
 }
 
 const EventsTable = (props: EventTablesProps) => {
-  const { initialData, blockHeight, pageLimit } = props
+  const { initialData, blockHeight, pageLimit, ownerId } = props
 
   const [data, setData] = useState<NormalizedAoEvent[]>(initialData)
 
   useEffect(() => {
     const unsubscribe = subscribeToEvents((event: AoEvent) => {
-      if (event.height !== blockHeight) return
+      if (blockHeight && event.height !== blockHeight) return
+      if (ownerId && event.owner_address !== ownerId) return
 
       console.log("📜 LOG > unsubscribe > event:", event)
       setData((prevData) => {
@@ -46,7 +48,7 @@ const EventsTable = (props: EventTablesProps) => {
     })
 
     return unsubscribe
-  }, [blockHeight, pageLimit])
+  }, [blockHeight, pageLimit, ownerId])
 
   return (
     <>
@@ -59,7 +61,9 @@ const EventsTable = (props: EventTablesProps) => {
                 <th className="text-start p-2 w-[160px]">Action</th>
                 <th className="text-start p-2 w-[180px]">Message ID</th>
                 <th className="text-start p-2 w-[180px]">Process ID</th>
-                <th className="text-start p-2 w-[180px]">Owner</th>
+                {!ownerId && (
+                  <th className="text-start p-2 w-[180px]">Owner</th>
+                )}
                 {!blockHeight && (
                   <th className="text-start p-2">Block Height</th>
                 )}
@@ -114,9 +118,14 @@ const EventsTable = (props: EventTablesProps) => {
                       href={`/process/${item.processId}`}
                     />
                   </td>
-                  <td className="text-start p-2 ">
-                    <IdBlock value={item.owner} />
-                  </td>
+                  {!ownerId && (
+                    <td className="text-start p-2 ">
+                      <IdBlock
+                        value={item.owner}
+                        href={`/owner/${item.owner}`}
+                      />
+                    </td>
+                  )}
                   {!blockHeight && (
                     <td className="text-start p-2 ">
                       <Link href={`/block/${item.blockHeight}`}>

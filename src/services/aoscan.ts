@@ -56,6 +56,29 @@ export async function getAoEventsForBlock(
   }
 }
 
+export async function getAoEventsForOwner(
+  ownerId: string,
+): Promise<AoEvent[] | null> {
+  try {
+    let supabaseRq
+
+    supabaseRq = supabase
+      .from("ao_events")
+      .select("owner,id,tags_flat,target,owner_address,height,created_at")
+      .order("created_at", { ascending: false })
+      .eq("owner_address", ownerId)
+
+    const { data } = await supabaseRq
+    if (data) {
+      return data as AoEvent[]
+    }
+
+    return null
+  } catch (error) {
+    return null
+  }
+}
+
 export async function getLatestMessagesForProcess(
   processId: string,
 ): Promise<AoEvent[] | null> {

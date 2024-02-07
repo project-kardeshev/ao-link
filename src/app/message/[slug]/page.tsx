@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 import { Chip } from "@/components/Chip"
 import { Graph } from "@/components/Graph"
 import Header from "@/components/Header"
@@ -9,6 +11,7 @@ import { getAoEventById } from "@/services/aoscan"
 import { normalizeAoEvent, normalizeTags } from "@/utils/ao-event-utils"
 import { truncateId } from "@/utils/data-utils"
 import { formatRelative } from "@/utils/date-utils"
+import { formatNumber } from "@/utils/number-utils"
 import { getColorFromText } from "@/utils/tailwind-utils"
 
 type MessagePageProps = {
@@ -55,15 +58,26 @@ export default async function MessagePage(props: MessagePageProps) {
           </div>
           <div className="flex flex-col gap-8">
             <SectionInfoWithChip title="Type" value={type} />
-            <SectionInfo title="Owner" value={<IdBlock value={owner} />} />
-            <SectionInfo title="Message ID" value={<IdBlock value={id} />} />
+            <SectionInfo
+              title="Owner"
+              value={<IdBlock value={owner} href={`/owner/${owner}`} />}
+            />
             <SectionInfo
               title="Process ID"
               value={
                 <IdBlock value={processId} href={`/process/${processId}`} />
               }
             />
-            <SectionInfo title="Block Height" value={blockHeight} />
+            <SectionInfo
+              title="Block Height"
+              value={
+                <Link href={`/block/${blockHeight}`}>
+                  <span className="hover:underline">
+                    {formatNumber(blockHeight)}
+                  </span>
+                </Link>
+              }
+            />
             <SectionInfo title="Created" value={formatRelative(created)} />
           </div>
         </div>
