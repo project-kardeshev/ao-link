@@ -1,5 +1,6 @@
 import { CopyToClipboard } from "@/components/CopyToClipboard"
 import Header from "@/components/Header"
+import { IdBlock } from "@/components/IdBlock"
 import EventsTable from "@/page-components/HomePage/EventsTable"
 import { getAoEventsForBlock } from "@/services/aoscan"
 import { normalizeAoEvent } from "@/utils/ao-event-utils"
@@ -23,10 +24,7 @@ export default async function BlockPage(props: BlockPageProps) {
       <div className="flex gap-2 items-center text-sm mt-12 mb-11">
         <p className="text-[#9EA2AA] ">BLOCK</p>
         <p className="font-bold">/</p>
-        <p className="fill-[#7d7d7d]">
-          {formatNumber(parseInt(blockHeight))}{" "}
-          <CopyToClipboard value={blockHeight} />
-        </p>
+        <IdBlock label={blockHeight} />
       </div>
 
       <div className="text-main-dark-color uppercase mt-[2.75rem] mb-8">

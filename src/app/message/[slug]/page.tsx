@@ -48,7 +48,7 @@ export default async function MessagePage(props: MessagePageProps) {
       <div className="flex gap-2 items-center text-sm mt-12 mb-11">
         <p className="text-[#9EA2AA] ">MESSAGE</p>
         <p className="font-bold">/</p>
-        <p className="">{truncateId(id)}</p>
+        <IdBlock label={id} />
       </div>
 
       <div className="flex w-full">
@@ -60,22 +60,31 @@ export default async function MessagePage(props: MessagePageProps) {
             <SectionInfoWithChip title="Type" value={type} />
             <SectionInfo
               title="Owner"
-              value={<IdBlock value={owner} href={`/owner/${owner}`} />}
+              value={
+                <IdBlock
+                  label={truncateId(owner)}
+                  value={owner}
+                  href={`/owner/${owner}`}
+                />
+              }
             />
             <SectionInfo
               title="Process ID"
               value={
-                <IdBlock value={processId} href={`/process/${processId}`} />
+                <IdBlock
+                  label={truncateId(processId)}
+                  value={processId}
+                  href={`/process/${processId}`}
+                />
               }
             />
             <SectionInfo
               title="Block Height"
               value={
-                <Link href={`/block/${blockHeight}`}>
-                  <span className="hover:underline">
-                    {formatNumber(blockHeight)}
-                  </span>
-                </Link>
+                <IdBlock
+                  label={String(blockHeight)}
+                  href={`/block/${blockHeight}`}
+                />
               }
             />
             <SectionInfo title="Created" value={formatRelative(created)} />

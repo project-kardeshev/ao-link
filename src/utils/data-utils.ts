@@ -12,3 +12,15 @@ export function hashString(str: string) {
   }
   return hash
 }
+
+export const TYPE_ICON_MAP: Record<string, string> = {
+  Process: "/process.svg",
+  Message: "/message.svg",
+}
+
+export const TYPE_COLOR_MAP: Record<string, string> = {
+  Process: "bg-[#B8C3E0]",
+  Message: "bg-[#E2F0DC]",
+  Owner: "bg-[#FFADAD]",
+  Block: "bg-[#FEEEE5]",
+}

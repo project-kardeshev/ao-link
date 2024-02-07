@@ -9,7 +9,7 @@ import {
   normalizeAoEvent,
 } from "@/utils/ao-event-utils"
 
-import { truncateId } from "@/utils/data-utils"
+import { TYPE_COLOR_MAP, TYPE_ICON_MAP, truncateId } from "@/utils/data-utils"
 
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
 
@@ -73,9 +73,7 @@ const MessagesTable = (props: MessagesTableProps) => {
                   <td className="text-start p-2">
                     <div
                       className={`gap-2 inline-flex px-2 py-1 ${
-                        item.type === "Process"
-                          ? "bg-[#FEEEE5]"
-                          : "bg-[#E2F0DC]"
+                        TYPE_COLOR_MAP[item.type]
                       }`}
                     >
                       <p className="uppercase">{item.type}</p>
@@ -83,30 +81,30 @@ const MessagesTable = (props: MessagesTableProps) => {
                         alt="icon"
                         width={8}
                         height={8}
-                        src={
-                          item.type === "Process"
-                            ? "/process.svg"
-                            : "/message.svg"
-                        }
+                        src={TYPE_ICON_MAP[item.type]}
                       />
                     </div>
                   </td>
                   <td className="text-start p-2 ">{item.action}</td>
                   <td className="text-start p-2 ">
                     <IdBlock
+                      label={truncateId(item.messageId)}
                       value={item.messageId}
                       href={`/message/${item.messageId}`}
                     />
                   </td>
                   <td className="text-start p-2 ">
-                    <IdBlock value={item.owner} href={`/owner/${item.owner}`} />
+                    <IdBlock
+                      label={truncateId(item.owner)}
+                      value={item.owner}
+                      href={`/owner/${item.owner}`}
+                    />
                   </td>
                   <td className="text-start p-2 ">
-                    <Link href={`/block/${item.blockHeight}`}>
-                      <span className="hover:underline">
-                        {formatNumber(item.blockHeight)}
-                      </span>
-                    </Link>
+                    <IdBlock
+                      label={String(item.blockHeight)}
+                      href={`/block/${item.blockHeight}`}
+                    />
                   </td>
                   <td className="text-start p-2 ">
                     {truncateId(item.schedulerId)}
@@ -124,9 +122,7 @@ const MessagesTable = (props: MessagesTableProps) => {
             </tbody>
           </table>
         </div>
-      ) : (
-        <Loader />
-      )}
+      ) : null}
     </>
   )
 }

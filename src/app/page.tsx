@@ -1,7 +1,8 @@
 import { AreaChart } from "@/components/Charts/AreaChart"
 import Header from "@/components/Header"
-import SuggestionInput from "@/components/SuggestionInput"
+
 import EventsTable from "@/page-components/HomePage/EventsTable"
+import SearchBar from "@/page-components/HomePage/SearchBar"
 import {
   metricsMessages,
   metricsModules,
@@ -28,9 +29,7 @@ export default async function Home() {
     <main>
       <Header />
       <div className="mt-4">
-        <SuggestionInput
-          eventsIds={events?.map((event) => event.id) as string[]}
-        />
+        <SearchBar />
       </div>
       <div className="flex justify-between flex-wrap mt-[64px]">
         <div className="container w-1/2 lg:w-1/4 px-4 min-h-[150px] relative">

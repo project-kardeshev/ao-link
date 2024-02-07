@@ -58,6 +58,7 @@ export async function getAoEventsForBlock(
 
 export async function getAoEventsForOwner(
   ownerId: string,
+  limit?: number,
 ): Promise<AoEvent[] | null> {
   try {
     let supabaseRq
@@ -67,6 +68,10 @@ export async function getAoEventsForOwner(
       .select("owner,id,tags_flat,target,owner_address,height,created_at")
       .order("created_at", { ascending: false })
       .eq("owner_address", ownerId)
+
+    if (limit) {
+      supabaseRq = supabaseRq.range(0, limit - 1)
+    }
 
     const { data } = await supabaseRq
     if (data) {

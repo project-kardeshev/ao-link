@@ -24,9 +24,7 @@ export default async function OwnerPage(props: OwnerPageProps) {
       <div className="flex gap-2 items-center text-sm mt-12 mb-11">
         <p className="text-[#9EA2AA] ">OWNER</p>
         <p className="font-bold">/</p>
-        <div className="">
-          <IdBlock value={ownerId} />
-        </div>
+        <IdBlock label={ownerId} />
       </div>
 
       <div className="text-main-dark-color uppercase mt-[2.75rem] mb-8">
