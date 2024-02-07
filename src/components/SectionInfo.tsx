@@ -7,7 +7,7 @@ export const SectionInfo = ({
   title: string
   value: React.ReactNode
 }) => (
-  <div className="flex flex-row items-baseline w-full mb-12">
+  <div className="flex flex-row items-baseline w-full">
     <div className="flex w-56 items-center">
       <div className="table-headers">{title}</div>
     </div>
