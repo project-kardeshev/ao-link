@@ -16,12 +16,12 @@ export type NormalizedAoEvent = {
 
 export function normalizeAoEvent(event: AoEvent): NormalizedAoEvent {
   const { owner_address, id, tags_flat, height, created_at, target } = event
-  const { Action, Type, Variant } = tags_flat
+  const { Action, Type, Scheduler } = tags_flat
   //
   const type = Type as NormalizedAoEvent["type"]
   const blockHeight = height
   const owner = owner_address
-  const schedulerId = Variant
+  const schedulerId = Scheduler
   const action = Action
   const created = parseUtcString(created_at)
   //
