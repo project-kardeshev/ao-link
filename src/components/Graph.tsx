@@ -139,7 +139,7 @@ export const Graph: React.FC<GraphProps> = ({
       source: nodes.find((n) => n.id === d.source),
       target: nodes.find((n) => n.id === d.target),
     }))
-    const myColors = ["#FF9C67"]
+    const myColors = ["#6BB24C"]
     const color = d3.scaleOrdinal(types, myColors)
 
     const simulation = d3
@@ -183,9 +183,7 @@ export const Graph: React.FC<GraphProps> = ({
       .data(links)
       .join("path")
       .attr("id", (d) => `link-${d.source.id}-${d.target.id}`)
-      .attr("stroke", (d) =>
-        d.type === "User Message" ? "#FE7171" : color(d.type),
-      )
+      .attr("stroke", (d) => d.type === "User Message" ? "#57E51A" : "#6BB24C") // Set "#57E51A" for "User Message", and "#6BB24C" as default
       .attr(
         "marker-end",
         (d) => `url(${new URL(`#arrow-${d.type}`, location.href)})`,
@@ -214,27 +212,34 @@ export const Graph: React.FC<GraphProps> = ({
       .attr("markerHeight", 4)
       .attr("orient", "auto")
       .append("path")
-      .attr("fill", (d) => (d === "User Message" ? "#FE7171" : color(d)))
+      .attr("fill", (d) => (d === "User Message" ? "#57E51A" : color(d)))
       .attr("d", "M0,-5L10,0L0,5")
 
-    const node = svg
-      .append("g")
-      .attr("fill", "currentColor")
-      .attr("stroke-linecap", "round")
-      .attr("stroke-linejoin", "round")
-      .selectAll<SVGGElement, CustomNode>("g")
-      .data(nodes)
-      .join("g")
-      .call(drag(simulation))
+   const node = svg
+    .append("g")
+    .attr("fill", "currentColor")
+    .attr("stroke-linecap", "round")
+    .attr("stroke-linejoin", "round")
+    .selectAll<SVGGElement, CustomNode>("g")
+    .data(nodes)
+    .join("g")
+    .call(drag(simulation));
 
-    node
-      .append("circle")
-      .attr("stroke", "white")
-      .attr("stroke-width", 1.5)
-      .attr("r", 8)
-      .attr("fill", (d) => (d.id === "User" ? "#FE7171" : color(d.type)))
+  node
+    .append("circle")
+    .attr("stroke", "white")
+    .attr("stroke-width", 1.5)
+    .attr("r", 8)
+    .attr("fill", (d) => {
+      if (d.id === "This Process") return "#0046FF";
+      else if (d.id.startsWith("Process")) return "#596EA6";
+      else if (d.id === "User") return "#D52C2C";
+      else if (d.id.startsWith("User")) return "#6BB24C";
+      else return color(d.type); // Default color assignment for other cases
+    });
 
-    const text = node
+
+  const text = node
       .append("text")
       .attr("x", 10)
       .attr("y", "0.31em")
