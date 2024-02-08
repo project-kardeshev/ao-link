@@ -105,7 +105,9 @@ export default async function ProcessPage(props: ProcessPageProps) {
               <p className="table-headers">Result Type</p>
             </div>
             <div className="bg-secondary-gray w-96 min-h-14 flex items-start justify-start">
-              <p className="font-mono text-xs font-normal leading-normal tracking-tighter p-2"></p>
+              <p className="font-mono text-xs font-normal leading-normal tracking-tighter p-2">
+                JSON
+              </p>
             </div>
           </div>
         </div>
