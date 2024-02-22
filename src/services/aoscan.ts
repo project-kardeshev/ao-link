@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase"
+import { FilterOption } from "@/types"
 
 export interface AoEvent {
   owner: string
@@ -10,9 +11,12 @@ export interface AoEvent {
   created_at: string
 }
 
+export const targetEmptyValue = "                                           "
+
 export async function getLatestAoEvents(
-  pageLimit: number,
-): Promise<AoEvent[] | null> {
+  pageLimit: number = 1000,
+  filter?: FilterOption,
+): Promise<AoEvent[]> {
   try {
     let supabaseRq
 
@@ -20,16 +24,22 @@ export async function getLatestAoEvents(
       .from("ao_events")
       .select("owner,id,tags_flat,target,owner_address,height,created_at")
       .order("created_at", { ascending: false })
-      .range(0, pageLimit - 1)
 
-    const { data } = await supabaseRq
-    if (data) {
-      return data as AoEvent[]
+    if (filter === "process") {
+      supabaseRq = supabaseRq.eq("target", targetEmptyValue)
+    } else if (filter === "message") {
+      supabaseRq = supabaseRq.neq("target", targetEmptyValue)
     }
 
-    return null
+    supabaseRq = supabaseRq.range(0, pageLimit - 1).returns<AoEvent[]>()
+
+    const { data } = await supabaseRq
+
+    if (!data) return []
+
+    return data
   } catch (error) {
-    return null
+    return []
   }
 }
 
@@ -86,7 +96,7 @@ export async function getAoEventsForOwner(
 
 export async function getLatestMessagesForProcess(
   processId: string,
-): Promise<AoEvent[] | null> {
+): Promise<AoEvent[]> {
   try {
     let supabaseRq
 
@@ -103,9 +113,10 @@ export async function getLatestMessagesForProcess(
       return data as AoEvent[]
     }
 
-    return null
+    return []
   } catch (error) {
-    return null
+    console.error(error)
+    return []
   }
 }
 

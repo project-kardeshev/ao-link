@@ -1,9 +1,18 @@
 "use client"
+import { MenuItem, Select, Stack, Typography } from "@mui/material"
 import Image from "next/image"
-import Link from "next/link"
+import { useRouter, useSearchParams } from "next/navigation"
 import React, { useEffect, useState } from "react"
 
-import { type AoEvent, subscribeToEvents } from "@/services/aoscan"
+import { MonoFontFF } from "@/components/RootLayout/fonts"
+import { useUpdateSearch } from "@/hooks/useUpdateSearch"
+import {
+  type AoEvent,
+  subscribeToEvents,
+  getLatestAoEvents,
+  targetEmptyValue,
+} from "@/services/aoscan"
+import { FilterOption } from "@/types"
 import {
   type NormalizedAoEvent,
   normalizeAoEvent,
@@ -16,7 +25,6 @@ import { formatFullDate, formatRelative } from "@/utils/date-utils"
 import { formatNumber } from "@/utils/number-utils"
 
 import { IdBlock } from "../../components/IdBlock"
-import { Loader } from "../../components/Loader"
 
 type EventTablesProps = {
   initialData: NormalizedAoEvent[]
@@ -28,14 +36,56 @@ type EventTablesProps = {
 const EventsTable = (props: EventTablesProps) => {
   const { initialData, blockHeight, pageLimit, ownerId } = props
 
+  const searchParams = useSearchParams()
+
+  const [filter, setFilter] = useState<FilterOption>(
+    (searchParams?.get("filter") as FilterOption) || "",
+  )
+
   const [data, setData] = useState<NormalizedAoEvent[]>(initialData)
 
+  const [pauseStreaming, setPauseStreaming] = useState(false)
+
   useEffect(() => {
+    function handleVisibilityChange() {
+      if (document.visibilityState === "visible") {
+        console.log("Resuming realtime streaming")
+        setPauseStreaming(false)
+      } else {
+        console.log("Pausing realtime streaming")
+        setPauseStreaming(true)
+      }
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+
+    return function cleanup() {
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (pauseStreaming) return
+    console.log("Fetching latest data")
+    getLatestAoEvents(pageLimit, filter).then((events) => {
+      setData(events.map(normalizeAoEvent))
+    })
+  }, [pauseStreaming, pageLimit, filter])
+
+  useEffect(() => {
+    if (pauseStreaming) return
+
     const unsubscribe = subscribeToEvents((event: AoEvent) => {
       if (blockHeight && event.height !== blockHeight) return
       if (ownerId && event.owner_address !== ownerId) return
+      if (filter === "message" && event.target === targetEmptyValue) {
+        return
+      }
+      if (filter === "process" && event.target !== targetEmptyValue) {
+        return
+      }
 
-      console.log("📜 LOG > unsubscribe > event:", event)
+      console.log("📜 LOG > subscribe > event:", event)
       setData((prevData) => {
         const parsed = normalizeAoEvent(event)
 
@@ -48,41 +98,67 @@ const EventsTable = (props: EventTablesProps) => {
     })
 
     return unsubscribe
-  }, [blockHeight, pageLimit, ownerId])
+  }, [pauseStreaming, blockHeight, pageLimit, ownerId, filter])
+
+  const router = useRouter()
+  const updateSearch = useUpdateSearch()
 
   return (
-    <>
+    <Stack marginTop={5} gap={2}>
+      <Stack direction="row" justifyContent="space-between">
+        <div className="text-main-dark-color uppercase ">Latest events</div>
+        <Select
+          size="small"
+          sx={{
+            width: 160,
+            lineHeight: "normal",
+            "& .MuiSelect-select": { paddingY: "4px !important" },
+          }}
+          displayEmpty
+          value={filter}
+          onChange={(event) => {
+            const newValue = event.target.value as FilterOption
+            setFilter(newValue)
+            updateSearch("filter", newValue)
+          }}
+        >
+          <MenuItem value="">
+            <em>All</em>
+          </MenuItem>
+          <MenuItem value="message">Messages</MenuItem>
+          <MenuItem value="process">Processes</MenuItem>
+        </Select>
+      </Stack>
       {data.length ? (
-        <div className="overflow-x-auto">
+        <div>
           <table className="min-w-full">
             <thead className="table-headers">
               <tr>
                 <th className="text-start p-2 w-[120px]">Type</th>
-                <th className="text-start p-2 w-[160px]">Action</th>
-                <th className="text-start p-2 w-[180px]">Message ID</th>
-                <th className="text-start p-2 w-[180px]">Process ID</th>
+                <th className="text-start p-2">Action</th>
+                <th className="text-start p-2 w-[220px]">Message ID</th>
+                <th className="text-start p-2 w-[220px]">Process ID</th>
                 {!ownerId && (
-                  <th className="text-start p-2 w-[180px]">Owner</th>
+                  <th className="text-start p-2 w-[220px]">Owner</th>
                 )}
                 {!blockHeight && (
-                  <th className="text-start p-2">Block Height</th>
+                  <th className="text-end p-2 w-[160px]">Block Height</th>
                 )}
-                <th className="text-start p-2">Scheduler ID</th>
-                <th className="text-start p-2">Created</th>
+                <th className="text-end p-2 w-[160px]">Created</th>
               </tr>
             </thead>
             <tbody>
               {data.map((item) => (
                 <tr
-                  className="table-row"
+                  className="table-row cursor-pointer"
                   key={item.id}
-                  // onClick={() => {
-                  //   router.push(
-                  //     item.type === "Message"
-                  //       ? `/message/${item.id}`
-                  //       : `/process/${item.id}`,
-                  //   )
-                  // }}
+                  onClick={() => {
+                    router.push(
+                      item.type === "Message"
+                        ? `/message/${item.id}`
+                        : `/process/${item.id}`,
+                    )
+                  }}
                 >
                   <td className="text-start p-2">
                     <div
@@ -124,17 +200,21 @@ const EventsTable = (props: EventTablesProps) => {
                     </td>
                   )}
                   {!blockHeight && (
-                    <td className="text-start p-2 ">
-                      <IdBlock
-                        label={String(item.blockHeight)}
-                        href={`/block/${item.blockHeight}`}
-                      />
+                    <td className="text-end p-2">
+                      <Typography
+                        fontFamily={MonoFontFF}
+                        component="div"
+                        variant="inherit"
+                      >
+                        <IdBlock
+                          label={formatNumber(item.blockHeight)}
+                          value={String(item.blockHeight)}
+                          href={`/block/${item.blockHeight}`}
+                        />
+                      </Typography>
                     </td>
                   )}
-                  <td className="text-start p-2 ">
-                    {truncateId(item.schedulerId)}
-                  </td>
-                  <td className="text-start p-2">
+                  <td className="text-end p-2">
                     <span
                       className="tooltip"
                       data-tip={formatFullDate(item.created)}
@@ -148,7 +228,7 @@ const EventsTable = (props: EventTablesProps) => {
           </table>
         </div>
       ) : null}
-    </>
+    </Stack>
   )
 }
 

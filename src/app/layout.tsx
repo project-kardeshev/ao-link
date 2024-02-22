@@ -1,24 +1,25 @@
-import type { Metadata } from "next";
-import { Inter, DM_Sans } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from "next"
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", });
-const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dmSans", });
+import "./globals.css"
+import RootLayoutUI from "../components/RootLayout/RootLayoutUI"
 
 export const metadata: Metadata = {
   title: "AOScan",
-};
+  icons: {
+    icon: "/ao.svg",
+  },
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
-      <body className={`px-[32px] ${inter.variable} ${dmSans.variable} font-dmSans max-w-screen-lg mx-auto`}>
-        {children}
+      <body>
+        <RootLayoutUI>{children}</RootLayoutUI>
       </body>
     </html>
-  );
+  )
 }

@@ -1,18 +1,18 @@
-import Link from "next/link"
+import { Grid, Paper, Stack, Typography } from "@mui/material"
 
-import { Chip } from "@/components/Chip"
 import { Graph } from "@/components/Graph"
-import Header from "@/components/Header"
 import { IdBlock } from "@/components/IdBlock"
 
+import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { SectionInfo } from "@/components/SectionInfo"
 import { SectionInfoWithChip } from "@/components/SectionInfoWithChip"
 import { getAoEventById } from "@/services/aoscan"
 import { normalizeAoEvent, normalizeTags } from "@/utils/ao-event-utils"
 import { truncateId } from "@/utils/data-utils"
 import { formatRelative } from "@/utils/date-utils"
-import { formatNumber } from "@/utils/number-utils"
 import { getColorFromText } from "@/utils/tailwind-utils"
+
+import { ComputeResult } from "./ComputeResult"
 
 type MessagePageProps = {
   params: { slug: string }
@@ -44,19 +44,17 @@ export default async function MessagePage(props: MessagePageProps) {
 
   return (
     <main className="min-h-screen mb-6">
-      <Header />
       <div className="flex gap-2 items-center text-sm mt-12 mb-11">
         <p className="text-[#9EA2AA] ">MESSAGE</p>
         <p className="font-bold">/</p>
         <IdBlock label={id} />
       </div>
-
-      <div className="flex w-full">
-        <div className="w-1/2 flex flex-col">
-          <div className="w-[426px] h-[410px] border border-[#000] flex items-center justify-center mb-6">
-            <Graph messageId={id} />
-          </div>
-          <div className="flex flex-col gap-8">
+      <Grid container spacing={{ xs: 2, lg: 12 }}>
+        <Grid item xs={12} lg={6}>
+          <Stack gap={4}>
+            <Paper sx={{ height: 428, width: 428 }}>
+              <Graph messageId={id} />
+            </Paper>
             <SectionInfoWithChip title="Type" value={type} />
             <SectionInfo
               title="Owner"
@@ -88,55 +86,60 @@ export default async function MessagePage(props: MessagePageProps) {
               }
             />
             <SectionInfo title="Created" value={formatRelative(created)} />
-          </div>
-        </div>
-        <div className="flex flex-col items-start justify-start gap-8">
-          <div>
-            <div className="mb-2">
-              <p className="table-headers">Tags:</p>
-            </div>
-            <div className="bg-secondary-gray w-96 flex items-start justify-start">
-              <p className="font-mono text-xs font-normal leading-normal tracking-tighter p-2">
+          </Stack>
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <Stack gap={4}>
+            <Stack gap={1} justifyContent="stretch">
+              <Typography variant="subtitle2" color="text.secondary">
+                Tags
+              </Typography>
+              <Stack
+                direction="row"
+                flexWrap="wrap"
+                gap={1}
+                sx={{
+                  maxHeight: 178,
+                  overflowY: "auto",
+                }}
+              >
                 {Object.entries(tags).map(([key, value]) => (
-                  <Chip key={key} className={getColorFromText(key)}>
+                  <Typography
+                    key={key}
+                    className={getColorFromText(key)}
+                    sx={{ padding: 0.5 }}
+                    variant="caption"
+                    fontFamily={MonoFontFF}
+                  >
                     {key}:{value}
-                  </Chip>
+                  </Typography>
                 ))}
-              </p>
-            </div>
-          </div>
-          <div>
-            <div className="mb-2">
-              <SectionInfoWithChip title="Compute Result" value={"Compute"} />
-            </div>
-            <div className="bg-secondary-gray w-96 min-h-14 flex items-start justify-start">
-              <p className="font-mono text-xs font-normal leading-normal tracking-tighter p-2">
-                Waiting to compute...
-              </p>
-            </div>
-          </div>
-          <div>
-            <div className="mb-2">
-              <p className="table-headers">Data</p>
-            </div>
-            <div className="bg-secondary-gray w-96 min-h-14 flex items-start justify-start">
-              <p className="font-mono text-xs font-normal leading-normal tracking-tighter p-2">
-                {data}
-              </p>
-            </div>
-          </div>
-          <div>
-            <div className="mb-2">
-              <p className="table-headers">Result Type</p>
-            </div>
-            <div className="bg-secondary-gray w-96 min-h-14 flex items-start justify-start">
-              <p className="font-mono text-xs font-normal leading-normal tracking-tighter p-2">
-                JSON
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+              </Stack>
+            </Stack>
+            <ComputeResult messageId={messageId} processId={processId} />
+            <Stack gap={1} justifyContent="stretch">
+              <Typography variant="subtitle2" color="text.secondary">
+                Data
+              </Typography>
+              <Paper sx={{ width: "100%", padding: 2 }}>
+                <Typography variant="body2" fontFamily={MonoFontFF}>
+                  {data}
+                </Typography>
+              </Paper>
+            </Stack>
+            <Stack gap={1} justifyContent="stretch">
+              <Typography variant="subtitle2" color="text.secondary">
+                Result Type
+              </Typography>
+              <Paper sx={{ width: "100%", padding: 2 }}>
+                <Typography variant="body2" fontFamily={MonoFontFF}>
+                  JSON
+                </Typography>
+              </Paper>
+            </Stack>
+          </Stack>
+        </Grid>
+      </Grid>
     </main>
   )
 }
