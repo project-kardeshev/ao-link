@@ -5,9 +5,8 @@ import { parseUtcString } from "./date-utils"
 export type NormalizedAoEvent = {
   id: string
   type: "Message" | "Process"
-  messageId: string
-  processId: string
-  owner: string
+  to: string
+  from: string
   blockHeight: number
   schedulerId: string
   created: Date
@@ -20,20 +19,18 @@ export function normalizeAoEvent(event: AoEvent): NormalizedAoEvent {
   //
   const type = Type as NormalizedAoEvent["type"]
   const blockHeight = height
-  const owner = owner_address
+  const forwardedFor = tags_flat["Forwarded-For"]
+  const from = forwardedFor || owner_address
   const schedulerId = Scheduler
   const action = Action
   const created = parseUtcString(created_at)
-  //
-  const processId = type === "Message" ? target : id
-  const messageId = type === "Message" ? id : ""
+  const to = target.trim()
 
   return {
     id,
     type,
-    messageId,
-    owner,
-    processId,
+    from,
+    to,
     blockHeight,
     schedulerId,
     created,

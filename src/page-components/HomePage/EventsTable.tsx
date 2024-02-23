@@ -1,10 +1,16 @@
 "use client"
-import { MenuItem, Select, Stack, Typography } from "@mui/material"
-import Image from "next/image"
+import {
+  CircularProgress,
+  MenuItem,
+  Select,
+  Stack,
+  Typography,
+} from "@mui/material"
 import { useRouter, useSearchParams } from "next/navigation"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
 import { MonoFontFF } from "@/components/RootLayout/fonts"
+import { TypeBadge } from "@/components/TypeBadge"
 import { useUpdateSearch } from "@/hooks/useUpdateSearch"
 import {
   type AoEvent,
@@ -18,7 +24,7 @@ import {
   normalizeAoEvent,
 } from "@/utils/ao-event-utils"
 
-import { TYPE_COLOR_MAP, TYPE_ICON_MAP, truncateId } from "@/utils/data-utils"
+import { truncateId } from "@/utils/data-utils"
 
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
 
@@ -30,30 +36,89 @@ type EventTablesProps = {
   initialData: NormalizedAoEvent[]
   blockHeight?: number
   ownerId?: string
-  pageLimit?: number
+  pageSize: number
 }
 
 const EventsTable = (props: EventTablesProps) => {
-  const { initialData, blockHeight, pageLimit, ownerId } = props
+  const { initialData, blockHeight, pageSize, ownerId } = props
 
   const searchParams = useSearchParams()
+  const loaderRef = useRef(null)
 
-  const [filter, setFilter] = useState<FilterOption>(
+  const listSizeRef = useRef(pageSize)
+
+  const [endReached, setEndReached] = useState(false)
+
+  const filterRef = useRef<FilterOption>(
     (searchParams?.get("filter") as FilterOption) || "",
   )
 
-  const [data, setData] = useState<NormalizedAoEvent[]>(initialData)
+  useEffect(() => {
+    if (endReached) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0]
+        if (first.isIntersecting) {
+          console.log("Intersecting - Fetching more data")
+          getLatestAoEvents(
+            pageSize,
+            listSizeRef.current,
+            filterRef.current,
+            blockHeight,
+            ownerId,
+          ).then((events) => {
+            console.log(`Fetched another page of ${events.length} records`)
+            if (events.length === 0) {
+              console.log("No more records to fetch")
+              observer.disconnect()
+              setEndReached(true)
+              return
+            }
 
-  const [pauseStreaming, setPauseStreaming] = useState(false)
+            setData((prevData) => {
+              const newData = events.map(normalizeAoEvent)
+              const newList = [...prevData, ...newData]
+              listSizeRef.current = newList.length
+              return newList
+            })
+          })
+        } else {
+          console.log("Not intersecting")
+        }
+      },
+      { threshold: 1 },
+    )
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [])
+
+  const [data, setData] = useState<NormalizedAoEvent[]>(initialData)
+  const [streamingPaused, setStreamingPaused] = useState(false)
 
   useEffect(() => {
     function handleVisibilityChange() {
       if (document.visibilityState === "visible") {
         console.log("Resuming realtime streaming")
-        setPauseStreaming(false)
+        getLatestAoEvents(
+          listSizeRef.current,
+          0,
+          filterRef.current,
+          blockHeight,
+          ownerId,
+        ).then((events) => {
+          console.log(
+            `Fetched ${events.length} records, listSize=${listSizeRef.current}`,
+          )
+          setData(events.map(normalizeAoEvent))
+          setStreamingPaused(false)
+        })
       } else {
         console.log("Pausing realtime streaming")
-        setPauseStreaming(true)
+        setStreamingPaused(true)
       }
     }
 
@@ -65,40 +130,38 @@ const EventsTable = (props: EventTablesProps) => {
   }, [])
 
   useEffect(() => {
-    if (pauseStreaming) return
-    console.log("Fetching latest data")
-    getLatestAoEvents(pageLimit, filter).then((events) => {
-      setData(events.map(normalizeAoEvent))
-    })
-  }, [pauseStreaming, pageLimit, filter])
-
-  useEffect(() => {
-    if (pauseStreaming) return
+    if (streamingPaused) return
 
     const unsubscribe = subscribeToEvents((event: AoEvent) => {
       if (blockHeight && event.height !== blockHeight) return
       if (ownerId && event.owner_address !== ownerId) return
-      if (filter === "message" && event.target === targetEmptyValue) {
+      if (
+        filterRef.current === "message" &&
+        event.target === targetEmptyValue
+      ) {
         return
       }
-      if (filter === "process" && event.target !== targetEmptyValue) {
+      if (
+        filterRef.current === "process" &&
+        event.target !== targetEmptyValue
+      ) {
         return
       }
 
-      console.log("📜 LOG > subscribe > event:", event)
+      console.log("New realtime event", event.id)
       setData((prevData) => {
         const parsed = normalizeAoEvent(event)
-
-        if (pageLimit === undefined) {
-          return [parsed, ...prevData]
-        }
-
-        return [parsed, ...prevData.slice(0, pageLimit - 1)]
+        listSizeRef.current = prevData.length + 1
+        return [parsed, ...prevData]
       })
     })
+    console.log("Subscribed to realtime updates")
 
-    return unsubscribe
-  }, [pauseStreaming, blockHeight, pageLimit, ownerId, filter])
+    return function cleanup() {
+      console.log("Unsubscribed from realtime updates")
+      unsubscribe()
+    }
+  }, [streamingPaused, blockHeight, pageSize, ownerId])
 
   const router = useRouter()
   const updateSearch = useUpdateSearch()
@@ -106,7 +169,9 @@ const EventsTable = (props: EventTablesProps) => {
   return (
     <Stack marginTop={5} gap={2}>
       <Stack direction="row" justifyContent="space-between">
-        <div className="text-main-dark-color uppercase ">Latest events</div>
+        <Typography variant="subtitle1" sx={{ textTransform: "uppercase" }}>
+          Latest events
+        </Typography>
         <Select
           size="small"
           sx={{
@@ -115,11 +180,23 @@ const EventsTable = (props: EventTablesProps) => {
             "& .MuiSelect-select": { paddingY: "4px !important" },
           }}
           displayEmpty
-          value={filter}
+          value={filterRef.current}
           onChange={(event) => {
             const newValue = event.target.value as FilterOption
-            setFilter(newValue)
+            filterRef.current = newValue
             updateSearch("filter", newValue)
+            getLatestAoEvents(
+              listSizeRef.current,
+              0,
+              newValue,
+              blockHeight,
+              ownerId,
+            ).then((events) => {
+              console.log(
+                `Fetched ${events.length} records, listSize=${listSizeRef.current} (filter changed)`,
+              )
+              setData(events.map(normalizeAoEvent))
+            })
           }}
         >
           <MenuItem value="">
@@ -136,11 +213,9 @@ const EventsTable = (props: EventTablesProps) => {
               <tr>
                 <th className="text-start p-2 w-[120px]">Type</th>
                 <th className="text-start p-2">Action</th>
-                <th className="text-start p-2 w-[220px]">Message ID</th>
-                <th className="text-start p-2 w-[220px]">Process ID</th>
-                {!ownerId && (
-                  <th className="text-start p-2 w-[220px]">Owner</th>
-                )}
+                <th className="text-start p-2 w-[220px]">ID</th>
+                <th className="text-start p-2 w-[220px]">From</th>
+                <th className="text-start p-2 w-[220px]">To</th>
                 {!blockHeight && (
                   <th className="text-end p-2 w-[160px]">Block Height</th>
                 )}
@@ -156,49 +231,41 @@ const EventsTable = (props: EventTablesProps) => {
                     router.push(
                       item.type === "Message"
                         ? `/message/${item.id}`
-                        : `/process/${item.id}`,
+                        : `/entity/${item.id}`,
                     )
                   }}
                 >
                   <td className="text-start p-2">
-                    <div
-                      className={`gap-2 inline-flex px-2 py-1 ${
-                        TYPE_COLOR_MAP[item.type]
-                      }`}
-                    >
-                      <p className="uppercase">{item.type}</p>
-                      <Image
-                        alt="icon"
-                        width={8}
-                        height={8}
-                        src={TYPE_ICON_MAP[item.type]}
-                      />
-                    </div>
+                    <TypeBadge type={item.type} />
                   </td>
                   <td className="text-start p-2 ">{item.action}</td>
                   <td className="text-start p-2 ">
                     <IdBlock
-                      label={truncateId(item.messageId)}
-                      value={item.messageId}
-                      href={`/message/${item.messageId}`}
+                      label={truncateId(item.id)}
+                      value={item.id}
+                      href={
+                        item.type === "Message"
+                          ? `/message/${item.id}`
+                          : `/entity/${item.id}`
+                      }
                     />
                   </td>
                   <td className="text-start p-2">
                     <IdBlock
-                      label={truncateId(item.processId)}
-                      value={item.processId}
-                      href={`/process/${item.processId}`}
+                      label={truncateId(item.from)}
+                      value={item.from}
+                      href={`/entity/${item.from}`}
                     />
                   </td>
-                  {!ownerId && (
-                    <td className="text-start p-2 ">
+                  <td className="text-start p-2 ">
+                    {item.to && (
                       <IdBlock
-                        label={truncateId(item.owner)}
-                        value={item.owner}
-                        href={`/owner/${item.owner}`}
+                        label={truncateId(item.to)}
+                        value={item.to}
+                        href={`/entity/${item.to}`}
                       />
-                    </td>
-                  )}
+                    )}
+                  </td>
                   {!blockHeight && (
                     <td className="text-end p-2">
                       <Typography
@@ -226,6 +293,23 @@ const EventsTable = (props: EventTablesProps) => {
               ))}
             </tbody>
           </table>
+          <Stack
+            marginY={2}
+            marginX={1}
+            ref={loaderRef}
+            sx={{ width: "100%" }}
+            direction="row"
+            gap={1}
+            alignItems="center"
+            // justifyContent="center"
+          >
+            {!endReached && <CircularProgress size={12} color="primary" />}
+            <Typography variant="body2" color="text.secondary">
+              {endReached
+                ? `Total rows: ${data.length}`
+                : "Loading more records..."}
+            </Typography>
+          </Stack>
         </div>
       ) : null}
     </Stack>
