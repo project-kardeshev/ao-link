@@ -67,7 +67,7 @@ export function MessagePage(props: MessagePageProps) {
         setChartData(graph)
         setLinkedMessages(
           messages
-            .filter((x) => x.id !== messageId)
+            // .filter((x) => x.id !== messageId)
             .map(normalizeAoEvent)
             .sort((a, b) => b.created.getTime() - a.created.getTime()),
         )
