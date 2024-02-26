@@ -3,6 +3,7 @@
 "use client"
 import * as d3 from "d3"
 import { type Simulation, type SimulationNodeDatum } from "d3-force"
+import { useRouter } from "next/navigation"
 import React, { memo, useEffect, useRef } from "react"
 
 interface Link {
