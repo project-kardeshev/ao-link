@@ -38,14 +38,24 @@ export function normalizeAoEvent(event: AoEvent): NormalizedAoEvent {
   }
 }
 
-export function normalizeTags(tags: Record<string, any>): Record<string, any> {
+export function normalizeTags(tags: Record<string, any>) {
   const { Tags, ...rest } = tags
+
+  let normalizedTags = tags
 
   try {
     if (Tags) {
-      return { ...rest, ...JSON.parse(Tags) }
+      normalizedTags = { ...rest, ...JSON.parse(Tags) }
     }
   } catch {}
 
-  return tags
+  const pushedFor = normalizedTags["Pushed-For"]
+
+  delete normalizedTags["Data-Protocol"]
+  delete normalizedTags["Variant"]
+  delete normalizedTags["Type"]
+  delete normalizedTags["Pushed-For"]
+  delete normalizedTags["Ref_"]
+
+  return { tags: normalizedTags, pushedFor }
 }

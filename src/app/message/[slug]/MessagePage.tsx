@@ -41,7 +41,7 @@ export function MessagePage(props: MessagePageProps) {
     created,
     to,
   } = normalizedEvent
-  const tags = normalizeTags(event.tags_flat)
+  const { tags, pushedFor } = normalizeTags(event.tags_flat)
 
   const [loading, setLoading] = useState(true)
   const [graphData, setChartData] = useState<ChartDataItem[]>([])
@@ -120,6 +120,18 @@ export function MessagePage(props: MessagePageProps) {
                   />
                 }
               />
+              {pushedFor && (
+                <SectionInfo
+                  title="Pushed for"
+                  value={
+                    <IdBlock
+                      label={truncateId(pushedFor)}
+                      value={pushedFor}
+                      href={`/entity/${pushedFor}`}
+                    />
+                  }
+                />
+              )}
               <SectionInfo
                 title="Block Height"
                 value={

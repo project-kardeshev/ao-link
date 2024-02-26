@@ -37,7 +37,7 @@ export function ProcessPage(props: ProcessPageProps) {
     blockHeight,
     created,
   } = normalizedEvent
-  const tags = normalizeTags(event.tags_flat)
+  const { tags } = normalizeTags(event.tags_flat)
 
   const [loading, setLoading] = useState(true)
   const [graphData, setChartData] = useState<ChartDataItem[]>([])
