@@ -41,7 +41,7 @@ export function normalizeAoEvent(event: AoEvent): NormalizedAoEvent {
 export function normalizeTags(tags: Record<string, any>) {
   const { Tags, ...rest } = tags
 
-  let normalizedTags = tags
+  let normalizedTags = Object.assign({}, tags)
 
   try {
     if (Tags) {
