@@ -50,7 +50,7 @@ export function Footer() {
               /
             </Typography>
             <Link
-              href="https://6t4x4xx75j3ovjugzicw7wx7bogigt4sz3pnbh43dqdua6pa56wa.arweave.net/9Pl-Xv_qduqmhsoFb9r_C4yDT5LO3tCfmxwHQHng76w/#/spec"
+              href="https://gygbo2cdld7i3t624il5zxa3ezyv6sa2ikvhrlmabah2etw45wua.arweave.net/NgwXaENY_o3P2uIX3NwbJnFfSBpCqnitgAgPok7c7ag/"
               sx={{
                 "&:hover": {
                   color: "#FFF",
