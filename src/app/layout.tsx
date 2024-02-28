@@ -4,7 +4,7 @@ import "./globals.css"
 import RootLayoutUI from "../components/RootLayout/RootLayoutUI"
 
 export const metadata: Metadata = {
-  title: "AOScan",
+  title: "AOLink",
   icons: {
     icon: "/ao.svg",
   },
