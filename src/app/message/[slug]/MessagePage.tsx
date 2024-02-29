@@ -144,7 +144,7 @@ export function MessagePage(props: MessagePageProps) {
                     <IdBlock
                       label={truncateId(pushedFor)}
                       value={pushedFor}
-                      href={`/entity/${pushedFor}`}
+                      href={`/message/${pushedFor}`}
                     />
                   }
                 />
