@@ -1,6 +1,6 @@
 import { formatDistanceToNowStrict, format } from "date-fns"
 
-export function formatRelative(date: Date | string) {
+export function formatRelative(date: Date) {
   if (!date) return
 
   const distance = formatDistanceToNowStrict(date, { addSuffix: true })
@@ -16,7 +16,7 @@ export function parseUtcString(dateString: string): Date {
   return date
 }
 
-export function formatFullDate(date: Date | string) {
+export function formatFullDate(date: Date) {
   if (!date) return
 
   const formattedDate = format(date, "yyyy-MM-dd HH:mm:ss")

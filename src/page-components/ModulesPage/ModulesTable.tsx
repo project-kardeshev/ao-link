@@ -16,7 +16,11 @@ import { Module, getModules } from "@/services/aoscan"
 
 import { TYPE_PATH_MAP, truncateId } from "@/utils/data-utils"
 
-import { formatFullDate, formatRelative } from "@/utils/date-utils"
+import {
+  formatFullDate,
+  formatRelative,
+  parseUtcString,
+} from "@/utils/date-utils"
 
 import { formatNumber } from "@/utils/number-utils"
 
@@ -274,9 +278,9 @@ const ModulesTable = (props: ModulesTableProps) => {
                   <td className="text-end p-2">
                     <span
                       className="tooltip"
-                      data-tip={formatFullDate(item.created_at)}
+                      data-tip={formatFullDate(parseUtcString(item.created_at))}
                     >
-                      {formatRelative(item.created_at)}
+                      {formatRelative(parseUtcString(item.created_at))}
                     </span>
                   </td>
                 </tr>

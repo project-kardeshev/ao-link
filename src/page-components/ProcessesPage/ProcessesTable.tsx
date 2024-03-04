@@ -16,7 +16,11 @@ import { Process, getProcesses } from "@/services/aoscan"
 
 import { TYPE_PATH_MAP, truncateId } from "@/utils/data-utils"
 
-import { formatFullDate, formatRelative } from "@/utils/date-utils"
+import {
+  formatFullDate,
+  formatRelative,
+  parseUtcString,
+} from "@/utils/date-utils"
 
 import { formatNumber } from "@/utils/number-utils"
 
@@ -42,6 +46,7 @@ const ProcessesTable = (props: ProcessesTableProps) => {
   >("incoming_messages")
 
   const [data, setData] = useState<Process[]>(initialData)
+  console.log("📜 LOG > ProcessesTable > data:", data[0])
 
   useEffect(() => {
     if (endReached) return
@@ -258,17 +263,19 @@ const ProcessesTable = (props: ProcessesTableProps) => {
                   <td className="text-end p-2">
                     <span
                       className="tooltip"
-                      data-tip={formatFullDate(item.latest_message)}
+                      data-tip={formatFullDate(
+                        parseUtcString(item.latest_message),
+                      )}
                     >
-                      {formatRelative(item.latest_message)}
+                      {formatRelative(parseUtcString(item.latest_message))}
                     </span>
                   </td>
                   <td className="text-end p-2">
                     <span
                       className="tooltip"
-                      data-tip={formatFullDate(item.created_at)}
+                      data-tip={formatFullDate(parseUtcString(item.created_at))}
                     >
-                      {formatRelative(item.created_at)}
+                      {formatRelative(parseUtcString(item.created_at))}
                     </span>
                   </td>
                 </tr>

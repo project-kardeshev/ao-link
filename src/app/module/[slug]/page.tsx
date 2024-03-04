@@ -5,7 +5,7 @@ import { SectionInfo } from "@/components/SectionInfo"
 import { SectionInfoWithChip } from "@/components/SectionInfoWithChip"
 import ProcessesTable from "@/page-components/ProcessesPage/ProcessesTable"
 import { getModuleById, getProcesses } from "@/services/aoscan"
-import { formatRelative } from "@/utils/date-utils"
+import { formatRelative, parseUtcString } from "@/utils/date-utils"
 import { formatNumber } from "@/utils/number-utils"
 
 type BlockPageProps = {
@@ -39,7 +39,7 @@ export default async function BlockPage(props: BlockPageProps) {
             <SectionInfoWithChip title="Type" value={"Module"} />
             <SectionInfo
               title="Created"
-              value={formatRelative(item.created_at)}
+              value={formatRelative(parseUtcString(item.created_at))}
             />
             <SectionInfo
               title="Incoming messages"
