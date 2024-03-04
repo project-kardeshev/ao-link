@@ -11,6 +11,40 @@ export interface AoEvent {
   created_at: string
 }
 
+export interface Process {
+  id: string
+  sdk: string
+  name: string
+  type: string
+  module: string
+  variant: string
+  app_name: string
+  scheduler: string
+  aos_version: string
+  content_type: string
+  data_protocol: string
+  incoming_messages: number
+  latest_message: string
+  created_at: string
+}
+
+export interface Module {
+  id: string
+  type: string
+  variant: string
+  content_type: string
+  memory_limit: string
+  compute_limit: number
+  data_protocol: string
+  module_format: string
+  input_encoding: string
+  output_encoding: string
+  created_at: string
+  processes: number
+  incoming_messages: number
+  process_ids: string[]
+}
+
 export const targetEmptyValue = "                                           "
 
 export async function getLatestAoEvents(
@@ -108,4 +142,83 @@ export async function getAoEventById(id: string): Promise<AoEvent | null> {
   }
 
   return null
+}
+
+export async function getProcessById(id: string) {
+  const { data, error } = await supabase
+    .from("processes")
+    .select("*")
+    .eq("id", id)
+    .returns<Process[]>()
+
+  if (error || !data) {
+    console.error(error)
+    return null
+  }
+
+  return data[0]
+}
+
+export async function getProcesses(
+  limit = 1000,
+  skip = 0,
+  moduleId?: string,
+  orderBy = "incoming_messages",
+  ascending = false,
+) {
+  let supabaseRq = supabase
+    .from("processes")
+    .select("*")
+    .order(orderBy, { ascending, nullsFirst: ascending })
+
+  if (moduleId) {
+    supabaseRq = supabaseRq.eq("module", moduleId)
+  }
+
+  const { data, error } = await supabaseRq
+    .range(skip, skip + limit - 1)
+    .returns<Process[]>()
+
+  if (error || !data) {
+    console.error(error)
+    return []
+  }
+
+  return data
+}
+
+export async function getModuleById(id: string) {
+  const { data, error } = await supabase
+    .from("modules_extended")
+    .select("*")
+    .eq("id", id)
+    .returns<Module[]>()
+
+  if (error || !data) {
+    console.error(error)
+    return null
+  }
+
+  return data[0]
+}
+
+export async function getModules(
+  limit = 1000,
+  skip = 0,
+  orderBy = "incoming_messages",
+  ascending = false,
+) {
+  const { data, error } = await supabase
+    .from("modules_extended")
+    .select("*")
+    .order(orderBy, { ascending, nullsFirst: ascending })
+    .range(skip, skip + limit - 1)
+    .returns<Module[]>()
+
+  if (error || !data) {
+    console.error(error)
+    return []
+  }
+
+  return data
 }
