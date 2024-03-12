@@ -27,5 +27,6 @@ export type ProcessStatistic = {
 
 export type HighchartAreaDataServer = [string, number]
 export type HighchartAreaData = [number, number]
+export type HighchartPieData = { y: number; name: string }
 
 export type FilterOption = "" | "message" | "process"

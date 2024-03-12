@@ -1,6 +1,7 @@
 "use client"
-import { CircularProgress, Grid, Paper, Stack, Typography } from "@mui/material"
+import { CircularProgress, Paper, Stack, Typography } from "@mui/material"
 
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { useCallback, useEffect, useState } from "react"
 
 import { ChartDataItem, Graph } from "@/components/Graph"
@@ -81,8 +82,8 @@ export function ProcessPage(props: ProcessPageProps) {
         <p className="font-bold">/</p>
         <IdBlock label={processId} />
       </div>
-      <Grid container spacing={{ xs: 2, lg: 12 }}>
-        <Grid item xs={12} lg={6}>
+      <Grid2 container spacing={{ xs: 2, lg: 12 }}>
+        <Grid2 xs={12} lg={6}>
           <Stack gap={4}>
             <Paper sx={{ height: 428, width: 428 }}>
               {loading ? (
@@ -133,8 +134,8 @@ export function ProcessPage(props: ProcessPageProps) {
               value={formatNumber(process.incoming_messages)}
             />
           </Stack>
-        </Grid>
-        <Grid item xs={12} lg={6}>
+        </Grid2>
+        <Grid2 xs={12} lg={6}>
           <Stack gap={4}>
             <Stack gap={1} justifyContent="stretch">
               <Typography variant="subtitle2" color="text.secondary">
@@ -173,8 +174,8 @@ export function ProcessPage(props: ProcessPageProps) {
               </Paper>
             </Stack>
           </Stack>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
       <MessagesTable
         processId={processId}
         tableFilter={tableFilter}

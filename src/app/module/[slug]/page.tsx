@@ -1,4 +1,6 @@
-import { Grid, Stack } from "@mui/material"
+import { Stack } from "@mui/material"
+
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 
 import { IdBlock } from "@/components/IdBlock"
 import { SectionInfo } from "@/components/SectionInfo"
@@ -33,8 +35,8 @@ export default async function BlockPage(props: BlockPageProps) {
         <p className="font-bold">/</p>
         <IdBlock label={moduleId} />
       </div>
-      <Grid container spacing={{ xs: 2, lg: 12 }}>
-        <Grid item xs={12} lg={6}>
+      <Grid2 container spacing={{ xs: 2, lg: 12 }}>
+        <Grid2 xs={12} lg={6}>
           <Stack gap={4}>
             <SectionInfoWithChip title="Type" value={"Module"} />
             <SectionInfo
@@ -50,8 +52,8 @@ export default async function BlockPage(props: BlockPageProps) {
               value={formatNumber(item.processes)}
             />
           </Stack>
-        </Grid>
-        <Grid item xs={12} lg={6}>
+        </Grid2>
+        <Grid2 xs={12} lg={6}>
           <Stack gap={4}>
             <SectionInfo title="Memory limit" value={item.memory_limit} />
             <SectionInfo
@@ -65,8 +67,8 @@ export default async function BlockPage(props: BlockPageProps) {
             <SectionInfo title="Module format" value={item.module_format} />
             <SectionInfo title="Variant" value={item.variant} />
           </Stack>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
       <ProcessesTable
         initialData={processes}
         pageSize={pageSize}

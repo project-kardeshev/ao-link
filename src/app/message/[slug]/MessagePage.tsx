@@ -3,13 +3,13 @@
 import {
   Button,
   CircularProgress,
-  Grid,
   Paper,
   Stack,
   TextField,
   Typography,
 } from "@mui/material"
 
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { ChartDataItem, Graph } from "@/components/Graph"
@@ -102,8 +102,8 @@ export function MessagePage(props: MessagePageProps) {
           <p className="font-bold">/</p>
           <IdBlock label={messageId} />
         </div>
-        <Grid container spacing={{ xs: 2, lg: 12 }}>
-          <Grid item xs={12} lg={6}>
+        <Grid2 container spacing={{ xs: 2, lg: 12 }}>
+          <Grid2 xs={12} lg={6}>
             <Stack gap={4}>
               <Paper sx={{ height: 428, width: 428 }}>
                 {loading ? (
@@ -164,8 +164,8 @@ export function MessagePage(props: MessagePageProps) {
               />
               <SectionInfo title="Created" value={formatRelative(created)} />
             </Stack>
-          </Grid>
-          <Grid item xs={12} lg={6}>
+          </Grid2>
+          <Grid2 xs={12} lg={6}>
             <Stack gap={4}>
               <Stack gap={1} justifyContent="stretch">
                 <Typography variant="subtitle2" color="text.secondary">
@@ -226,8 +226,8 @@ export function MessagePage(props: MessagePageProps) {
                 </Paper>
               </Stack>
             </Stack>
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
         {linkedMessages.length > 0 && (
           <>
             <Stack

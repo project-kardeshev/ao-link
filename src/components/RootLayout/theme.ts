@@ -51,11 +51,22 @@ export const theme = extendTheme({
     MuiTooltip: {
       defaultProps: {
         placement: "top",
+        disableInteractive: true,
+        enterDelay: 0,
+        leaveDelay: 0,
+        arrow: true,
       },
       styleOverrides: {
         tooltip: {
           fontSize: "0.9rem",
           textAlign: "center",
+        },
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          textTransform: "none",
         },
       },
     },
@@ -77,8 +88,9 @@ export const theme = extendTheme({
     },
     MuiTabs: {
       styleOverrides: {
-        indicator: {
-          borderRadius: "5px",
+        root: {
+          marginLeft: "8px",
+          marginRight: "8px",
         },
       },
     },

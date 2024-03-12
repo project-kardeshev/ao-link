@@ -10,10 +10,11 @@ type IdBlockProps = {
   label: string
   value?: string
   href?: string
+  hideTooltip?: boolean
 }
 
 export function IdBlock(props: IdBlockProps) {
-  const { label, value, href } = props
+  const { label, value, href, hideTooltip } = props
 
   const copyValue = value || label
 
@@ -31,7 +32,7 @@ export function IdBlock(props: IdBlockProps) {
             event.stopPropagation()
           }}
         >
-          <Tooltip title={value}>
+          <Tooltip title={hideTooltip ? null : value}>
             <Box
               sx={{
                 display: "inline-block",
@@ -54,7 +55,7 @@ export function IdBlock(props: IdBlockProps) {
         "&:hover": { fill: "var(--mui-palette-text-secondary)" },
       }}
     >
-      <Tooltip title={value}>
+      <Tooltip title={hideTooltip ? null : value}>
         <span>{label}</span>
       </Tooltip>
       <CopyToClipboard value={copyValue} />
