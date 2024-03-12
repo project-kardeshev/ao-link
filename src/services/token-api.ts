@@ -82,7 +82,6 @@ export async function getInfo(
 
   try {
     const tags = result.Messages[0].Tags as Tag[]
-    console.log("📜 LOG > tags:", tags)
     const tagMap = tags.reduce(
       (acc, tag) => {
         acc[tag.name] = tag.value

@@ -36,7 +36,7 @@ export default function TokenPage(props: TokenPageProps) {
     0,
   )
 
-  const [activeTab, setActiveTab] = useState(1)
+  const [activeTab, setActiveTab] = useState(0)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue)
