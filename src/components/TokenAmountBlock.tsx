@@ -14,7 +14,8 @@ export function TokenAmountBlock(props: TokenAmountBlockProps) {
 
   const amountNumber = Number(amount)
   const shortValue = formatNumber(amountNumber, {
-    maximumFractionDigits: 0,
+    minimumFractionDigits: amountNumber < 1 ? tokenInfo.denomination : 0,
+    maximumFractionDigits: amountNumber < 1 ? tokenInfo.denomination : 0,
   })
   const longValue = formatNumber(amountNumber, {
     minimumFractionDigits: tokenInfo.denomination,
