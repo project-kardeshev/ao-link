@@ -113,7 +113,9 @@ const ProcessesTable = (props: ProcessesTableProps) => {
   }, [sortField, sortAscending, moduleId])
 
   const [streamingPaused, setStreamingPaused] = useState(false)
-  const [realtime, setRealtime] = useState(true)
+  const [realtime, setRealtime] = useState(
+    localStorage.getItem("realtime") === "true" || false,
+  )
 
   useEffect(() => {
     if (!realtime) return
@@ -184,6 +186,7 @@ const ProcessesTable = (props: ProcessesTableProps) => {
             setSortField("created_at")
             setSortAscending(false)
             setRealtime(!realtime)
+            localStorage.setItem("realtime", String(!realtime))
           }}
           control={
             <AntSwitch

@@ -100,7 +100,9 @@ const EventsTable = (props: EventTablesProps) => {
 
   const [data, setData] = useState<NormalizedAoEvent[]>(initialData)
   const [streamingPaused, setStreamingPaused] = useState(false)
-  const [realtime, setRealtime] = useState(true)
+  const [realtime, setRealtime] = useState(
+    localStorage.getItem("realtime") === "true" || false,
+  )
 
   useEffect(() => {
     if (!realtime) return
@@ -185,6 +187,7 @@ const EventsTable = (props: EventTablesProps) => {
             slotProps={{ typography: { variant: "body2" } }}
             onChange={() => {
               setRealtime(!realtime)
+              localStorage.setItem("realtime", String(!realtime))
             }}
             control={
               <AntSwitch
