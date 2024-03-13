@@ -19,6 +19,7 @@ export function CopyToClipboard(props: CopyToClipboardProps) {
     <Tooltip title={copied ? "Copied" : "Copy to clipboard"}>
       <Box
         sx={{
+          marginBottom: "-2px",
           marginLeft: 1,
           cursor: "pointer",
           display: "inline-block",

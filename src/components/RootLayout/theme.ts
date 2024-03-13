@@ -25,7 +25,7 @@ export const theme = extendTheme({
     light: {
       palette: {
         primary: {
-          main: "rgb(180, 180, 180)",
+          main: "rgb(50, 50, 50)",
         },
         secondary: {
           main: "rgb(230, 230, 230)",
@@ -63,13 +63,6 @@ export const theme = extendTheme({
         },
       },
     },
-    MuiTab: {
-      styleOverrides: {
-        root: {
-          textTransform: "none",
-        },
-      },
-    },
     MuiButtonBase: {
       defaultProps: {
         disableRipple: true,
@@ -86,11 +79,24 @@ export const theme = extendTheme({
         },
       },
     },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+          padding: "12px 8px !important",
+          minHeight: "unset !important",
+        },
+      },
+    },
     MuiTabs: {
       styleOverrides: {
         root: {
-          marginLeft: "8px",
-          marginRight: "8px",
+          minHeight: "unset !important",
+          marginTop: "-12px",
+          marginLeft: "-8px",
+        },
+        flexContainer: {
+          gap: "16px",
         },
       },
     },

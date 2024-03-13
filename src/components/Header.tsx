@@ -9,6 +9,7 @@ import {
   Toolbar,
   useColorScheme,
   Link as MuiLink,
+  useScrollTrigger,
 } from "@mui/material"
 import { Moon, Sun } from "@phosphor-icons/react"
 import Link from "next/link"
@@ -18,6 +19,12 @@ import { Logo } from "./Logo"
 const Header = () => {
   const { mode = "dark", setMode } = useColorScheme()
 
+  const elevated = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 0,
+    target: typeof window !== "undefined" ? window : undefined,
+  })
+
   return (
     <AppBar
       position="sticky"
@@ -25,6 +32,16 @@ const Header = () => {
       sx={{
         bgcolor: "background.default",
         border: 0,
+        borderBottom: "1px solid transparent",
+        transition: "background 0.2s",
+        ...(elevated
+          ? {
+              // background: "var(--mui-palette-background-paper)",
+              borderColor: "var(--mui-palette-divider)",
+            }
+          : {
+              // background: "var(--mui-palette-background-default)",
+            }),
       }}
     >
       <Container maxWidth="xl">
@@ -37,7 +54,7 @@ const Header = () => {
             sx={{ width: "100%" }}
           >
             <Stack direction="row" gap={2} alignItems="baseline">
-              <Button component={Link} href="/">
+              <Button component={Link} href="/" sx={{ marginLeft: -1 }}>
                 <Logo color="var(--mui-palette-text-primary)" />
               </Button>
               <MuiLink

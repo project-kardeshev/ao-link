@@ -32,6 +32,7 @@ export function Footer() {
             <Link
               href="/"
               sx={{
+                color: "rgb(180, 180, 180)",
                 "&:hover": {
                   color: "#FFF",
                 },
@@ -53,6 +54,7 @@ export function Footer() {
               href="https://gygbo2cdld7i3t624il5zxa3ezyv6sa2ikvhrlmabah2etw45wua.arweave.net/NgwXaENY_o3P2uIX3NwbJnFfSBpCqnitgAgPok7c7ag/#/spec"
               target="_blank"
               sx={{
+                color: "rgb(180, 180, 180)",
                 "&:hover": {
                   color: "#FFF",
                 },
@@ -74,6 +76,7 @@ export function Footer() {
               href="https://github.com/permaweb/aos"
               target="_blank"
               sx={{
+                color: "rgb(180, 180, 180)",
                 "&:hover": {
                   color: "#FFF",
                 },
@@ -95,6 +98,7 @@ export function Footer() {
               href="http://arweave.net/9Pl-Xv_qduqmhsoFb9r_C4yDT5LO3tCfmxwHQHng76w/"
               target="_blank"
               sx={{
+                color: "rgb(180, 180, 180)",
                 "&:hover": {
                   color: "#FFF",
                 },
@@ -116,6 +120,7 @@ export function Footer() {
               href="https://twitter.com/TheDataOS"
               target="_blank"
               sx={{
+                color: "rgb(180, 180, 180)",
                 "&:hover": {
                   color: "#FFF",
                 },
@@ -137,6 +142,7 @@ export function Footer() {
               href="https://stats.dataos.so/"
               target="_blank"
               sx={{
+                color: "rgb(180, 180, 180)",
                 "&:hover": {
                   color: "#FFF",
                 },

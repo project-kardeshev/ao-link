@@ -2,7 +2,6 @@
 
 import {
   Avatar,
-  Box,
   Paper,
   Stack,
   Tab,
@@ -43,55 +42,57 @@ export default function TokenPage(props: TokenPageProps) {
   }
 
   return (
-    <Stack component="main" gap={4} paddingY={4}>
+    <Stack component="main" gap={6} paddingY={4}>
       <div className="flex gap-2 items-center text-sm">
-        <p className="text-[#9EA2AA]">TOKEN</p>
-        <p className="font-bold">/</p>
+        <Typography variant="body2" color="text.secondary">
+          TOKEN
+        </Typography>
+        <Typography variant="body2" fontWeight={700}>
+          /
+        </Typography>
         <IdBlock label={tokenInfo.processId} />
       </div>
-      <Box sx={{ marginX: 1 }}>
-        <Grid2 container spacing={{ xs: 4 }}>
-          <Grid2 xs={12} lg={6}>
-            <Stack direction="row" gap={1} alignItems="center">
-              <Avatar
-                src={`https://arweave.net/${tokenInfo.logo}`}
-                alt={tokenInfo.name}
-                sx={{ width: 48, height: 48 }}
-              />
-              <Stack>
-                <Tooltip title="Name" placement="right">
-                  <Typography variant="h6" lineHeight={1.15}>
-                    {tokenInfo.name}
-                  </Typography>
-                </Tooltip>
-                <Tooltip title="Ticker" placement="right">
-                  <Typography
-                    variant="body2"
-                    lineHeight={1.15}
-                    color="text.secondary"
-                  >
-                    {tokenInfo.ticker}
-                  </Typography>
-                </Tooltip>
-              </Stack>
+      <Grid2 container spacing={{ xs: 4 }}>
+        <Grid2 xs={12} lg={6}>
+          <Stack direction="row" gap={1} alignItems="center">
+            <Avatar
+              src={`https://arweave.net/${tokenInfo.logo}`}
+              alt={tokenInfo.name}
+              sx={{ width: 48, height: 48 }}
+            />
+            <Stack>
+              <Tooltip title="Name" placement="right">
+                <Typography variant="h6" lineHeight={1.15}>
+                  {tokenInfo.name}
+                </Typography>
+              </Tooltip>
+              <Tooltip title="Ticker" placement="right">
+                <Typography
+                  variant="body2"
+                  lineHeight={1.15}
+                  color="text.secondary"
+                >
+                  {tokenInfo.ticker}
+                </Typography>
+              </Tooltip>
             </Stack>
-          </Grid2>
-          <Grid2 xs={12} lg={6}>
-            <Stack justifyContent="center" height="100%">
-              <SectionInfo title="Token holders" value={tokenHolders.length} />
-              <SectionInfo
-                title="Circulating supply"
-                value={
-                  <TokenAmountBlock
-                    amount={circulatingSupply}
-                    tokenInfo={tokenInfo}
-                  />
-                }
-              />
-            </Stack>
-          </Grid2>
+          </Stack>
         </Grid2>
-      </Box>
+        <Grid2 xs={12} lg={6}>
+          <Stack justifyContent="center" height="100%">
+            <SectionInfo title="Token holders" value={tokenHolders.length} />
+            <SectionInfo
+              title="Circulating supply"
+              value={
+                <TokenAmountBlock
+                  amount={circulatingSupply}
+                  tokenInfo={tokenInfo}
+                />
+              }
+            />
+          </Stack>
+        </Grid2>
+      </Grid2>
       <div>
         <Tabs
           value={activeTab}
@@ -102,7 +103,7 @@ export default function TokenPage(props: TokenPageProps) {
           <Tab value={0} label="Token Holders Table" />
           <Tab value={1} label="Token Holders Chart" />
         </Tabs>
-        <Paper>
+        <Paper sx={{ marginX: -2 }}>
           {activeTab === 0 && (
             <TokenHolderTable data={tokenHolders} tokenInfo={tokenInfo} />
           )}
