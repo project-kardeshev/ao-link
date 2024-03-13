@@ -18,11 +18,19 @@ export function TokenHolderTable(props: TokenHolderTableProps) {
   return (
     <>
       <InMemoryTable
+        initialSortField="balance"
+        initialSortDir="desc"
         data={data}
         headerCells={[
           { label: "Rank", align: "center", sx: { width: 60 } },
           { label: "Entity" },
-          { label: "Balance", align: "right" },
+          {
+            field: "rank",
+            label: "Balance",
+            align: "right",
+            sortable: true,
+            sx: { paddingRight: "36px" },
+          },
         ]}
         renderRow={(tokenHolder) => (
           <TableRow key={tokenHolder.entityId}>

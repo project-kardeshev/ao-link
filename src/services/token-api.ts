@@ -35,7 +35,7 @@ export async function getBalance(tokenInfo: TokenInfo, entityId: string) {
 }
 
 type BalanceMap = {
-  [key: string]: string
+  [key: string]: string | number
 }
 
 export async function getTokenHolders(
@@ -50,7 +50,10 @@ export async function getTokenHolders(
   try {
     const balanceMap = JSON.parse(result.Messages[0].Data) as BalanceMap
     const tokenHolders = Object.keys(balanceMap)
-      .filter((entityId) => balanceMap[entityId] !== "0")
+      .filter(
+        (entityId) =>
+          balanceMap[entityId] !== "0" && balanceMap[entityId] !== 0,
+      )
       .sort((a, b) => Number(balanceMap[b]) - Number(balanceMap[a]))
       .map((entityId, index) => ({
         rank: index + 1,

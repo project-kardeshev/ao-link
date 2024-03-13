@@ -6,11 +6,14 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  TableSortLabel,
   Typography,
 } from "@mui/material"
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 
 export type HeaderCell = {
+  field?: string
+  sortable?: boolean
   sx?: any
   label: string
   align?: "center" | "left" | "right"
@@ -24,10 +27,19 @@ type InMemoryTableProps = {
    */
   pageSize?: number
   renderRow: (row: any) => React.ReactNode
+  initialSortField: string
+  initialSortDir: "asc" | "desc"
 }
 
 export function InMemoryTable(props: InMemoryTableProps) {
-  const { data, pageSize = 30, renderRow, headerCells } = props
+  const {
+    data,
+    pageSize = 30,
+    renderRow,
+    headerCells,
+    initialSortField,
+    initialSortDir,
+  } = props
 
   const loaderRef = useRef(null)
 
@@ -60,7 +72,26 @@ export function InMemoryTable(props: InMemoryTableProps) {
     }
 
     return () => observer.disconnect()
-  }, [])
+  }, [data.length, endReached, pageSize])
+
+  const [sortAscending, setSortAscending] = useState<boolean>(
+    initialSortDir === "asc",
+  )
+  const [sortField, setSortField] = useState<string>(initialSortField)
+
+  const visibleRows = useMemo(
+    () =>
+      data.slice(0, listSize).sort((a, b) => {
+        if (a[sortField] < b[sortField]) {
+          return sortAscending ? -1 : 1
+        }
+        if (a[sortField] > b[sortField]) {
+          return sortAscending ? 1 : -1
+        }
+        return 0
+      }),
+    [data, listSize, sortAscending, sortField],
+  )
 
   return (
     <Stack>
@@ -76,12 +107,28 @@ export function InMemoryTable(props: InMemoryTableProps) {
                   ...(cell.sx || {}),
                 }}
               >
-                {cell.label}
+                {cell.sortable ? (
+                  <TableSortLabel
+                    active={sortField === cell.field}
+                    direction={sortAscending ? "asc" : "desc"}
+                    onClick={() => {
+                      if (sortField !== cell.field) {
+                        setSortField(cell.field as string)
+                      } else {
+                        setSortAscending(!sortAscending)
+                      }
+                    }}
+                  >
+                    {cell.label}
+                  </TableSortLabel>
+                ) : (
+                  cell.label
+                )}
               </TableCell>
             ))}
           </TableRow>
         </TableHead>
-        <TableBody>{data.slice(0, listSize).map(renderRow)}</TableBody>
+        <TableBody>{visibleRows.map(renderRow)}</TableBody>
       </Table>
       <Stack
         marginY={2}
