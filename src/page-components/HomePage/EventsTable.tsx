@@ -101,7 +101,9 @@ const EventsTable = (props: EventTablesProps) => {
   const [data, setData] = useState<NormalizedAoEvent[]>(initialData)
   const [streamingPaused, setStreamingPaused] = useState(false)
   const [realtime, setRealtime] = useState(
-    localStorage.getItem("realtime") === "true" || false,
+    (typeof window !== "undefined" &&
+      window.localStorage.getItem("realtime") === "true") ||
+      false,
   )
 
   useEffect(() => {

@@ -33,7 +33,6 @@ const Header = () => {
         bgcolor: "background.default",
         border: 0,
         borderBottom: "1px solid transparent",
-        transition: "background 0.2s",
         ...(elevated
           ? {
               // background: "var(--mui-palette-background-paper)",
