@@ -1,6 +1,19 @@
+import { colors } from "@mui/material"
 import { experimental_extendTheme as extendTheme } from "@mui/material/styles"
 
 import { MainFontFF } from "./fonts"
+
+const extraColors = {
+  red: colors.red[200],
+  blue: colors.blue[200],
+  green: colors.green[200],
+  lime: colors.lime[200],
+  yellow: colors.yellow[200],
+  purple: colors.purple[200],
+  indigo: colors.indigo[200],
+  cyan: colors.cyan[200],
+  pink: colors.pink[200],
+}
 
 export const theme = extendTheme({
   colorSchemes: {
@@ -20,6 +33,7 @@ export const theme = extendTheme({
           paper: "#252424",
           default: "rgb(24, 25, 26)",
         },
+        ...extraColors,
       },
     },
     light: {
@@ -41,6 +55,7 @@ export const theme = extendTheme({
         text: {
           secondary: "#9EA2AA",
         },
+        ...extraColors,
       },
     },
   },

@@ -14,6 +14,7 @@ import React, { useState } from "react"
 
 import { IdBlock } from "@/components/IdBlock"
 import { SectionInfo } from "@/components/SectionInfo"
+import { Subheading } from "@/components/Subheading"
 import { TokenAmountBlock } from "@/components/TokenAmountBlock"
 import { TokenInfo, TokenHolder } from "@/services/token-api"
 
@@ -43,15 +44,10 @@ export default function TokenPage(props: TokenPageProps) {
 
   return (
     <Stack component="main" gap={6} paddingY={4}>
-      <div className="flex gap-2 items-center text-sm">
-        <Typography variant="body2" color="text.secondary">
-          TOKEN
-        </Typography>
-        <Typography variant="body2" fontWeight={700}>
-          /
-        </Typography>
-        <IdBlock label={tokenInfo.processId} />
-      </div>
+      <Subheading
+        type="TOKEN"
+        value={<IdBlock label={tokenInfo.processId} />}
+      />
       <Grid2 container spacing={{ xs: 4 }}>
         <Grid2 xs={12} lg={6}>
           <Stack direction="row" gap={1} alignItems="center">

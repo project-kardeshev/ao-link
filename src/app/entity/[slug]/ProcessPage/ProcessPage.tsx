@@ -9,6 +9,7 @@ import { IdBlock } from "@/components/IdBlock"
 import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { SectionInfo } from "@/components/SectionInfo"
 import { SectionInfoWithChip } from "@/components/SectionInfoWithChip"
+import { TagsSection } from "@/components/TagsSection"
 import { supabase } from "@/lib/supabase"
 
 import { AoEvent, Process } from "@/services/aoscan"
@@ -16,7 +17,6 @@ import { normalizeAoEvent, normalizeTags } from "@/utils/ao-event-utils"
 import { truncateId } from "@/utils/data-utils"
 import { formatRelative } from "@/utils/date-utils"
 import { formatNumber } from "@/utils/number-utils"
-import { getColorFromText } from "@/utils/tailwind-utils"
 
 import MessagesTable from "./MessagesTable"
 
@@ -137,32 +137,7 @@ export function ProcessPage(props: ProcessPageProps) {
         </Grid2>
         <Grid2 xs={12} lg={6}>
           <Stack gap={4}>
-            <Stack gap={1} justifyContent="stretch">
-              <Typography variant="subtitle2" color="text.secondary">
-                Tags
-              </Typography>
-              <Stack
-                direction="row"
-                flexWrap="wrap"
-                gap={1}
-                sx={{
-                  maxHeight: 178,
-                  overflowY: "auto",
-                }}
-              >
-                {Object.entries(tags).map(([key, value]) => (
-                  <Typography
-                    key={key}
-                    className={getColorFromText(key)}
-                    sx={{ padding: 0.5, color: "black" }}
-                    variant="caption"
-                    fontFamily={MonoFontFF}
-                  >
-                    {key}:{value}
-                  </Typography>
-                ))}
-              </Stack>
-            </Stack>
+            <TagsSection tags={tags} />
             <Stack gap={1} justifyContent="stretch">
               <Typography variant="subtitle2" color="text.secondary">
                 Result Type

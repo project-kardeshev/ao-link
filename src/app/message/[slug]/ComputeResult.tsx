@@ -68,6 +68,7 @@ export function ComputeResult(props: ComputeResultProps) {
           size="small"
           sx={{
             bgcolor: "var(--mui-palette-secondary-main) !important",
+            color: "black",
             height: "fit-content",
           }}
           variant="contained"

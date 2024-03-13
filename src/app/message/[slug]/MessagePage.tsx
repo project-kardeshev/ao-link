@@ -18,6 +18,8 @@ import { IdBlock } from "@/components/IdBlock"
 import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { SectionInfo } from "@/components/SectionInfo"
 import { SectionInfoWithChip } from "@/components/SectionInfoWithChip"
+import { Subheading } from "@/components/Subheading"
+import { TagsSection } from "@/components/TagsSection"
 import { supabase } from "@/lib/supabase"
 
 import { AoEvent } from "@/services/aoscan"
@@ -28,7 +30,6 @@ import {
 } from "@/utils/ao-event-utils"
 import { truncateId } from "@/utils/data-utils"
 import { formatRelative } from "@/utils/date-utils"
-import { getColorFromText } from "@/utils/tailwind-utils"
 
 import { ComputeResult } from "./ComputeResult"
 import MessagesTable from "./MessagesTable"
@@ -96,12 +97,8 @@ export function MessagePage(props: MessagePageProps) {
 
   return (
     <>
-      <main className="min-h-screen mb-6">
-        <div className="flex gap-2 items-center text-sm mt-12 mb-11">
-          <p className="text-[#9EA2AA] ">MESSAGE</p>
-          <p className="font-bold">/</p>
-          <IdBlock label={messageId} />
-        </div>
+      <Stack component="main" gap={6} paddingY={4}>
+        <Subheading type="MESSAGE" value={<IdBlock label={messageId} />} />
         <Grid2 container spacing={{ xs: 2, lg: 12 }}>
           <Grid2 xs={12} lg={6}>
             <Stack gap={4}>
@@ -167,32 +164,7 @@ export function MessagePage(props: MessagePageProps) {
           </Grid2>
           <Grid2 xs={12} lg={6}>
             <Stack gap={4}>
-              <Stack gap={1} justifyContent="stretch">
-                <Typography variant="subtitle2" color="text.secondary">
-                  Tags
-                </Typography>
-                <Stack
-                  direction="row"
-                  flexWrap="wrap"
-                  gap={1}
-                  sx={{
-                    maxHeight: 178,
-                    overflowY: "auto",
-                  }}
-                >
-                  {Object.entries(tags).map(([key, value]) => (
-                    <Typography
-                      key={key}
-                      className={getColorFromText(key)}
-                      sx={{ padding: 0.5, color: "black" }}
-                      variant="caption"
-                      fontFamily={MonoFontFF}
-                    >
-                      {key}:{value}
-                    </Typography>
-                  ))}
-                </Stack>
-              </Stack>
+              <TagsSection tags={tags} />
               <ComputeResult messageId={messageId} processId={to} />
               <Stack gap={1} justifyContent="stretch">
                 <Typography variant="subtitle2" color="text.secondary">
@@ -258,7 +230,7 @@ export function MessagePage(props: MessagePageProps) {
             <MessagesTable data={linkedMessages} tableFilter={tableFilter} />
           </>
         )}
-      </main>
+      </Stack>
     </>
   )
 }
