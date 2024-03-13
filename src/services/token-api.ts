@@ -31,7 +31,7 @@ export async function getBalance(tokenInfo: TokenInfo, entityId: string) {
     console.error(err)
   }
 
-  return 0
+  return null
 }
 
 type BalanceMap = {
