@@ -45,6 +45,8 @@ const MessagesTable = (props: MessagesTableProps) => {
       {!!data.length && (
         <Paper>
           <InMemoryTable
+            initialSortDir="desc"
+            initialSortField="created"
             data={filteredData}
             headerCells={[
               { label: "Type", sx: { width: 120 } },
@@ -52,8 +54,18 @@ const MessagesTable = (props: MessagesTableProps) => {
               { label: "ID", sx: { width: 220 } },
               { label: "From", sx: { width: 220 } },
               { label: "To", sx: { width: 220 } },
-              { label: "Block Height", sx: { width: 160 }, align: "right" },
-              { label: "Created", sx: { width: 160 }, align: "right" },
+              {
+                label: "Block Height",
+                sx: { width: 160 },
+                align: "right",
+              },
+              {
+                field: "created",
+                label: "Created",
+                sx: { width: 160 },
+                align: "right",
+                sortable: true,
+              },
             ]}
             renderRow={(item) => (
               <tr
