@@ -47,6 +47,10 @@ export function InMemoryTable(props: InMemoryTableProps) {
   const [endReached, setEndReached] = useState(false)
 
   useEffect(() => {
+    setListSize(pageSize)
+  }, [data, pageSize])
+
+  useEffect(() => {
     if (endReached) return
     const observer = new IntersectionObserver(
       (entries) => {
@@ -81,15 +85,17 @@ export function InMemoryTable(props: InMemoryTableProps) {
 
   const visibleRows = useMemo(
     () =>
-      data.slice(0, listSize).sort((a, b) => {
-        if (a[sortField] < b[sortField]) {
-          return sortAscending ? -1 : 1
-        }
-        if (a[sortField] > b[sortField]) {
-          return sortAscending ? 1 : -1
-        }
-        return 0
-      }),
+      data
+        .sort((a, b) => {
+          if (a[sortField] < b[sortField]) {
+            return sortAscending ? -1 : 1
+          }
+          if (a[sortField] > b[sortField]) {
+            return sortAscending ? 1 : -1
+          }
+          return 0
+        })
+        .slice(0, listSize),
     [data, listSize, sortAscending, sortField],
   )
 

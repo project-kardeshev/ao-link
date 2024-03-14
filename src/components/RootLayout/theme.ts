@@ -100,6 +100,7 @@ export const theme = extendTheme({
           textTransform: "none",
           padding: "12px 8px !important",
           minHeight: "unset !important",
+          minWidth: "unset !important",
         },
       },
     },

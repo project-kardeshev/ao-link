@@ -19,7 +19,7 @@ export default function RootLayoutUI({
         <CssBaseline />
         <Stack>
           <Header />
-          <Container maxWidth="xl" sx={{ minHeight: "calc(100vh - 100px)" }}>
+          <Container maxWidth="xl" sx={{ minHeight: "calc(100vh - 101px)" }}>
             {children}
           </Container>
           <Footer />

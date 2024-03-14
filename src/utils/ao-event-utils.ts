@@ -60,3 +60,63 @@ export function normalizeTags(tags: Record<string, any>) {
 
   return { tags: normalizedTags, pushedFor }
 }
+
+export type TokenEvent = {
+  id: string
+  type: "Message"
+  created: Date
+  action: string
+  sender: string
+  recipient: string
+  amount: number
+  tokenId: string
+}
+
+export function normalizeTokenEvent(event: AoEvent): TokenEvent {
+  const { owner_address, id, tags_flat, created_at, target } = event
+  const { Action, Type } = tags_flat
+  //
+  const type = Type as "Message"
+  const forwardedFor = tags_flat["Forwarded-For"]
+  const fromProcess = tags_flat["From-Process"]
+  const from = forwardedFor || fromProcess || owner_address
+  const action = Action
+  const created = parseUtcString(created_at)
+  const to = target.trim()
+  const { tags } = normalizeTags(tags_flat)
+
+  let sender
+  let recipient
+  let tokenId
+  let amount = 0
+
+  if (action === "Debit-Notice") {
+    amount = -Number(tags["Quantity"])
+    sender = to
+    recipient = tags["Recipient"]
+    tokenId = from
+  } else if (action === "Credit-Notice") {
+    amount = Number(tags["Quantity"])
+    sender = tags["Sender"]
+    recipient = to
+    tokenId = from
+  } else if (action === "Transfer") {
+    amount = -Number(tags["Quantity"])
+    sender = from
+    recipient = tags["Recipient"]
+    tokenId = to
+  } else {
+    throw new Error(`Unknown action: ${action}`)
+  }
+
+  return {
+    id,
+    type,
+    created,
+    action,
+    sender,
+    recipient,
+    amount,
+    tokenId,
+  }
+}

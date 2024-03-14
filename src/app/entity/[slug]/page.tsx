@@ -1,8 +1,13 @@
 import { supabase } from "@/lib/supabase"
 import { getAoEventById, getProcessById } from "@/services/aoscan"
 
+import { getBalance } from "@/services/token-api"
+
+import { nativeTokenInfo } from "@/utils/native-token"
+import { wait } from "@/utils/utils"
+
 import { ProcessPage } from "./ProcessPage/ProcessPage"
-import { UserPage } from "./UserPage"
+import { UserPage } from "./UserPage/UserPage"
 
 type EntityPageServerProps = {
   params: { slug: string }
@@ -25,7 +30,12 @@ export default async function EntityPageServer(props: EntityPageServerProps) {
   }
 
   if (data === "user") {
-    return <UserPage entityId={entityId} />
+    const balance = await Promise.race([
+      getBalance(nativeTokenInfo, entityId),
+      wait(2_000),
+    ])
+
+    return <UserPage entityId={entityId} balance={balance} />
   }
 
   const processId = entityId

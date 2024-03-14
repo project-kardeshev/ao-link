@@ -7,18 +7,22 @@ import { formatNumber } from "@/utils/number-utils"
 import { CopyToClipboard } from "./CopyToClipboard"
 import { MonoFontFF } from "./RootLayout/fonts"
 
-type TokenAmountBlockProps = { amount: string | number; tokenInfo: TokenInfo }
+type TokenAmountBlockProps = { amount: string | number; tokenInfo?: TokenInfo }
 
 export function TokenAmountBlock(props: TokenAmountBlockProps) {
   const { amount, tokenInfo } = props
 
   const amountNumber = Number(amount)
+  const smallAmount = amountNumber < 1 && amountNumber > -1
+
+  const decimals = tokenInfo?.denomination || 0
+
   const shortValue = formatNumber(amountNumber, {
-    minimumFractionDigits: amountNumber < 1 ? tokenInfo.denomination : 0,
-    maximumFractionDigits: amountNumber < 1 ? tokenInfo.denomination : 0,
+    minimumFractionDigits: smallAmount ? decimals : 0,
+    maximumFractionDigits: smallAmount ? decimals : 0,
   })
   const longValue = formatNumber(amountNumber, {
-    minimumFractionDigits: tokenInfo.denomination,
+    minimumFractionDigits: decimals,
   })
 
   return (
@@ -45,16 +49,6 @@ export function TokenAmountBlock(props: TokenAmountBlockProps) {
         </Tooltip>
         <CopyToClipboard value={String(amount)} />
       </Box>
-      {/* <IdBlock
-        label={}
-        value={String(item.blockHeight)}
-        href={`/block/${item.blockHeight}`}
-      /> */}
     </Typography>
-    // <IdBlock>
-    //   {formatNumber(amountNumber, {
-    //     maximumFractionDigits: 0,
-    //   })}
-    // </IdBlock>
   )
 }

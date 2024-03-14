@@ -1,5 +1,8 @@
 import { dryrun } from "@permaweb/aoconnect/browser"
 
+import { nativeTokenInfo } from "@/utils/native-token"
+import { wait } from "@/utils/utils"
+
 export type TokenInfo = {
   processId: string
   denomination: number
@@ -74,7 +77,7 @@ type Tag = {
   value: string
 }
 
-export async function getInfo(
+export async function getTokenInfo(
   processId: string,
 ): Promise<TokenInfo | undefined> {
   const result = await dryrun({
@@ -103,4 +106,28 @@ export async function getInfo(
   } catch (err) {
     console.error(err)
   }
+}
+
+export type TokenInfoMap = Record<string, TokenInfo>
+
+export async function getTokenInfoMap(
+  processIds: string[],
+): Promise<TokenInfoMap> {
+  const tokenInfoMap: TokenInfoMap = {}
+
+  const results = await Promise.all(
+    processIds.map((processId) =>
+      processId === nativeTokenInfo.processId
+        ? nativeTokenInfo
+        : Promise.race([getTokenInfo(processId), wait(2_000)]),
+    ),
+  )
+
+  for (const info of results) {
+    if (info) {
+      tokenInfoMap[info.processId] = info
+    }
+  }
+
+  return tokenInfoMap
 }

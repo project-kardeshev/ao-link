@@ -1,6 +1,6 @@
 import React from "react"
 
-import { getTokenHolders, getInfo } from "@/services/token-api"
+import { getTokenHolders, getTokenInfo } from "@/services/token-api"
 
 import TokenPage from "./TokenPage"
 
@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic"
 export default async function TokenPageServer(props: TokenPageServerProps) {
   const { slug: processId } = props.params
 
-  const tokenInfo = await getInfo(processId)
+  const tokenInfo = await getTokenInfo(processId)
 
   if (!tokenInfo) {
     return <>Not a valid token</>
