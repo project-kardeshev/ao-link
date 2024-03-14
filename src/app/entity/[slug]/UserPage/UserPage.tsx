@@ -20,7 +20,7 @@ type UserPageProps = {
 export function UserPage(props: UserPageProps) {
   const { entityId, balance } = props
 
-  const [activeTab, setActiveTab] = useState(2)
+  const [activeTab, setActiveTab] = useState(0)
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue)
   }
