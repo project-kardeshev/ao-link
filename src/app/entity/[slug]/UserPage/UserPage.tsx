@@ -5,11 +5,12 @@ import React, { useState } from "react"
 import { IdBlock } from "@/components/IdBlock"
 import { SectionInfo } from "@/components/SectionInfo"
 import { Subheading } from "@/components/Subheading"
+import { TokenAmountBlock } from "@/components/TokenAmountBlock"
 import { nativeTokenInfo } from "@/utils/native-token"
-import { formatNumber } from "@/utils/number-utils"
 
 import { InboxTable } from "./InboxTable"
 import { OutboxTable } from "./OutboxTable"
+import { TokenBalances } from "./TokenBalances"
 import { TokenTransfers } from "./TokenTransfers"
 
 type UserPageProps = {
@@ -32,10 +33,11 @@ export function UserPage(props: UserPageProps) {
         <SectionInfo
           title="Balance"
           value={
-            <IdBlock
-              label={`${formatNumber(balance)} ${nativeTokenInfo.ticker}`}
-              value={String(balance)}
-              hideTooltip
+            <TokenAmountBlock
+              amount={balance}
+              tokenInfo={nativeTokenInfo}
+              needsParsing
+              showTicker
             />
           }
         />
@@ -45,11 +47,13 @@ export function UserPage(props: UserPageProps) {
           <Tab value={0} label="Outbox" />
           <Tab value={1} label="Inbox" />
           <Tab value={2} label="Token transfers" />
+          <Tab value={3} label="Token balances" />
         </Tabs>
         <Paper sx={{ marginX: -2 }}>
           <OutboxTable entityId={entityId} open={activeTab === 0} />
           <InboxTable entityId={entityId} open={activeTab === 1} />
           <TokenTransfers entityId={entityId} open={activeTab === 2} />
+          <TokenBalances entityId={entityId} open={activeTab === 3} />
         </Paper>
       </div>
     </Stack>

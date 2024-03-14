@@ -17,9 +17,9 @@ export type TokenHolder = {
   balance: number
 }
 
-export async function getBalance(tokenInfo: TokenInfo, entityId: string) {
+export async function getBalance(tokenId: string, entityId: string) {
   const result = await dryrun({
-    process: tokenInfo.processId,
+    process: tokenId,
     data: "",
     tags: [
       { name: "Action", value: "Balance" },
@@ -29,7 +29,7 @@ export async function getBalance(tokenInfo: TokenInfo, entityId: string) {
 
   try {
     const balance = parseFloat(result.Messages[0].Data)
-    return balance / 10 ** tokenInfo.denomination
+    return balance
   } catch (err) {
     console.error(err)
   }
@@ -113,21 +113,42 @@ export type TokenInfoMap = Record<string, TokenInfo>
 export async function getTokenInfoMap(
   processIds: string[],
 ): Promise<TokenInfoMap> {
-  const tokenInfoMap: TokenInfoMap = {}
+  const map: TokenInfoMap = {}
 
   const results = await Promise.all(
     processIds.map((processId) =>
       processId === nativeTokenInfo.processId
         ? nativeTokenInfo
-        : Promise.race([getTokenInfo(processId), wait(2_000)]),
+        : Promise.race([getTokenInfo(processId), wait(5_000)]),
     ),
   )
 
   for (const info of results) {
     if (info) {
-      tokenInfoMap[info.processId] = info
+      map[info.processId] = info
     }
   }
 
-  return tokenInfoMap
+  return map
+}
+
+export type TokenBalanceMap = Record<string, number | null>
+
+export async function getTokenBalanceMap(
+  tokenIds: string[],
+  entityId: string,
+): Promise<TokenBalanceMap> {
+  const map: TokenBalanceMap = {}
+
+  const results = await Promise.all(
+    tokenIds.map((tokenId) =>
+      Promise.race([getBalance(tokenId, entityId), wait(5_000)]),
+    ),
+  )
+
+  results.forEach((balance, index) => {
+    map[tokenIds[index]] = balance
+  })
+
+  return map
 }

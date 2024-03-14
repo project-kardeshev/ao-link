@@ -7,15 +7,22 @@ import { formatNumber } from "@/utils/number-utils"
 import { CopyToClipboard } from "./CopyToClipboard"
 import { MonoFontFF } from "./RootLayout/fonts"
 
-type TokenAmountBlockProps = { amount: string | number; tokenInfo?: TokenInfo }
+type TokenAmountBlockProps = {
+  amount: string | number
+  tokenInfo?: TokenInfo
+  needsParsing?: boolean
+  showTicker?: boolean
+}
 
 export function TokenAmountBlock(props: TokenAmountBlockProps) {
-  const { amount, tokenInfo } = props
-
-  const amountNumber = Number(amount)
-  const smallAmount = amountNumber < 1 && amountNumber > -1
+  const { amount, tokenInfo, needsParsing, showTicker } = props
 
   const decimals = tokenInfo?.denomination || 0
+
+  let amountNumber = Number(amount)
+  if (needsParsing) amountNumber = amountNumber / 10 ** decimals
+
+  const smallAmount = amountNumber < 1 && amountNumber > -1
 
   const shortValue = formatNumber(amountNumber, {
     minimumFractionDigits: smallAmount ? decimals : 0,
@@ -40,12 +47,16 @@ export function TokenAmountBlock(props: TokenAmountBlockProps) {
               component="span"
               variant="inherit"
             >
-              {longValue}
-              {/* {tokenInfo.ticker} */}
+              <span>
+                {longValue} {showTicker && <span>{tokenInfo?.ticker}</span>}
+              </span>
             </Typography>
           }
         >
-          <span>{shortValue}</span>
+          <span>
+            <span>{shortValue}</span>{" "}
+            {showTicker && <span>{tokenInfo?.ticker}</span>}
+          </span>
         </Tooltip>
         <CopyToClipboard value={String(amount)} />
       </Box>

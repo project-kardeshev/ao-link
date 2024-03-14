@@ -31,7 +31,7 @@ export default async function EntityPageServer(props: EntityPageServerProps) {
 
   if (data === "user") {
     const balance = await Promise.race([
-      getBalance(nativeTokenInfo, entityId),
+      getBalance(nativeTokenInfo.processId, entityId),
       wait(2_000),
     ])
 
