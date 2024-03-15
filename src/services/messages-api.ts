@@ -16,9 +16,8 @@ export async function getMessagesByEntityId(
       .from("ao_events")
       .select("owner,id,tags_flat,target,owner_address,height,created_at")
       .order("created_at", { ascending: false })
-      .or(
-        `tags_flat ->> Forwarded-For.eq.${entityId},tags_flat ->> From-Process.eq.${entityId},owner_address.eq.${entityId},target.eq.${entityId}`,
-      )
+      .or(`owner_address.eq.${entityId},target.eq.${entityId}`)
+    //tags_flat ->> Forwarded-For.eq.${entityId},tags_flat ->> From-Process.eq.${entityId},
 
     supabaseRq = supabaseRq.range(skip, skip + limit - 1).returns<AoEvent[]>()
 
