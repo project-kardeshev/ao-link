@@ -2,11 +2,9 @@
 import { Paper, Stack, Tab, Tabs } from "@mui/material"
 import React, { useState } from "react"
 
+import { BalanceSection } from "@/components/BalanceSection"
 import { IdBlock } from "@/components/IdBlock"
-import { SectionInfo } from "@/components/SectionInfo"
 import { Subheading } from "@/components/Subheading"
-import { TokenAmountBlock } from "@/components/TokenAmountBlock"
-import { nativeTokenInfo } from "@/utils/native-token"
 
 import { InboxTable } from "./InboxTable"
 import { OutboxTable } from "./OutboxTable"
@@ -15,11 +13,10 @@ import { TokenTransfers } from "./TokenTransfers"
 
 type UserPageProps = {
   entityId: string
-  balance: number | null
 }
 
 export function UserPage(props: UserPageProps) {
-  const { entityId, balance } = props
+  const { entityId } = props
 
   const [activeTab, setActiveTab] = useState(0)
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -29,19 +26,7 @@ export function UserPage(props: UserPageProps) {
   return (
     <Stack component="main" gap={6} paddingY={4}>
       <Subheading type="USER" value={<IdBlock label={entityId} />} />
-      {balance !== null && (
-        <SectionInfo
-          title="Balance"
-          value={
-            <TokenAmountBlock
-              amount={balance}
-              tokenInfo={nativeTokenInfo}
-              needsParsing
-              showTicker
-            />
-          }
-        />
-      )}
+      <BalanceSection entityId={entityId} />
       <div>
         <Tabs value={activeTab} onChange={handleChange} textColor="primary">
           <Tab value={0} label="Outbox" />

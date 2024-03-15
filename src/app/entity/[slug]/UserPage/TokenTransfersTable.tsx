@@ -99,7 +99,11 @@ export function TokenTransfersTable(props: TokenTransfersTableProps) {
                   color: item.amount > 0 ? "success.main" : "error.main",
                 }}
               >
-                <TokenAmountBlock amount={item.amount} tokenInfo={tokenInfo} />
+                <TokenAmountBlock
+                  amount={item.amount}
+                  tokenInfo={tokenInfo}
+                  needsParsing
+                />
               </Typography>
             </td>
             <td className="text-start p-2 ">

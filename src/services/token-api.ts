@@ -28,8 +28,12 @@ export async function getBalance(tokenId: string, entityId: string) {
   })
 
   try {
-    const balance = parseFloat(result.Messages[0].Data)
-    return balance
+    const message = result.Messages[0]
+    const balance =
+      message.Data ||
+      message.Tags?.find((tag: any) => tag.name === "Balance")?.value
+    const balanceNumber = parseFloat(balance)
+    return balanceNumber
   } catch (err) {
     console.error(err)
   }
