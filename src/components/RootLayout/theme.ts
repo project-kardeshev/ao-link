@@ -120,6 +120,10 @@ export const theme = extendTheme({
         flexContainer: {
           gap: "16px",
         },
+        // indicator: {
+        //   opacity: 0.25,
+        //   height: "100%",
+        // },
       },
     },
     MuiPaper: {

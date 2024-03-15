@@ -11,6 +11,7 @@ import {
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { useCallback, useEffect, useState } from "react"
 
+import { BalanceSection } from "@/components/BalanceSection"
 import { ChartDataItem, Graph } from "@/components/Graph"
 import { IdBlock } from "@/components/IdBlock"
 import { MonoFontFF } from "@/components/RootLayout/fonts"
@@ -24,11 +25,10 @@ import { AoEvent, Process } from "@/services/aoscan"
 import { normalizeAoEvent, normalizeTags } from "@/utils/ao-event-utils"
 import { truncateId } from "@/utils/data-utils"
 import { formatRelative } from "@/utils/date-utils"
-import { formatNumber } from "@/utils/number-utils"
 
-import MessagesTable from "./MessagesTable"
-import { TokenBalances } from "../UserPage/TokenBalances"
-import { TokenTransfers } from "../UserPage/TokenTransfers"
+import { TokenBalances } from "./TokenBalances"
+import { TokenTransfers } from "./TokenTransfers"
+import { EntityMessages } from "./EntityMessages"
 
 type ProcessPageProps = {
   event: AoEvent
@@ -92,7 +92,6 @@ export function ProcessPage(props: ProcessPageProps) {
   return (
     <Stack component="main" gap={6} paddingY={4}>
       <Subheading type="PROCESS" value={<IdBlock label={entityId} />} />
-
       <Grid2 container spacing={{ xs: 2, lg: 12 }}>
         <Grid2 xs={12} lg={6}>
           <Stack gap={4}>
@@ -130,7 +129,7 @@ export function ProcessPage(props: ProcessPageProps) {
                 />
               }
             />
-            <SectionInfo
+            {/* <SectionInfo
               title="Block Height"
               value={
                 <IdBlock
@@ -138,12 +137,12 @@ export function ProcessPage(props: ProcessPageProps) {
                   href={`/block/${blockHeight}`}
                 />
               }
-            />
+            /> */}
             <SectionInfo title="Created" value={formatRelative(created)} />
-            <SectionInfo
+            {/* <SectionInfo
               title="Incoming messages"
               value={formatNumber(process.incoming_messages)}
-            />
+            /> */}
           </Stack>
         </Grid2>
         <Grid2 xs={12} lg={6}>
@@ -159,6 +158,7 @@ export function ProcessPage(props: ProcessPageProps) {
                 </Typography>
               </Paper>
             </Stack>
+            <BalanceSection entityId={entityId} />
           </Stack>
         </Grid2>
       </Grid2>
@@ -169,13 +169,14 @@ export function ProcessPage(props: ProcessPageProps) {
           <Tab value={3} label="Token balances" />
         </Tabs>
         <Paper sx={{ marginX: -2 }}>
-          {activeTab === 0 && (
+          <EntityMessages entityId={entityId} open={activeTab === 0} />
+          {/* {activeTab === 0 && (
             <MessagesTable
               processId={entityId}
               tableFilter={tableFilter}
               setTableFilter={setTableFilter}
             />
-          )}
+          )} */}
           <TokenTransfers entityId={entityId} open={activeTab === 2} />
           <TokenBalances entityId={entityId} open={activeTab === 3} />
         </Paper>

@@ -1,7 +1,5 @@
 import {
-  Box,
   CircularProgress,
-  LinearProgress,
   Stack,
   Table,
   TableBody,
@@ -11,7 +9,7 @@ import {
   TableSortLabel,
   Typography,
 } from "@mui/material"
-import React, { useEffect, useMemo, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
 export type HeaderCell = {
   field?: string
@@ -21,39 +19,30 @@ export type HeaderCell = {
   align?: "center" | "left" | "right"
 }
 
-type InMemoryTableProps = {
+export type AsyncTableProps = {
   headerCells: HeaderCell[]
-  data: any[]
-  /**
-   * @default 30
-   */
-  pageSize?: number
+  pageSize: number
   renderRow: (row: any) => React.ReactNode
   initialSortField: string
   initialSortDir: "asc" | "desc"
-  loading?: boolean
+  fetchFunction: (offset: number) => Promise<any[]>
 }
 
-export function InMemoryTable(props: InMemoryTableProps) {
+export function AsyncTable(props: AsyncTableProps) {
   const {
-    data,
-    pageSize = 30,
+    pageSize,
     renderRow,
     headerCells,
     initialSortField,
     initialSortDir,
-    loading,
+    fetchFunction,
   } = props
 
   const loaderRef = useRef(null)
+  const listSizeRef = useRef(0)
+  const [data, setData] = useState<any[]>([])
 
-  const [listSize, setListSize] = useState(pageSize)
   const [endReached, setEndReached] = useState(false)
-
-  useEffect(() => {
-    setListSize(pageSize)
-    setEndReached(false)
-  }, [data, pageSize])
 
   useEffect(() => {
     if (endReached) return
@@ -61,13 +50,22 @@ export function InMemoryTable(props: InMemoryTableProps) {
       (entries) => {
         const first = entries[0]
         if (first.isIntersecting) {
-          console.log("Intersecting - Showing more data")
-          setListSize((prev) => {
-            if (prev + pageSize >= data.length) {
+          console.log("Intersecting - Fetching more data")
+          fetchFunction(listSizeRef.current).then((newPage) => {
+            console.log(`Fetched another page of ${newPage.length} records`)
+
+            if (newPage.length === 0) {
+              console.log("No more records to fetch")
+              observer.disconnect()
               setEndReached(true)
-              return data.length
+              return
             }
-            return prev + pageSize
+
+            setData((prevData) => {
+              const newList = [...prevData, ...newPage]
+              listSizeRef.current = newList.length
+              return newList
+            })
           })
         } else {
           console.log("Not intersecting")
@@ -81,6 +79,7 @@ export function InMemoryTable(props: InMemoryTableProps) {
     }
 
     return () => observer.disconnect()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data.length, endReached, pageSize])
 
   const [sortAscending, setSortAscending] = useState<boolean>(
@@ -88,21 +87,21 @@ export function InMemoryTable(props: InMemoryTableProps) {
   )
   const [sortField, setSortField] = useState<string>(initialSortField)
 
-  const visibleRows = useMemo(
-    () =>
-      data
-        .sort((a, b) => {
-          if (a[sortField] < b[sortField]) {
-            return sortAscending ? -1 : 1
-          }
-          if (a[sortField] > b[sortField]) {
-            return sortAscending ? 1 : -1
-          }
-          return 0
-        })
-        .slice(0, listSize),
-    [data, listSize, sortAscending, sortField],
-  )
+  // const visibleRows = useMemo(
+  //   () =>
+  //     data
+  //       .sort((a, b) => {
+  //         if (a[sortField] < b[sortField]) {
+  //           return sortAscending ? -1 : 1
+  //         }
+  //         if (a[sortField] > b[sortField]) {
+  //           return sortAscending ? 1 : -1
+  //         }
+  //         return 0
+  //       })
+  //       .slice(0, listSize),
+  //   [data, listSize, sortAscending, sortField],
+  // )
 
   return (
     <Stack>
@@ -140,21 +139,8 @@ export function InMemoryTable(props: InMemoryTableProps) {
           </TableRow>
         </TableHead>
         <TableBody>
-          <TableRow hover={false}>
-            <TableCell colSpan={99} sx={{ padding: 0, border: 0 }}>
-              {loading ? (
-                <LinearProgress
-                  color="primary"
-                  variant="indeterminate"
-                  sx={{ height: 2 }}
-                />
-              ) : (
-                <Box sx={{ height: 2 }} />
-              )}
-            </TableCell>
-          </TableRow>
-          {visibleRows.map(renderRow)}
-          {data.length === 0 && !loading && (
+          {data.map(renderRow)}
+          {data.length === 0 && endReached && (
             <TableRow hover={false}>
               <TableCell colSpan={99} sx={{ padding: 2 }}>
                 <Typography variant="body2" color="text.secondary">

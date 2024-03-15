@@ -1,9 +1,9 @@
-import { TableRow, Typography } from "@mui/material"
+import { TableRow, Tooltip, Typography } from "@mui/material"
 import { useRouter } from "next/navigation"
 import React from "react"
 
+import { AsyncTable, AsyncTableProps } from "@/components/AsyncTable"
 import { IdBlock } from "@/components/IdBlock"
-import { InMemoryTable } from "@/components/InMemoryTable"
 import { InOutLabel } from "@/components/InOutLabel"
 import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { TypeBadge } from "@/components/TypeBadge"
@@ -12,19 +12,22 @@ import { TYPE_PATH_MAP, truncateId } from "@/utils/data-utils"
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
 import { formatNumber } from "@/utils/number-utils"
 
-type EntityMessagesTableProps = {
-  data: NormalizedAoEvent[]
-  loading?: boolean
+type EntityMessagesTableProps = Pick<
+  AsyncTableProps,
+  "fetchFunction" | "pageSize"
+> & {
   entityId: string
 }
 
 export function EntityMessagesTable(props: EntityMessagesTableProps) {
-  const { data, loading, entityId } = props
+  const { entityId, ...rest } = props
   const router = useRouter()
 
   return (
-    <InMemoryTable
-      loading={loading}
+    <AsyncTable
+      {...rest}
+      initialSortDir="desc"
+      initialSortField="created"
       headerCells={[
         { label: "Type", sx: { width: 120 } },
         { label: "Action" },
@@ -44,9 +47,6 @@ export function EntityMessagesTable(props: EntityMessagesTableProps) {
           align: "right",
         },
       ]}
-      initialSortDir="desc"
-      initialSortField="created"
-      data={data}
       renderRow={(item: NormalizedAoEvent) => (
         <TableRow
           className="table-row cursor-pointer"
@@ -97,10 +97,9 @@ export function EntityMessagesTable(props: EntityMessagesTableProps) {
             </Typography>
           </td>
           <td className="text-end p-2">
-            {/* TODO */}
-            <span className="tooltip" data-tip={formatFullDate(item.created)}>
-              {formatRelative(item.created)}
-            </span>
+            <Tooltip title={formatFullDate(item.created)}>
+              <span>{formatRelative(item.created)}</span>
+            </Tooltip>
           </td>
         </TableRow>
       )}

@@ -1,12 +1,14 @@
 import { supabase } from "@/lib/supabase"
 
+import { NormalizedAoEvent, normalizeAoEvent } from "@/utils/ao-event-utils"
+
 import { AoEvent } from "./aoscan"
 
 export async function getMessagesByEntityId(
   limit = 1000,
   skip = 0,
   entityId: string,
-): Promise<AoEvent[]> {
+): Promise<NormalizedAoEvent[]> {
   try {
     let supabaseRq
 
@@ -23,7 +25,7 @@ export async function getMessagesByEntityId(
 
     if (!data) return []
 
-    return data
+    return data.map(normalizeAoEvent)
   } catch (error) {
     return []
   }

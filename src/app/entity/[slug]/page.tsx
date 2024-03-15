@@ -1,8 +1,8 @@
 import { supabase } from "@/lib/supabase"
 import { getAoEventById, getProcessById } from "@/services/aoscan"
 
-import { ProcessPage } from "./ProcessPage/ProcessPage"
-import { UserPage } from "./UserPage/UserPage"
+import { ProcessPage } from "./ProcessPage"
+import { UserPage } from "./UserPage"
 
 type EntityPageServerProps = {
   params: { slug: string }

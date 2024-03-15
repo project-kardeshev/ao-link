@@ -8,7 +8,7 @@ import { Subheading } from "@/components/Subheading"
 
 import { TokenBalances } from "./TokenBalances"
 import { TokenTransfers } from "./TokenTransfers"
-import { UserMessages } from "./UserMessages"
+import { EntityMessages } from "./EntityMessages"
 
 type UserPageProps = {
   entityId: string
@@ -33,7 +33,7 @@ export function UserPage(props: UserPageProps) {
           <Tab value={2} label="Token balances" />
         </Tabs>
         <Paper sx={{ marginX: -2 }}>
-          <UserMessages entityId={entityId} open={activeTab === 0} />
+          <EntityMessages entityId={entityId} open={activeTab === 0} />
           <TokenTransfers entityId={entityId} open={activeTab === 1} />
           <TokenBalances entityId={entityId} open={activeTab === 2} />
         </Paper>
