@@ -6,6 +6,7 @@ import { IdBlock } from "@/components/IdBlock"
 import { InMemoryTable } from "@/components/InMemoryTable"
 import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { TokenAmountBlock } from "@/components/TokenAmountBlock"
+import { TokenBlock } from "@/components/TokenBlock"
 import { TypeBadge } from "@/components/TypeBadge"
 import { TokenInfo, TokenInfoMap } from "@/services/token-api"
 import { TokenEvent } from "@/utils/ao-event-utils"
@@ -102,11 +103,7 @@ export function TokenTransfersTable(props: TokenTransfersTableProps) {
               </Typography>
             </td>
             <td className="text-start p-2 ">
-              <IdBlock
-                label={tokenInfo?.ticker || truncateId(tokenId)}
-                value={tokenId}
-                href={`/token/${tokenId}`}
-              />
+              <TokenBlock tokenId={tokenId} tokenInfo={tokenInfo} />
             </td>
             <td className="text-end p-2">
               <Tooltip title={formatFullDate(item.created)}>

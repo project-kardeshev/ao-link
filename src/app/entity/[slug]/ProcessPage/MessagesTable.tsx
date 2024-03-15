@@ -107,13 +107,12 @@ const MessagesTable = (props: MessagesTableProps) => {
             direction="row"
             justifyContent="space-between"
             alignItems="center"
+            sx={{ marginTop: -8 }}
           >
             <Typography
               variant="subtitle1"
               sx={{ textTransform: "uppercase", marginBottom: 3, marginTop: 6 }}
-            >
-              Linked messages
-            </Typography>
+            ></Typography>
             {filter && (
               <Button
                 size="small"

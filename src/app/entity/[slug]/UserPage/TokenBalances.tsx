@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 import { IdBlock } from "@/components/IdBlock"
 import { InMemoryTable } from "@/components/InMemoryTable"
 import { TokenAmountBlock } from "@/components/TokenAmountBlock"
+import { TokenBlock } from "@/components/TokenBlock"
 import { getTokenTransfers } from "@/services/messages-api"
 import {
   TokenBalanceMap,
@@ -72,7 +73,7 @@ export function TokenBalances(props: TokenBalancesProps) {
         initialSortDir="desc"
         data={data}
         headerCells={[
-          { label: "Token" },
+          { label: "Token name" },
           {
             field: "rank",
             label: "Balance",
@@ -80,12 +81,13 @@ export function TokenBalances(props: TokenBalancesProps) {
             sortable: true,
             sx: { paddingRight: "36px" },
           },
+          { label: "Ticker", sx: { width: 220 } },
         ]}
         renderRow={({ tokenInfo, balance, tokenId }: TokenBalance) => (
           <TableRow key={tokenId}>
             <TableCell>
               <IdBlock
-                label={tokenInfo?.ticker || truncateId(tokenId)}
+                label={tokenInfo?.name || truncateId(tokenId)}
                 value={tokenId}
                 href={`/token/${tokenId}`}
               />
@@ -96,6 +98,9 @@ export function TokenBalances(props: TokenBalancesProps) {
                 tokenInfo={tokenInfo}
                 needsParsing
               />
+            </TableCell>
+            <TableCell align="right">
+              <TokenBlock tokenId={tokenId} tokenInfo={tokenInfo} />
             </TableCell>
           </TableRow>
         )}

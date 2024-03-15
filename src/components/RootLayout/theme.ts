@@ -104,6 +104,11 @@ export const theme = extendTheme({
         },
       },
     },
+    MuiTableRow: {
+      defaultProps: {
+        hover: true,
+      },
+    },
     MuiTabs: {
       styleOverrides: {
         root: {

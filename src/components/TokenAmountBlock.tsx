@@ -17,9 +17,9 @@ type TokenAmountBlockProps = {
 export function TokenAmountBlock(props: TokenAmountBlockProps) {
   const { amount, tokenInfo, needsParsing, showTicker } = props
 
-  const decimals = tokenInfo?.denomination || 0
-
   let amountNumber = Number(amount)
+  const decimals = amountNumber !== 0 && tokenInfo ? tokenInfo.denomination : 0
+
   if (needsParsing) amountNumber = amountNumber / 10 ** decimals
 
   const smallAmount = amountNumber < 1 && amountNumber > -1

@@ -1,5 +1,12 @@
 "use client"
-import { CircularProgress, Paper, Stack, Typography } from "@mui/material"
+import {
+  CircularProgress,
+  Paper,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material"
 
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { useCallback, useEffect, useState } from "react"
@@ -9,6 +16,7 @@ import { IdBlock } from "@/components/IdBlock"
 import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { SectionInfo } from "@/components/SectionInfo"
 import { SectionInfoWithChip } from "@/components/SectionInfoWithChip"
+import { Subheading } from "@/components/Subheading"
 import { TagsSection } from "@/components/TagsSection"
 import { supabase } from "@/lib/supabase"
 
@@ -19,6 +27,8 @@ import { formatRelative } from "@/utils/date-utils"
 import { formatNumber } from "@/utils/number-utils"
 
 import MessagesTable from "./MessagesTable"
+import { TokenBalances } from "../UserPage/TokenBalances"
+import { TokenTransfers } from "../UserPage/TokenTransfers"
 
 type ProcessPageProps = {
   event: AoEvent
@@ -31,7 +41,7 @@ export function ProcessPage(props: ProcessPageProps) {
   const normalizedEvent = normalizeAoEvent(event)
 
   const {
-    id: processId,
+    id: entityId,
     from: owner,
     type,
     blockHeight,
@@ -46,7 +56,7 @@ export function ProcessPage(props: ProcessPageProps) {
     setLoading(true)
     supabase
       .rpc("get_message_network_v2", {
-        p_id: processId,
+        p_id: entityId,
         is_process: true,
         p_include_messages: false,
       })
@@ -63,7 +73,7 @@ export function ProcessPage(props: ProcessPageProps) {
 
         setLoading(false)
       })
-  }, [processId])
+  }, [entityId])
 
   const [tableFilter, setTableFilter] = useState<{
     from: string
@@ -74,13 +84,15 @@ export function ProcessPage(props: ProcessPageProps) {
     setTableFilter({ from, to })
   }, [])
 
+  const [activeTab, setActiveTab] = useState(0)
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setActiveTab(newValue)
+  }
+
   return (
-    <main className="min-h-screen mb-6">
-      <div className="flex gap-2 items-center text-sm mt-12 mb-11">
-        <p className="text-[#9EA2AA] ">PROCESS</p>
-        <p className="font-bold">/</p>
-        <IdBlock label={processId} />
-      </div>
+    <Stack component="main" gap={6} paddingY={4}>
+      <Subheading type="PROCESS" value={<IdBlock label={entityId} />} />
+
       <Grid2 container spacing={{ xs: 2, lg: 12 }}>
         <Grid2 xs={12} lg={6}>
           <Stack gap={4}>
@@ -150,11 +162,24 @@ export function ProcessPage(props: ProcessPageProps) {
           </Stack>
         </Grid2>
       </Grid2>
-      <MessagesTable
-        processId={processId}
-        tableFilter={tableFilter}
-        setTableFilter={setTableFilter}
-      />
-    </main>
+      <div>
+        <Tabs value={activeTab} onChange={handleChange} textColor="primary">
+          <Tab value={0} label="Messages" />
+          <Tab value={2} label="Token transfers" />
+          <Tab value={3} label="Token balances" />
+        </Tabs>
+        <Paper sx={{ marginX: -2 }}>
+          {activeTab === 0 && (
+            <MessagesTable
+              processId={entityId}
+              tableFilter={tableFilter}
+              setTableFilter={setTableFilter}
+            />
+          )}
+          <TokenTransfers entityId={entityId} open={activeTab === 2} />
+          <TokenBalances entityId={entityId} open={activeTab === 3} />
+        </Paper>
+      </div>
+    </Stack>
   )
 }

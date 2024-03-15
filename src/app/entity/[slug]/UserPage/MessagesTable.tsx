@@ -13,14 +13,16 @@ import { formatNumber } from "@/utils/number-utils"
 
 type MessagesTableProps = {
   data: NormalizedAoEvent[]
+  loading?: boolean
 }
 
 export function MessagesTable(props: MessagesTableProps) {
-  const { data } = props
+  const { data, loading } = props
   const router = useRouter()
 
   return (
     <InMemoryTable
+      loading={loading}
       headerCells={[
         { label: "Type", sx: { width: 120 } },
         { label: "Action" },

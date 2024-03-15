@@ -1,5 +1,7 @@
 import {
+  Box,
   CircularProgress,
+  LinearProgress,
   Stack,
   Table,
   TableBody,
@@ -29,6 +31,7 @@ type InMemoryTableProps = {
   renderRow: (row: any) => React.ReactNode
   initialSortField: string
   initialSortDir: "asc" | "desc"
+  loading?: boolean
 }
 
 export function InMemoryTable(props: InMemoryTableProps) {
@@ -39,6 +42,7 @@ export function InMemoryTable(props: InMemoryTableProps) {
     headerCells,
     initialSortField,
     initialSortDir,
+    loading,
   } = props
 
   const loaderRef = useRef(null)
@@ -134,11 +138,35 @@ export function InMemoryTable(props: InMemoryTableProps) {
             ))}
           </TableRow>
         </TableHead>
-        <TableBody>{visibleRows.map(renderRow)}</TableBody>
+        <TableBody>
+          <TableRow>
+            <TableCell colSpan={99} sx={{ padding: 0, border: 0 }}>
+              {loading ? (
+                <LinearProgress
+                  color="primary"
+                  variant="indeterminate"
+                  sx={{ height: 2 }}
+                />
+              ) : (
+                <Box sx={{ height: 2 }} />
+              )}
+            </TableCell>
+          </TableRow>
+          {visibleRows.map(renderRow)}
+          {data.length === 0 && !loading && (
+            <TableRow>
+              <TableCell colSpan={99} sx={{ padding: 2 }}>
+                <Typography variant="body2" color="text.secondary">
+                  No data available.
+                </Typography>
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
       </Table>
       <Stack
-        marginY={2}
-        marginX={1}
+        marginY={1.5}
+        marginX={2}
         ref={loaderRef}
         sx={{ width: "100%" }}
         direction="row"
