@@ -4,6 +4,7 @@ import React from "react"
 
 import { IdBlock } from "@/components/IdBlock"
 import { InMemoryTable } from "@/components/InMemoryTable"
+import { InOutLabel } from "@/components/InOutLabel"
 import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { TypeBadge } from "@/components/TypeBadge"
 import { NormalizedAoEvent } from "@/utils/ao-event-utils"
@@ -11,13 +12,14 @@ import { TYPE_PATH_MAP, truncateId } from "@/utils/data-utils"
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
 import { formatNumber } from "@/utils/number-utils"
 
-type MessagesTableProps = {
+type EntityMessagesTableProps = {
   data: NormalizedAoEvent[]
   loading?: boolean
+  entityId: string
 }
 
-export function MessagesTable(props: MessagesTableProps) {
-  const { data, loading } = props
+export function EntityMessagesTable(props: EntityMessagesTableProps) {
+  const { data, loading, entityId } = props
   const router = useRouter()
 
   return (
@@ -28,6 +30,7 @@ export function MessagesTable(props: MessagesTableProps) {
         { label: "Action" },
         { label: "ID", sx: { width: 220 } },
         { label: "From", sx: { width: 220 } },
+        { label: "", sx: { width: 60 } },
         { label: "To", sx: { width: 220 } },
         {
           label: "Block Height",
@@ -69,6 +72,9 @@ export function MessagesTable(props: MessagesTableProps) {
               value={item.from}
               href={`/entity/${item.from}`}
             />
+          </td>
+          <td className="text-start p-2">
+            <InOutLabel outbound={entityId === item.from} />
           </td>
           <td className="text-start p-2 ">
             <IdBlock

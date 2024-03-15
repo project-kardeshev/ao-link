@@ -6,10 +6,9 @@ import { BalanceSection } from "@/components/BalanceSection"
 import { IdBlock } from "@/components/IdBlock"
 import { Subheading } from "@/components/Subheading"
 
-import { InboxTable } from "./InboxTable"
-import { OutboxTable } from "./OutboxTable"
 import { TokenBalances } from "./TokenBalances"
 import { TokenTransfers } from "./TokenTransfers"
+import { UserMessages } from "./UserMessages"
 
 type UserPageProps = {
   entityId: string
@@ -29,16 +28,14 @@ export function UserPage(props: UserPageProps) {
       <BalanceSection entityId={entityId} />
       <div>
         <Tabs value={activeTab} onChange={handleChange} textColor="primary">
-          <Tab value={0} label="Outbox" />
-          <Tab value={1} label="Inbox" />
-          <Tab value={2} label="Token transfers" />
-          <Tab value={3} label="Token balances" />
+          <Tab value={0} label="Messages" />
+          <Tab value={1} label="Token transfers" />
+          <Tab value={2} label="Token balances" />
         </Tabs>
         <Paper sx={{ marginX: -2 }}>
-          <OutboxTable entityId={entityId} open={activeTab === 0} />
-          <InboxTable entityId={entityId} open={activeTab === 1} />
-          <TokenTransfers entityId={entityId} open={activeTab === 2} />
-          <TokenBalances entityId={entityId} open={activeTab === 3} />
+          <UserMessages entityId={entityId} open={activeTab === 0} />
+          <TokenTransfers entityId={entityId} open={activeTab === 1} />
+          <TokenBalances entityId={entityId} open={activeTab === 2} />
         </Paper>
       </div>
     </Stack>

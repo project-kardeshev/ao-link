@@ -29,8 +29,8 @@ export function TokenTransfersTable(props: TokenTransfersTableProps) {
         { label: "Type", sx: { width: 120 } },
         { label: "Action" },
         { label: "ID", sx: { width: 220 } },
-        { label: "Sender", sx: { width: 220 } },
-        { label: "Recipient", sx: { width: 220 } },
+        { label: "From", sx: { width: 220 } },
+        { label: "To", sx: { width: 220 } },
         {
           label: "Quantity",
           sx: { width: 160 },

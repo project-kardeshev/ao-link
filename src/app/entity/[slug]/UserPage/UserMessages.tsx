@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react"
 
-import { getOutboxMessages } from "@/services/messages-api"
+import { getMessagesByEntityId as getMessagesByEntityId } from "@/services/messages-api"
 import { NormalizedAoEvent, normalizeAoEvent } from "@/utils/ao-event-utils"
 
-import { MessagesTable } from "./MessagesTable"
+import { EntityMessagesTable } from "./EntityMessagesTable"
 
-type OutboxTableProps = {
+type UserMessagesProps = {
   entityId: string
   open: boolean
 }
 
-export function OutboxTable(props: OutboxTableProps) {
+export function UserMessages(props: UserMessagesProps) {
   const { entityId, open } = props
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<NormalizedAoEvent[]>([])
@@ -19,7 +19,7 @@ export function OutboxTable(props: OutboxTableProps) {
 
   useEffect(() => {
     setLoading(true)
-    getOutboxMessages(pageSize, undefined, entityId)
+    getMessagesByEntityId(pageSize, undefined, entityId)
       .then((events) => {
         const parsed = events.map(normalizeAoEvent)
         setData(parsed)
@@ -29,5 +29,7 @@ export function OutboxTable(props: OutboxTableProps) {
 
   if (!open) return null
 
-  return <MessagesTable data={data} loading={loading} />
+  return (
+    <EntityMessagesTable data={data} loading={loading} entityId={entityId} />
+  )
 }

@@ -11,6 +11,7 @@ export function getColorFromText(text: string) {
     indigo: "var(--mui-palette-indigo)",
     cyan: "var(--mui-palette-cyan)",
     pink: "var(--mui-palette-pink)",
+    orange: "var(--mui-palette-orange)",
   }
 
   const colorKeys = Object.keys(colors)

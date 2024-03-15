@@ -52,6 +52,7 @@ export function InMemoryTable(props: InMemoryTableProps) {
 
   useEffect(() => {
     setListSize(pageSize)
+    setEndReached(false)
   }, [data, pageSize])
 
   useEffect(() => {

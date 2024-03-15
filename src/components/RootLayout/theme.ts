@@ -13,6 +13,7 @@ const extraColors = {
   indigo: colors.indigo[200],
   cyan: colors.cyan[200],
   pink: colors.pink[200],
+  orange: colors.orange[200],
 }
 
 export const theme = extendTheme({

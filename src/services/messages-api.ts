@@ -2,10 +2,10 @@ import { supabase } from "@/lib/supabase"
 
 import { AoEvent } from "./aoscan"
 
-export async function getOutboxMessages(
+export async function getMessagesByEntityId(
   limit = 1000,
   skip = 0,
-  sender: string,
+  entityId: string,
 ): Promise<AoEvent[]> {
   try {
     let supabaseRq
@@ -14,39 +14,8 @@ export async function getOutboxMessages(
       .from("ao_events")
       .select("owner,id,tags_flat,target,owner_address,height,created_at")
       .order("created_at", { ascending: false })
-      .or(
-        `tags_flat ->> Forwarded-For.eq.${sender},tags_flat ->> Forwarded-For.is.null`,
-      )
-      .or(
-        `tags_flat ->> From-Process.eq.${sender},tags_flat ->> From-Process.is.null`,
-      )
-      .or(`owner_address.eq.${sender}`)
-
-    supabaseRq = supabaseRq.range(skip, skip + limit - 1).returns<AoEvent[]>()
-
-    const { data } = await supabaseRq
-
-    if (!data) return []
-
-    return data
-  } catch (error) {
-    return []
-  }
-}
-
-export async function getInboxMessages(
-  limit = 1000,
-  skip = 0,
-  receiver: string,
-): Promise<AoEvent[]> {
-  try {
-    let supabaseRq
-
-    supabaseRq = supabase
-      .from("ao_events")
-      .select("owner,id,tags_flat,target,owner_address,height,created_at")
-      .order("created_at", { ascending: false })
-      .eq("target", receiver)
+      .or(`owner_address.eq.${entityId},target.eq.${entityId}`)
+    //tags_flat ->> Forwarded-For.eq.${entityId},tags_flat ->> From-Process.eq.${entityId},
 
     supabaseRq = supabaseRq.range(skip, skip + limit - 1).returns<AoEvent[]>()
 
