@@ -1,13 +1,12 @@
-import { Link, Skeleton, Tooltip } from "@mui/material"
-import React, { useCallback, useEffect } from "react"
+import { Avatar, Stack } from "@mui/material"
+import React from "react"
 
-import { getBalance } from "@/services/token-api"
+import { truncateId } from "@/utils/data-utils"
 import { nativeTokenInfo } from "@/utils/native-token"
 
-import { timeout } from "@/utils/utils"
-
+import { IdBlock } from "./IdBlock"
+import { RetryableBalance } from "./RetryableBalance"
 import { SectionInfo } from "./SectionInfo"
-import { TokenAmountBlock } from "./TokenAmountBlock"
 
 type BalanceSectionProps = {
   entityId: string
@@ -16,52 +15,28 @@ type BalanceSectionProps = {
 export function BalanceSection(props: BalanceSectionProps) {
   const { entityId } = props
 
-  const [loading, setLoading] = React.useState(true)
-  const [error, setError] = React.useState("asd")
-  const [balance, setBalance] = React.useState<number | null>(null)
-
-  const fetchBalance = useCallback(async () => {
-    setLoading(true)
-    setError("")
-    Promise.race([
-      getBalance(nativeTokenInfo.processId, entityId),
-      timeout(2_000),
-    ])
-      .then((balance) => {
-        setBalance(balance as number)
-      })
-      .catch((error) => {
-        setError(String(error))
-      })
-      .finally(() => setLoading(false))
-  }, [entityId, setError])
-
-  useEffect(() => {
-    fetchBalance()
-  }, [fetchBalance])
+  const tokenInfo = nativeTokenInfo
+  const tokenId = tokenInfo.processId
 
   return (
     <SectionInfo
       title="Balance"
       value={
-        <>
-          {loading ? (
-            <Skeleton width={120} />
-          ) : balance === null ? (
-            <Tooltip title={error}>
-              <Link component="button" onClick={fetchBalance}>
-                Retry
-              </Link>
-            </Tooltip>
-          ) : (
-            <TokenAmountBlock
-              amount={balance}
-              tokenInfo={nativeTokenInfo}
-              needsParsing
-              showTicker
+        <Stack direction="row" gap={1} alignItems="center">
+          <RetryableBalance entityId={entityId} tokenInfo={nativeTokenInfo} />
+          {tokenInfo && (
+            <Avatar
+              src={`https://arweave.net/${tokenInfo.logo}`}
+              alt={tokenInfo.name}
+              sx={{ width: 16, height: 16 }}
             />
           )}
-        </>
+          <IdBlock
+            label={tokenInfo?.ticker || truncateId(tokenId)}
+            value={tokenId}
+            href={`/token/${tokenId}`}
+          />
+        </Stack>
       }
     />
   )

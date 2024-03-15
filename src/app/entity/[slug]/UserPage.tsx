@@ -6,9 +6,9 @@ import { BalanceSection } from "@/components/BalanceSection"
 import { IdBlock } from "@/components/IdBlock"
 import { Subheading } from "@/components/Subheading"
 
+import { EntityMessages } from "./EntityMessages"
 import { TokenBalances } from "./TokenBalances"
 import { TokenTransfers } from "./TokenTransfers"
-import { EntityMessages } from "./EntityMessages"
 
 type UserPageProps = {
   entityId: string

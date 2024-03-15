@@ -135,24 +135,3 @@ export async function getTokenInfoMap(
 
   return map
 }
-
-export type TokenBalanceMap = Record<string, number | null>
-
-export async function getTokenBalanceMap(
-  tokenIds: string[],
-  entityId: string,
-): Promise<TokenBalanceMap> {
-  const map: TokenBalanceMap = {}
-
-  const results = await Promise.all(
-    tokenIds.map((tokenId) =>
-      Promise.race([getBalance(tokenId, entityId), wait(5_000)]),
-    ),
-  )
-
-  results.forEach((balance, index) => {
-    map[tokenIds[index]] = balance
-  })
-
-  return map
-}

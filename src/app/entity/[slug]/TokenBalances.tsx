@@ -3,16 +3,10 @@ import { useEffect, useMemo, useState } from "react"
 
 import { IdBlock } from "@/components/IdBlock"
 import { InMemoryTable } from "@/components/InMemoryTable"
-import { TokenAmountBlock } from "@/components/TokenAmountBlock"
+import { RetryableBalance } from "@/components/RetryableBalance"
 import { TokenBlock } from "@/components/TokenBlock"
 import { getTokenTransfers } from "@/services/messages-api"
-import {
-  TokenBalanceMap,
-  TokenInfo,
-  TokenInfoMap,
-  getTokenBalanceMap,
-  getTokenInfoMap,
-} from "@/services/token-api"
+import { TokenInfo, TokenInfoMap, getTokenInfoMap } from "@/services/token-api"
 import { normalizeTokenEvent } from "@/utils/ao-event-utils"
 import { truncateId } from "@/utils/data-utils"
 
@@ -23,14 +17,12 @@ type TokenBalancesProps = {
 
 type TokenBalance = {
   tokenId: string
-  balance: number | null
   tokenInfo: TokenInfo
 }
 
 export function TokenBalances(props: TokenBalancesProps) {
   const { entityId, open } = props
   const [tokenInfoMap, setTokenInfoMap] = useState<TokenInfoMap>({})
-  const [tokenBalanceMap, setTokenBalanceMap] = useState<TokenBalanceMap>({})
 
   const pageSize = 1000
 
@@ -43,25 +35,20 @@ export function TokenBalances(props: TokenBalancesProps) {
           uniqueTokenIds.add(event.tokenId)
         })
         const tokenIds = Array.from(uniqueTokenIds)
-        return Promise.all([
-          getTokenInfoMap(tokenIds),
-          getTokenBalanceMap(tokenIds, entityId),
-        ])
+        return getTokenInfoMap(tokenIds)
       })
-      .then(([tokenInfoMap, tokenBalanceMap]) => {
+      .then((tokenInfoMap) => {
         setTokenInfoMap(tokenInfoMap)
-        setTokenBalanceMap(tokenBalanceMap)
       })
   }, [entityId])
 
   const data: TokenBalance[] = useMemo(
     () =>
-      Object.keys(tokenBalanceMap).map((tokenId) => ({
+      Object.keys(tokenInfoMap).map((tokenId) => ({
         tokenId,
-        balance: tokenBalanceMap[tokenId],
         tokenInfo: tokenInfoMap[tokenId],
       })),
-    [tokenBalanceMap, tokenInfoMap],
+    [tokenInfoMap],
   )
 
   if (!open) return null
@@ -79,11 +66,10 @@ export function TokenBalances(props: TokenBalancesProps) {
             label: "Balance",
             align: "right",
             sortable: true,
-            sx: { paddingRight: "36px" },
           },
           { label: "Ticker", sx: { width: 220 } },
         ]}
-        renderRow={({ tokenInfo, balance, tokenId }: TokenBalance) => (
+        renderRow={({ tokenInfo, tokenId }: TokenBalance) => (
           <TableRow key={tokenId}>
             <TableCell>
               <IdBlock
@@ -93,11 +79,7 @@ export function TokenBalances(props: TokenBalancesProps) {
               />
             </TableCell>
             <TableCell align="right">
-              <TokenAmountBlock
-                amount={balance || 0}
-                tokenInfo={tokenInfo}
-                needsParsing
-              />
+              <RetryableBalance entityId={entityId} tokenInfo={tokenInfo} />
             </TableCell>
             <TableCell align="right">
               <TokenBlock tokenId={tokenId} tokenInfo={tokenInfo} />

@@ -11,11 +11,10 @@ type TokenAmountBlockProps = {
   amount: string | number
   tokenInfo?: TokenInfo
   needsParsing?: boolean
-  showTicker?: boolean
 }
 
 export function TokenAmountBlock(props: TokenAmountBlockProps) {
-  const { amount, tokenInfo, needsParsing, showTicker } = props
+  const { amount, tokenInfo, needsParsing } = props
 
   let amountNumber = Number(amount)
   const decimals = amountNumber !== 0 && tokenInfo ? tokenInfo.denomination : 0
@@ -47,16 +46,11 @@ export function TokenAmountBlock(props: TokenAmountBlockProps) {
               component="span"
               variant="inherit"
             >
-              <span>
-                {longValue} {showTicker && <span>{tokenInfo?.ticker}</span>}
-              </span>
+              <span>{longValue}</span>
             </Typography>
           }
         >
-          <span>
-            <span>{shortValue}</span>{" "}
-            {showTicker && <span>{tokenInfo?.ticker}</span>}
-          </span>
+          <span>{shortValue}</span>
         </Tooltip>
         <CopyToClipboard value={String(amount)} />
       </Box>
