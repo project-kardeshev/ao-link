@@ -1,7 +1,6 @@
 import { AreaChart } from "@/components/Charts/AreaChart"
 
 import EventsTable from "@/page-components/HomePage/EventsTable"
-import SearchBar from "@/page-components/HomePage/SearchBar"
 import {
   getMessageStats,
   getModuleStats,
@@ -40,10 +39,7 @@ export default async function HomePage(props: HomePageProps) {
 
   return (
     <main>
-      <div className="mt-4">
-        <SearchBar />
-      </div>
-      <div className="flex justify-between flex-wrap mt-[64px] mx-[-24px]">
+      <div className="flex justify-between flex-wrap mt-[24px] mx-[-24px]">
         <div className="container w-1/2 lg:w-1/4 px-4 min-h-[150px] relative">
           <AreaChart
             data={messages}

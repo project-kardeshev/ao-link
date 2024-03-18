@@ -14,6 +14,8 @@ import {
 import { Moon, Sun } from "@phosphor-icons/react"
 import Link from "next/link"
 
+import SearchBar from "@/page-components/HomePage/SearchBar"
+
 import { Logo } from "./Logo"
 
 const Header = () => {
@@ -87,15 +89,22 @@ const Header = () => {
                 MODULES
               </MuiLink>
             </Stack>
-            <IconButton
-              size="small"
-              onClick={() => {
-                const nextMode = mode === "dark" ? "light" : "dark"
-                setMode(nextMode)
-              }}
-            >
-              {mode === "dark" ? <Moon weight="bold" /> : <Sun weight="bold" />}
-            </IconButton>
+            <Stack direction="row" gap={2} alignItems="center">
+              <SearchBar />
+              <IconButton
+                size="small"
+                onClick={() => {
+                  const nextMode = mode === "dark" ? "light" : "dark"
+                  setMode(nextMode)
+                }}
+              >
+                {mode === "dark" ? (
+                  <Moon weight="bold" />
+                ) : (
+                  <Sun weight="bold" />
+                )}
+              </IconButton>
+            </Stack>
           </Stack>
         </Toolbar>
       </Container>

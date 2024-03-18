@@ -1,16 +1,29 @@
 "use client"
 
-import { Backdrop, Box } from "@mui/material"
+import {
+  Backdrop,
+  Box,
+  CircularProgress,
+  InputAdornment,
+  TextField,
+} from "@mui/material"
 import { ArrowUpRight, MagnifyingGlass } from "@phosphor-icons/react"
 import Link from "next/link"
 import React, { type ChangeEvent, useState } from "react"
 
 import { TypeBadge } from "@/components/TypeBadge"
 import { getAoEventById, getLatestAoEvents } from "@/services/aoscan"
+import { getTokenInfo } from "@/services/token-api"
 import { normalizeAoEvent } from "@/utils/ao-event-utils"
 import { TYPE_PATH_MAP } from "@/utils/data-utils"
 
-type ResultType = "Message" | "Entity" | "Block" | "Checkpoint" | "Process"
+type ResultType =
+  | "Message"
+  | "Entity"
+  | "Block"
+  | "Checkpoint"
+  | "Process"
+  | "Token"
 
 type Result = {
   id: string
@@ -20,9 +33,10 @@ type Result = {
 async function findByText(text: string): Promise<Result[]> {
   if (!text || !text.trim()) return Promise.resolve([])
 
-  const [event, ownerEvents] = await Promise.all([
+  const [event, ownerEvents, tokenInfo] = await Promise.all([
     getAoEventById(text),
     getLatestAoEvents(1, 0, undefined, undefined, text),
+    getTokenInfo(text),
   ])
 
   const results = []
@@ -31,6 +45,13 @@ async function findByText(text: string): Promise<Result[]> {
     results.push({
       id: event.id,
       type: normalizeAoEvent(event).type,
+    })
+  }
+
+  if (tokenInfo) {
+    results.push({
+      id: text,
+      type: "Token" as ResultType,
     })
   }
 
@@ -86,53 +107,51 @@ const SearchBar = () => {
     }, 0)
   }
 
-  //
-  // const handleKeyDown = (e: any) => {
-  //   if (e.code === "Enter") {
-  //     push(`/${inputValue}`)
-  //   }
-  // }
-
   return (
-    <div>
+    <Box sx={{ width: 640 }}>
       <div className="dropdown relative w-full">
-        <Box
-          component="input"
+        <TextField
+          size="small"
           sx={{
             background: "var(--mui-palette-background-default) !important",
-            border: "1px solid var(--mui-palette-text-primary) !important",
-            "&:focus": {
-              borderColor: "var(--mui-palette-background-default) !important",
+            "& fieldset": {
+              borderColor: "var(--mui-palette-divider) !important",
             },
+            width: "100%",
+            zIndex: 50,
           }}
-          role="button"
           placeholder="Search by Message ID / Process ID / User ID / Block Height"
-          className="bg-transparent w-full py-[28px] px-[32px] outline-none focus:border-transparent z-50 relative"
           value={inputValue}
           onChange={handleInputChange}
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                {loading ? (
+                  <CircularProgress size={16} color="inherit" />
+                ) : (
+                  <MagnifyingGlass width={16} height={16} alt="search" />
+                )}
+              </InputAdornment>
+            ),
+          }}
         />
-        {loading ? (
-          <div className="absolute right-[32px] top-1/2 -translate-y-1/2 text-[18px] z-[51]">
-            <div className="w-[24px] h-[24px] border-l-2 border-main-dark-color rounded-full animate-spin"></div>
-          </div>
-        ) : (
-          <MagnifyingGlass
-            width={28}
-            height={28}
-            alt="search"
-            className="absolute right-[32px] top-1/2 -translate-y-1/2 text-[18px] z-[51]"
-          />
-        )}
         <div tabIndex={0} className="dropdown-content z-50 w-full">
-          <ul className="mt-[10px] z-50 relative max-h-[200px] overflow-y-auto">
+          <ul className="z-50 relative max-h-[200px] overflow-y-auto">
             {results.map((item) => (
               <Box
                 component={"li"}
-                sx={{ background: "var(--mui-palette-background-default)" }}
-                key={item.id}
+                sx={{
+                  background: "var(--mui-palette-background-default)",
+                  color: "text.primary",
+                }}
+                key={`${item.id}_${item.type}`}
                 className="cursor-pointer p-[8px] flex justify-between"
+                onClick={() => {
+                  setInputValue("")
+                  setResults([])
+                }}
               >
                 <Link
                   href={`/${TYPE_PATH_MAP[item.type]}/${item.id}`}
@@ -161,7 +180,7 @@ const SearchBar = () => {
           },
         }}
       />
-    </div>
+    </Box>
   )
 }
 

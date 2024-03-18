@@ -131,6 +131,15 @@ export const theme = extendTheme({
         variant: "outlined",
       },
     },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          "& fieldset": {
+            borderWidth: "1px !important",
+          },
+        },
+      },
+    },
   },
   shape: {
     borderRadius: 0,
