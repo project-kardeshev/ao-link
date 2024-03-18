@@ -105,11 +105,6 @@ export const theme = extendTheme({
         },
       },
     },
-    MuiTableRow: {
-      defaultProps: {
-        hover: true,
-      },
-    },
     MuiTabs: {
       styleOverrides: {
         root: {
@@ -137,6 +132,23 @@ export const theme = extendTheme({
           "& fieldset": {
             borderWidth: "1px !important",
           },
+        },
+      },
+    },
+    MuiTableRow: {
+      defaultProps: {
+        hover: true,
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        body: {
+          border: 0,
+          padding: "12px 16px",
+        },
+        head: {
+          paddingTop: "12px",
+          paddingBottom: "12px",
         },
       },
     },

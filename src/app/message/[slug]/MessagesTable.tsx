@@ -49,7 +49,7 @@ const MessagesTable = (props: MessagesTableProps) => {
             initialSortField="created"
             data={filteredData}
             headerCells={[
-              { label: "Type", sx: { width: 120 } },
+              { label: "Type", sx: { width: 140 } },
               { label: "Action" },
               { label: "ID", sx: { width: 220 } },
               { label: "From", sx: { width: 220 } },

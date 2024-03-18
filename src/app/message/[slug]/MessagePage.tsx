@@ -200,7 +200,7 @@ export function MessagePage(props: MessagePageProps) {
           </Grid2>
         </Grid2>
         {linkedMessages.length > 0 && (
-          <>
+          <div>
             <Stack
               direction="row"
               justifyContent="space-between"
@@ -227,7 +227,7 @@ export function MessagePage(props: MessagePageProps) {
               )}
             </Stack>
             <MessagesTable data={linkedMessages} tableFilter={tableFilter} />
-          </>
+          </div>
         )}
       </Stack>
     </>

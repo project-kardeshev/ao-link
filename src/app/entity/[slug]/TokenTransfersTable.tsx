@@ -1,4 +1,4 @@
-import { TableRow, Tooltip, Typography } from "@mui/material"
+import { TableCell, TableRow, Tooltip, Typography } from "@mui/material"
 import { useRouter } from "next/navigation"
 import React from "react"
 
@@ -26,14 +26,13 @@ export function TokenTransfersTable(props: TokenTransfersTableProps) {
   return (
     <InMemoryTable
       headerCells={[
-        { label: "Type", sx: { width: 120 } },
+        { label: "Type", sx: { width: 140 } },
         { label: "Action" },
         { label: "ID", sx: { width: 220 } },
         { label: "From", sx: { width: 220 } },
         { label: "To", sx: { width: 220 } },
         {
           label: "Quantity",
-          sx: { width: 160 },
           align: "right",
         },
         { label: "Token", sx: { width: 220 } },
@@ -59,38 +58,38 @@ export function TokenTransfersTable(props: TokenTransfersTableProps) {
 
         return (
           <TableRow
-            className="table-row cursor-pointer"
+            sx={{ cursor: "pointer" }}
             key={item.id}
             onClick={() => {
               router.push(`/${TYPE_PATH_MAP[item.type]}/${item.id}`)
             }}
           >
-            <td className="text-start p-2">
+            <TableCell>
               <TypeBadge type={item.type} />
-            </td>
-            <td className="text-start p-2 ">{item.action}</td>
-            <td className="text-start p-2 ">
+            </TableCell>
+            <TableCell>{item.action}</TableCell>
+            <TableCell>
               <IdBlock
                 label={truncateId(item.id)}
                 value={item.id}
                 href={`/message/${item.id}`}
               />
-            </td>
-            <td className="text-start p-2 ">
+            </TableCell>
+            <TableCell>
               <IdBlock
                 label={truncateId(item.sender)}
                 value={item.sender}
                 href={`/entity/${item.sender}`}
               />
-            </td>
-            <td className="text-start p-2 ">
+            </TableCell>
+            <TableCell>
               <IdBlock
                 label={truncateId(item.recipient)}
                 value={item.recipient}
                 href={`/entity/${item.recipient}`}
               />
-            </td>
-            <td className="text-end p-2">
+            </TableCell>
+            <TableCell align="right">
               <Typography
                 fontFamily={MonoFontFF}
                 component="div"
@@ -105,15 +104,15 @@ export function TokenTransfersTable(props: TokenTransfersTableProps) {
                   needsParsing
                 />
               </Typography>
-            </td>
-            <td className="text-start p-2 ">
+            </TableCell>
+            <TableCell>
               <TokenBlock tokenId={tokenId} tokenInfo={tokenInfo} />
-            </td>
-            <td className="text-end p-2">
+            </TableCell>
+            <TableCell align="right">
               <Tooltip title={formatFullDate(item.created)}>
                 <span>{formatRelative(item.created)}</span>
               </Tooltip>
-            </td>
+            </TableCell>
           </TableRow>
         )
       }}

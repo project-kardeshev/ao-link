@@ -18,7 +18,8 @@ export function TypeBadge(props: TypeBadgeProps) {
       <Stack
         direction="row"
         gap={1}
-        className={`flex min-w-[70px] py-1 px-2 space-x-1 items-center ${TYPE_COLOR_MAP[type]}`}
+        className={` ${TYPE_COLOR_MAP[type]}`}
+        sx={{ padding: "4px 8px", width: "fit-content" }}
       >
         <Typography
           textTransform="uppercase"
