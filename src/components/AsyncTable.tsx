@@ -25,7 +25,11 @@ export type AsyncTableProps = {
   renderRow: (row: any) => React.ReactNode
   initialSortField: string
   initialSortDir: "asc" | "desc"
-  fetchFunction: (offset: number) => Promise<any[]>
+  fetchFunction: (
+    offset: number,
+    ascending: boolean,
+    sortField: string,
+  ) => Promise<any[]>
 }
 
 export function AsyncTable(props: AsyncTableProps) {
@@ -44,6 +48,11 @@ export function AsyncTable(props: AsyncTableProps) {
 
   const [endReached, setEndReached] = useState(false)
 
+  const [sortAscending, setSortAscending] = useState<boolean>(
+    initialSortDir === "asc",
+  )
+  const [sortField, setSortField] = useState<string>(initialSortField)
+
   useEffect(() => {
     if (endReached) return
     const observer = new IntersectionObserver(
@@ -51,22 +60,24 @@ export function AsyncTable(props: AsyncTableProps) {
         const first = entries[0]
         if (first.isIntersecting) {
           console.log("Intersecting - Fetching more data")
-          fetchFunction(listSizeRef.current).then((newPage) => {
-            console.log(`Fetched another page of ${newPage.length} records`)
+          fetchFunction(listSizeRef.current, sortAscending, sortField).then(
+            (newPage) => {
+              console.log(`Fetched another page of ${newPage.length} records`)
 
-            if (newPage.length === 0) {
-              console.log("No more records to fetch")
-              observer.disconnect()
-              setEndReached(true)
-              return
-            }
+              if (newPage.length === 0) {
+                console.log("No more records to fetch")
+                observer.disconnect()
+                setEndReached(true)
+                return
+              }
 
-            setData((prevData) => {
-              const newList = [...prevData, ...newPage]
-              listSizeRef.current = newList.length
-              return newList
-            })
-          })
+              setData((prevData) => {
+                const newList = [...prevData, ...newPage]
+                listSizeRef.current = newList.length
+                return newList
+              })
+            },
+          )
         } else {
           console.log("Not intersecting")
         }
@@ -80,28 +91,15 @@ export function AsyncTable(props: AsyncTableProps) {
 
     return () => observer.disconnect()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data.length, endReached, pageSize])
+  }, [data.length, endReached, pageSize, sortAscending, sortField])
 
-  const [sortAscending, setSortAscending] = useState<boolean>(
-    initialSortDir === "asc",
-  )
-  const [sortField, setSortField] = useState<string>(initialSortField)
-
-  // const visibleRows = useMemo(
-  //   () =>
-  //     data
-  //       .sort((a, b) => {
-  //         if (a[sortField] < b[sortField]) {
-  //           return sortAscending ? -1 : 1
-  //         }
-  //         if (a[sortField] > b[sortField]) {
-  //           return sortAscending ? 1 : -1
-  //         }
-  //         return 0
-  //       })
-  //       .slice(0, listSize),
-  //   [data, listSize, sortAscending, sortField],
-  // )
+  useEffect(() => {
+    fetchFunction(0, sortAscending, sortField).then((newPage) => {
+      setData(newPage)
+      listSizeRef.current = newPage.length
+      setEndReached(false)
+    })
+  }, [fetchFunction, sortAscending, sortField])
 
   return (
     <Stack>

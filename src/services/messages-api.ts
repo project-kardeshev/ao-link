@@ -8,6 +8,7 @@ export async function getMessagesByEntityId(
   limit = 1000,
   skip = 0,
   entityId: string,
+  ascending: boolean,
 ): Promise<NormalizedAoEvent[]> {
   try {
     let supabaseRq
@@ -15,7 +16,7 @@ export async function getMessagesByEntityId(
     supabaseRq = supabase
       .from("ao_events")
       .select("owner,id,tags_flat,target,owner_address,height,created_at")
-      .order("created_at", { ascending: false })
+      .order("created_at", { ascending })
       .or(`owner_address.eq.${entityId},target.eq.${entityId}`)
     //tags_flat ->> Forwarded-For.eq.${entityId},tags_flat ->> From-Process.eq.${entityId},
 

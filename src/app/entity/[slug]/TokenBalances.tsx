@@ -56,16 +56,14 @@ export function TokenBalances(props: TokenBalancesProps) {
   return (
     <>
       <InMemoryTable
-        initialSortField="balance"
-        initialSortDir="desc"
+        initialSortField="tokenId"
+        initialSortDir="asc"
         data={data}
         headerCells={[
-          { label: "Token name" },
+          { field: "tokenId", label: "Token name", sortable: true },
           {
-            field: "rank",
             label: "Balance",
             align: "right",
-            sortable: true,
           },
           { label: "Ticker", sx: { width: 220 } },
         ]}

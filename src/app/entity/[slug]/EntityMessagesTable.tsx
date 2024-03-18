@@ -45,6 +45,7 @@ export function EntityMessagesTable(props: EntityMessagesTableProps) {
           label: "Created",
           sx: { width: 160 },
           align: "right",
+          sortable: true,
         },
       ]}
       renderRow={(item: NormalizedAoEvent) => (

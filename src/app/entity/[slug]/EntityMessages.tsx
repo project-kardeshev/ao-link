@@ -12,7 +12,7 @@ type EntityMessagesProps = {
 export function EntityMessages(props: EntityMessagesProps) {
   const { entityId, open } = props
 
-  const pageSize = 25
+  const pageSize = 30
 
   if (!open) return null
 
@@ -20,8 +20,8 @@ export function EntityMessages(props: EntityMessagesProps) {
     <EntityMessagesTable
       entityId={entityId}
       pageSize={pageSize}
-      fetchFunction={(offset) =>
-        getMessagesByEntityId(pageSize, offset, entityId)
+      fetchFunction={(offset, ascending) =>
+        getMessagesByEntityId(pageSize, offset, entityId, ascending)
       }
     />
   )

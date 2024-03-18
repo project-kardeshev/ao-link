@@ -27,20 +27,43 @@ export function TokenTransfersTable(props: TokenTransfersTableProps) {
     <InMemoryTable
       headerCells={[
         { label: "Type", sx: { width: 140 } },
-        { label: "Action" },
-        { label: "ID", sx: { width: 220 } },
-        { label: "From", sx: { width: 220 } },
-        { label: "To", sx: { width: 220 } },
+        {
+          label: "Action",
+          sortable: true,
+          field: "action",
+        },
+        {
+          label: "ID",
+          sx: { width: 220 },
+
+          sortable: true,
+          field: "id",
+        },
+        {
+          label: "From",
+          sx: { width: 220 },
+          sortable: true,
+          field: "sender",
+        },
+        { label: "To", sx: { width: 220 }, sortable: true, field: "recipient" },
         {
           label: "Quantity",
           align: "right",
+          sortable: true,
+          field: "amount",
         },
-        { label: "Token", sx: { width: 220 } },
+        {
+          label: "Token",
+          sortable: true,
+          field: "tokenId",
+          sx: { width: 220 },
+        },
         {
           field: "created",
           label: "Created",
           sx: { width: 160 },
           align: "right",
+          sortable: true,
         },
       ]}
       initialSortDir="desc"
