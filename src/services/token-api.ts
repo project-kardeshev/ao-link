@@ -100,9 +100,13 @@ export async function getTokenInfo(
       {} as { [key: string]: string },
     )
 
+    const denomination = parseInt(tagMap["Denomination"])
+
+    if (isNaN(denomination)) throw new Error("Denomination is not a number")
+
     return {
       processId,
-      denomination: parseInt(tagMap["Denomination"]),
+      denomination,
       ticker: tagMap["Ticker"],
       logo: tagMap["Logo"],
       name: tagMap["Name"],
