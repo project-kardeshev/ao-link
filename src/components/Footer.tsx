@@ -1,4 +1,4 @@
-import { Box, Button, Container, Link, Stack, Typography } from "@mui/material"
+import { Box, Container, Link, Stack, Typography } from "@mui/material"
 import React from "react"
 
 import { PoweredBy } from "./PoweredBy"
@@ -154,14 +154,30 @@ export function Footer() {
               ARWEAVE STATS
             </Link>
           </Stack>
-          <Button
-            component={Link}
-            target="_blank"
-            href="https://dataos.so/"
-            sx={{ margin: -1 }}
-          >
-            <PoweredBy />
-          </Button>
+          <Stack direction="row" gap={1}>
+            <Typography
+              component="span"
+              sx={{ color: "rgb(180, 180, 180)" }}
+              variant="caption"
+            >
+              Powered by
+            </Typography>
+            <Link
+              href="https://github.com/Autonomous-Finance"
+              target="_blank"
+              sx={{
+                color: "rgb(180, 180, 180)",
+                "&:hover": {
+                  color: "#FFF",
+                },
+              }}
+              fontWeight={500}
+              underline="none"
+              variant="body2"
+            >
+              <PoweredBy />
+            </Link>
+          </Stack>
         </Stack>
       </Container>
     </Box>
