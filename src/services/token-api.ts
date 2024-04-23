@@ -17,18 +17,28 @@ export type TokenHolder = {
   balance: number
 }
 
-export async function getBalance(tokenId: string, entityId: string) {
+export async function getBalance(
+  tokenId: string,
+  entityId: string,
+  tokenV2 = true,
+) {
   const result = await dryrun({
     process: tokenId,
     data: "",
     tags: [
       { name: "Action", value: "Balance" },
-      { name: "Target", value: entityId },
+      { name: tokenV2 ? "Recipient" : "Target", value: entityId },
     ],
   })
 
   try {
     const message = result.Messages[0]
+    const account = message.Tags?.find(
+      (tag: any) => tag.name === "Account",
+    )?.value
+    if (account !== entityId) {
+      throw new Error("Account mismatch")
+    }
     const balance =
       message.Data ||
       message.Tags?.find((tag: any) => tag.name === "Balance")?.value
@@ -36,6 +46,7 @@ export async function getBalance(tokenId: string, entityId: string) {
     return balanceNumber
   } catch (err) {
     console.error(err)
+    if (tokenV2) return getBalance(tokenId, entityId, false)
   }
 
   return null
