@@ -34,8 +34,8 @@ export function ComputeResult(props: ComputeResultProps) {
         throw new Error(json.error)
       }
 
-      if ("Output" in json) {
-        if ("data" in json.Output) {
+      if (typeof json === "object" && json !== null && "Output" in json) {
+        if (typeof json.Output === "object" && "data" in json.Output) {
           if (
             typeof json.Output.data === "object" &&
             "output" in json.Output.data
