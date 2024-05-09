@@ -107,7 +107,10 @@ export function ComputeResult(props: ComputeResultProps) {
         placeholder={
           loading ? "Loading..." : "Click 'Compute' to get the result."
         }
-        value={content}
+        value={content
+          ?.replace(/\\n/g, "\n")
+          .replace(/\\"/g, '"')
+          .replace(/\\u001b\[\d{1,2}(;\d{1,2})*m/g, "")}
       />
     </Stack>
   )
