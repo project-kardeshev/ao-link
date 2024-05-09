@@ -56,7 +56,7 @@ export function ComputeResult(props: ComputeResultProps) {
         setContent(JSON.stringify(json, null, 2))
       }
     } catch (error) {
-      setContent(`Error computing result: ${String(error)}`)
+      setContent(String(error))
     }
     setTimeout(() => {
       setLoading(false)
