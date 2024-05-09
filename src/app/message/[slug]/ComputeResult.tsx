@@ -29,9 +29,14 @@ export function ComputeResult(props: ComputeResultProps) {
         `https://cu.ao-testnet.xyz/result/${messageId}?process-id=${processId}`,
       )
       const json = await result.json()
+      console.log("📜 LOG > handleCompute > json:", json)
 
       if ("error" in json) {
         throw new Error(json.error)
+      }
+
+      if ("Error" in json) {
+        throw new Error(json.Error)
       }
 
       if (typeof json === "object" && json !== null && "Output" in json) {
