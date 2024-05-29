@@ -22,6 +22,7 @@ type ResultType =
   | "Entity"
   | "Block"
   | "Checkpoint"
+  | "Assignment"
   | "Process"
   | "Token"
 
