@@ -5,5 +5,5 @@
   "tabWidth": 2,
   "bracketSpacing": true,
   "semi": false,
-  "printWidth": 80
+  "printWidth": 100
 }

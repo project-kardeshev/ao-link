@@ -1,4 +1,4 @@
-import { NormalizedAoEvent } from "./ao-event-utils"
+import { NormalizedAoEvent, TokenEvent } from "./ao-event-utils"
 
 export type Tag = {
   name: string
@@ -90,5 +90,46 @@ export function parseNormalizedAoEvent(
     action,
     tags,
     cursor,
+  }
+}
+
+export function parseTokenEvent(edge: TransactionEdge): TokenEvent {
+  const normalizedEvent = parseNormalizedAoEvent(edge)
+
+  const { id, created, action, from, to, tags } = normalizedEvent as any // TODO
+
+  let sender
+  let recipient
+  let tokenId
+  let amount = 0
+
+  if (action === "Debit-Notice") {
+    amount = -Number(tags["Quantity"])
+    sender = to
+    recipient = tags["Recipient"]
+    tokenId = from
+  } else if (action === "Credit-Notice") {
+    amount = Number(tags["Quantity"])
+    sender = tags["Sender"]
+    recipient = to
+    tokenId = from
+  } else if (action === "Transfer") {
+    amount = -Number(tags["Quantity"])
+    sender = from
+    recipient = tags["Recipient"]
+    tokenId = to
+  } else {
+    throw new Error(`Unknown action: ${action}`)
+  }
+
+  return {
+    id,
+    type: "Message",
+    created,
+    action,
+    sender,
+    recipient,
+    amount,
+    tokenId,
   }
 }

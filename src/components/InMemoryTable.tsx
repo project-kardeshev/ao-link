@@ -7,21 +7,22 @@ import {
   TableBody,
   TableCell,
   TableHead,
+  TableProps,
   TableRow,
   TableSortLabel,
   Typography,
 } from "@mui/material"
-import React, { useEffect, useMemo, useRef, useState } from "react"
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react"
 
 export type HeaderCell = {
   field?: string
   sortable?: boolean
   sx?: any
-  label: string
+  label: ReactNode
   align?: "center" | "left" | "right"
 }
 
-type InMemoryTableProps = {
+type InMemoryTableProps = TableProps & {
   headerCells: HeaderCell[]
   data: any[]
   /**
@@ -43,6 +44,7 @@ export function InMemoryTable(props: InMemoryTableProps) {
     initialSortField,
     initialSortDir,
     loading,
+    ...rest
   } = props
 
   const loaderRef = useRef(null)
@@ -90,7 +92,7 @@ export function InMemoryTable(props: InMemoryTableProps) {
 
   const visibleRows = useMemo(
     () =>
-      data
+      [...data]
         .sort((a, b) => {
           if (a[sortField] < b[sortField]) {
             return sortAscending ? -1 : 1
@@ -106,8 +108,10 @@ export function InMemoryTable(props: InMemoryTableProps) {
 
   return (
     <Stack>
-      <Table>
-        <TableHead>
+      <Table size="small" {...rest}>
+        <TableHead
+        // sx={{ position: "sticky", top: 60 }}
+        >
           <TableRow hover={false}>
             {headerCells.map((cell, index) => (
               <TableCell
@@ -115,6 +119,7 @@ export function InMemoryTable(props: InMemoryTableProps) {
                 align={cell.align}
                 sx={{
                   color: "#9ea2aa",
+                  // background: "var(--mui-palette-background-default)",
                   ...(cell.sx || {}),
                 }}
               >
@@ -165,23 +170,22 @@ export function InMemoryTable(props: InMemoryTableProps) {
           )}
         </TableBody>
       </Table>
-      <Stack
-        marginY={1.5}
-        marginX={2}
-        ref={loaderRef}
-        sx={{ width: "100%" }}
-        direction="row"
-        gap={1}
-        alignItems="center"
-        // justifyContent="center"
-      >
-        {!endReached && <CircularProgress size={12} color="primary" />}
-        <Typography variant="body2" color="text.secondary">
-          {endReached
-            ? `Total rows: ${data.length}`
-            : "Loading more records..."}
-        </Typography>
-      </Stack>
+      {!endReached && data.length > 0 && (
+        <Stack
+          marginY={1.5}
+          marginX={2}
+          ref={loaderRef}
+          sx={{ width: "100%" }}
+          direction="row"
+          gap={1}
+          alignItems="center"
+        >
+          <CircularProgress size={12} color="primary" />
+          <Typography variant="body2" color="text.secondary">
+            Loading more records...
+          </Typography>
+        </Stack>
+      )}
     </Stack>
   )
 }

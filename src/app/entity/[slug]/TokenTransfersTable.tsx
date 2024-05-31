@@ -1,26 +1,34 @@
+import { Paper } from "@mui/material"
 import React from "react"
 
-import { InMemoryTable } from "@/components/InMemoryTable"
+import { AsyncTable, AsyncTableProps } from "@/components/AsyncTable"
 import { TokenEvent } from "@/utils/ao-event-utils"
 
 import { TokenTransfersTableRow } from "./TokenTransfersTableRow"
 
-type TokenTransfersTableProps = {
-  data: TokenEvent[]
+type TokenTransfersTableProps = Pick<
+  AsyncTableProps,
+  "fetchFunction" | "pageSize"
+> & {
+  entityId: string
 }
 
 export function TokenTransfersTable(props: TokenTransfersTableProps) {
-  const { data } = props
+  const { entityId, ...rest } = props
 
   return (
-    <InMemoryTable
+    <AsyncTable
+      {...rest}
+      component={Paper}
+      initialSortDir="desc"
+      initialSortField="created"
       headerCells={[
         { label: "Type", sx: { width: 140 } },
-        {
-          label: "Action",
-          sortable: true,
-          field: "action",
-        },
+        // {
+        //   label: "Action",
+        //   sortable: true,
+        //   field: "action",
+        // },
         {
           label: "ID",
           sx: { width: 220 },
@@ -34,6 +42,7 @@ export function TokenTransfersTable(props: TokenTransfersTableProps) {
           sortable: true,
           field: "sender",
         },
+        { label: "", sx: { width: 60 } },
         { label: "To", sx: { width: 220 }, sortable: true, field: "recipient" },
         {
           label: "Quantity",
@@ -55,11 +64,8 @@ export function TokenTransfersTable(props: TokenTransfersTableProps) {
           sortable: true,
         },
       ]}
-      initialSortDir="desc"
-      initialSortField="created"
-      data={data}
       renderRow={(item: TokenEvent) => (
-        <TokenTransfersTableRow key={item.id} item={item} />
+        <TokenTransfersTableRow key={item.id} item={item} entityId={entityId} />
       )}
     />
   )

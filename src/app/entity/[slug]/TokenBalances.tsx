@@ -3,32 +3,38 @@ import { useEffect, useState } from "react"
 
 import { InMemoryTable } from "@/components/InMemoryTable"
 import { getTokenTransfers } from "@/services/messages-api"
-import { normalizeTokenEvent } from "@/utils/ao-event-utils"
 
 import { TokenBalancesTableRow } from "./TokenBalancesTableRow"
 
 type TokenBalancesProps = {
   entityId: string
   open: boolean
+  onCountReady?: (count: number) => void
 }
 
 export function TokenBalances(props: TokenBalancesProps) {
-  const { entityId, open } = props
+  const { entityId, open, onCountReady } = props
 
-  const pageSize = 1000
   const [data, setData] = useState<string[]>([])
 
   useEffect(() => {
-    getTokenTransfers(pageSize, undefined, entityId).then((events) => {
-      const parsed = events.map(normalizeTokenEvent)
-      let uniqueTokenIds = new Set<string>()
-      parsed.forEach((event) => {
-        uniqueTokenIds.add(event.tokenId)
-      })
-      const tokenIds = Array.from(uniqueTokenIds)
-      setData(tokenIds)
-    })
-  }, [entityId])
+    if (!open || data.length > 0) return
+
+    getTokenTransfers(1000, undefined, false, entityId).then(
+      ([_count, transfers]) => {
+        let uniqueTokenIds = new Set<string>()
+        transfers.forEach((x) => {
+          uniqueTokenIds.add(x.tokenId)
+        })
+        const tokenIds = Array.from(uniqueTokenIds)
+        setData(tokenIds)
+
+        if (tokenIds.length !== undefined && onCountReady) {
+          onCountReady(tokenIds.length)
+        }
+      },
+    )
+  }, [data.length, entityId, onCountReady, open])
 
   if (!open) return null
 
@@ -40,10 +46,7 @@ export function TokenBalances(props: TokenBalancesProps) {
         data={data}
         headerCells={[
           { field: "tokenId", label: "Token name" },
-          {
-            label: "Balance",
-            align: "right",
-          },
+          { label: "Balance", align: "right" },
           { label: "Ticker", sx: { width: 220 } },
         ]}
         renderRow={(tokenId) => (

@@ -4,7 +4,6 @@ import {
   CircularProgress,
   Paper,
   Stack,
-  Tab,
   Tabs,
   Typography,
 } from "@mui/material"
@@ -95,6 +94,8 @@ export function ProcessPage(props: ProcessPageProps) {
 
   const [outgoingCount, setOutgoingCount] = useState<number>()
   const [incomingCount, setIncomingCount] = useState<number>()
+  const [transfersCount, setTransfersCount] = useState<number>()
+  const [balancesCount, setBalancesCount] = useState<number>()
 
   return (
     <Stack component="main" gap={6} paddingY={4}>
@@ -182,8 +183,16 @@ export function ProcessPage(props: ProcessPageProps) {
             label="Incoming messages"
             chipValue={incomingCount}
           />
-          <Tab value={2} label="Token transfers" />
-          <Tab value={3} label="Token balances" />
+          <TabWithCount
+            value={2}
+            label="Token transfers"
+            chipValue={transfersCount}
+          />
+          <TabWithCount
+            value={3}
+            label="Token balances"
+            chipValue={balancesCount}
+          />
         </Tabs>
         <Box sx={{ marginX: -2 }}>
           <OutgoingMessagesTable
@@ -197,8 +206,16 @@ export function ProcessPage(props: ProcessPageProps) {
             open={activeTab === 1}
             onCountReady={setIncomingCount}
           />
-          <TokenTransfers entityId={entityId} open={activeTab === 2} />
-          <TokenBalances entityId={entityId} open={activeTab === 3} />
+          <TokenTransfers
+            entityId={entityId}
+            open={activeTab === 2}
+            onCountReady={setTransfersCount}
+          />
+          <TokenBalances
+            entityId={entityId}
+            open={activeTab === 3}
+            onCountReady={setBalancesCount}
+          />
         </Box>
       </div>
     </Stack>

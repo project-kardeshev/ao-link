@@ -1,34 +1,40 @@
-import { Paper } from "@mui/material"
-import React, { useEffect, useState } from "react"
+import React from "react"
 
 import { getTokenTransfers } from "@/services/messages-api"
-import { TokenEvent, normalizeTokenEvent } from "@/utils/ao-event-utils"
 
 import { TokenTransfersTable } from "./TokenTransfersTable"
 
 type TokenTransfersProps = {
   entityId: string
   open: boolean
+  onCountReady?: (count: number) => void
 }
 
 export function TokenTransfers(props: TokenTransfersProps) {
-  const { entityId, open } = props
-  const [data, setData] = useState<TokenEvent[]>([])
+  const { entityId, open, onCountReady } = props
 
-  const pageSize = 1000
-
-  useEffect(() => {
-    getTokenTransfers(pageSize, undefined, entityId).then((events) => {
-      const parsed = events.map(normalizeTokenEvent)
-      setData(parsed)
-    })
-  }, [entityId])
+  const pageSize = 25
 
   if (!open) return null
 
   return (
-    <Paper>
-      <TokenTransfersTable data={data} />
-    </Paper>
+    <TokenTransfersTable
+      entityId={entityId}
+      pageSize={pageSize}
+      fetchFunction={async (offset, ascending, sortField, lastRecord) => {
+        const [count, records] = await getTokenTransfers(
+          pageSize,
+          lastRecord?.cursor,
+          ascending,
+          entityId,
+        )
+
+        if (count !== undefined && onCountReady) {
+          onCountReady(count)
+        }
+
+        return records
+      }}
+    />
   )
 }

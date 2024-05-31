@@ -1,48 +1,16 @@
 import { gql } from "urql"
 
-import { supabase } from "@/lib/supabase"
-
-import { NormalizedAoEvent } from "@/utils/ao-event-utils"
+import { NormalizedAoEvent, TokenEvent } from "@/utils/ao-event-utils"
 
 import {
   TransactionsResponse,
   parseNormalizedAoEvent,
+  parseTokenEvent,
 } from "@/utils/arweave-utils"
-
-import { AoEvent } from "./aoscan"
 
 import { goldsky } from "./graphql-client"
 
 // TODO
-export async function getTokenTransfers(
-  limit = 1000,
-  skip = 0,
-  processId: string,
-): Promise<AoEvent[]> {
-  try {
-    let supabaseRq
-
-    supabaseRq = supabase
-      .from("ao_events")
-      .select("owner,id,tags_flat,target,owner_address,height,created_at")
-      .order("created_at", { ascending: false })
-      .or(
-        `tags_flat ->> Action.eq.Credit-Notice,tags_flat ->> Action.eq.Debit-Notice,tags_flat ->> Action.eq.Transfer`,
-      )
-      .or(`owner_address.eq.${processId},target.eq.${processId}`)
-
-    supabaseRq = supabaseRq.range(skip, skip + limit - 1).returns<AoEvent[]>()
-
-    const { data } = await supabaseRq
-
-    if (!data) return []
-
-    return data
-  } catch (error) {
-    return []
-  }
-}
-
 // { name: "owner_address", values: [$entityId] }
 // { name: "target", values: [$entityId] }
 // { name: "Forwarded-For", values: [$entityId] }
@@ -142,7 +110,7 @@ export async function getOutgoingMessages(
 /**
  * WARN This query fails if both count and cursor are set
  */
-const getIncomingMessagesQuery = (includeCount = false) => gql`
+const incomingMessagesQuery = (includeCount = false) => gql`
   query (
     $entityId: String!
     $limit: Int!
@@ -173,7 +141,7 @@ export async function getIncomingMessages(
 ): Promise<[number | undefined, NormalizedAoEvent[]]> {
   try {
     const result = await goldsky
-      .query<TransactionsResponse>(getIncomingMessagesQuery(!cursor), {
+      .query<TransactionsResponse>(incomingMessagesQuery(!cursor), {
         limit,
         sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
         cursor,
@@ -187,6 +155,59 @@ export async function getIncomingMessages(
 
     const { count, edges } = data.transactions
     const events = edges.map(parseNormalizedAoEvent)
+
+    return [count, events]
+  } catch (error) {
+    return [0, []]
+  }
+}
+
+const tokenTransfersQuery = (includeCount = false) => gql`
+  query (
+    $entityId: String!
+    $limit: Int!
+    $sortOrder: SortOrder!
+    $cursor: String
+  ) {
+    transactions(
+      sort: $sortOrder
+      first: $limit
+      after: $cursor
+
+      tags: [{ name: "Action", values: ["Credit-Notice", "Debit-Notice"] }]
+      recipients: [$entityId]
+    ) {
+      ${includeCount ? "count" : ""}
+      ...MessageFields
+    }
+  }
+
+  ${messageFields}
+`
+
+export async function getTokenTransfers(
+  limit = 100,
+  cursor = "",
+  ascending: boolean,
+  //
+  entityId: string,
+): Promise<[number | undefined, TokenEvent[]]> {
+  try {
+    const result = await goldsky
+      .query<TransactionsResponse>(tokenTransfersQuery(!cursor), {
+        limit,
+        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        cursor,
+        //
+        entityId,
+      })
+      .toPromise()
+    const { data } = result
+
+    if (!data) return [0, []]
+
+    const { count, edges } = data.transactions
+    const events = edges.map(parseTokenEvent)
 
     return [count, events]
   } catch (error) {

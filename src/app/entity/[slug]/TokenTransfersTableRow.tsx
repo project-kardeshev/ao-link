@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation"
 import React, { useEffect, useState } from "react"
 
 import { IdBlock } from "@/components/IdBlock"
+import { InOutLabel } from "@/components/InOutLabel"
 import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { TokenAmountBlock } from "@/components/TokenAmountBlock"
 import { TokenBlock } from "@/components/TokenBlock"
@@ -15,12 +16,13 @@ import { nativeTokenInfo } from "@/utils/native-token"
 
 type TokenTransfersTableRowProps = {
   item: TokenEvent
+  entityId: string
 }
 
 export function TokenTransfersTableRow(props: TokenTransfersTableRowProps) {
   const router = useRouter()
 
-  const { item } = props
+  const { item, entityId } = props
 
   const { tokenId } = item
 
@@ -44,7 +46,7 @@ export function TokenTransfersTableRow(props: TokenTransfersTableRowProps) {
       <TableCell>
         <TypeBadge type={item.type} />
       </TableCell>
-      <TableCell>{item.action}</TableCell>
+      {/* <TableCell>{item.action}</TableCell> */}
       <TableCell>
         <IdBlock
           label={truncateId(item.id)}
@@ -58,6 +60,9 @@ export function TokenTransfersTableRow(props: TokenTransfersTableRowProps) {
           value={item.sender}
           href={`/entity/${item.sender}`}
         />
+      </TableCell>
+      <TableCell>
+        <InOutLabel outbound={entityId === item.sender} />
       </TableCell>
       <TableCell>
         <IdBlock
