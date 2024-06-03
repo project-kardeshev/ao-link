@@ -51,10 +51,7 @@ const userIdentifier = `
 /**
  * WARN This query fails if both count and cursor are set
  */
-const outgoingMessagesQuery = (
-  includeCount = false,
-  isProcess?: boolean,
-) => gql`
+const outgoingMessagesQuery = (includeCount = false, isProcess?: boolean) => gql`
   query (
     $entityId: String!
     $limit: Int!
@@ -208,6 +205,63 @@ export async function getTokenTransfers(
 
     const { count, edges } = data.transactions
     const events = edges.map(parseTokenEvent)
+
+    return [count, events]
+  } catch (error) {
+    return [0, []]
+  }
+}
+
+/**
+ * WARN This query fails if both count and cursor are set
+ */
+const spawnedProcessesQuery = (includeCount = false, isProcess?: boolean) => gql`
+  query (
+    $entityId: String!
+    $limit: Int!
+    $sortOrder: SortOrder!
+    $cursor: String
+  ) {
+    transactions(
+      sort: $sortOrder
+      first: $limit
+      after: $cursor
+
+      tags: [{ name: "SDK", values: ["aoconnect"]}, { name: "Type", values: ["Process"]}]
+      owners: [$entityId]
+    ) {
+      ${includeCount ? "count" : ""}
+      ...MessageFields
+    }
+  }
+
+  ${messageFields}
+`
+
+export async function getSpawnedProcesses(
+  limit = 100,
+  cursor = "",
+  ascending: boolean,
+  //
+  entityId: string,
+  isProcess?: boolean,
+): Promise<[number | undefined, NormalizedAoEvent[]]> {
+  try {
+    const result = await goldsky
+      .query<TransactionsResponse>(spawnedProcessesQuery(!cursor, isProcess), {
+        limit,
+        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        cursor,
+        //
+        entityId,
+      })
+      .toPromise()
+    const { data } = result
+
+    if (!data) return [0, []]
+
+    const { count, edges } = data.transactions
+    const events = edges.map(parseNormalizedAoEvent)
 
     return [count, events]
   } catch (error) {

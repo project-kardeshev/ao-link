@@ -10,6 +10,7 @@ import { TabWithCount } from "@/components/TabWithCount"
 
 import { IncomingMessagesTable } from "./IncomingMessagesTable"
 import { OutgoingMessagesTable } from "./OutgoingMessagesTable"
+import { SpawnedProcesses } from "./SpawnedProcesses"
 import { TokenBalances } from "./TokenBalances"
 import { TokenTransfers } from "./TokenTransfers"
 
@@ -20,13 +21,14 @@ type UserPageProps = {
 export function UserPage(props: UserPageProps) {
   const { entityId } = props
 
-  const [activeTab, setActiveTab] = useState(0)
+  const [activeTab, setActiveTab] = useState(2)
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue)
   }
 
   const [outgoingCount, setOutgoingCount] = useState<number>()
   const [incomingCount, setIncomingCount] = useState<number>()
+  const [processesCount, setProcessesCount] = useState<number>()
   const [transfersCount, setTransfersCount] = useState<number>()
   const [balancesCount, setBalancesCount] = useState<number>()
 
@@ -36,26 +38,11 @@ export function UserPage(props: UserPageProps) {
       <BalanceSection entityId={entityId} />
       <div>
         <Tabs value={activeTab} onChange={handleChange} textColor="primary">
-          <TabWithCount
-            value={0}
-            label="Outgoing messages"
-            chipValue={outgoingCount}
-          />
-          <TabWithCount
-            value={1}
-            label="Incoming messages"
-            chipValue={incomingCount}
-          />
-          <TabWithCount
-            value={2}
-            label="Token transfers"
-            chipValue={transfersCount}
-          />
-          <TabWithCount
-            value={3}
-            label="Token balances"
-            chipValue={balancesCount}
-          />
+          <TabWithCount value={0} label="Outgoing messages" chipValue={outgoingCount} />
+          <TabWithCount value={1} label="Incoming messages" chipValue={incomingCount} />
+          <TabWithCount value={2} label="Spawned processes" chipValue={processesCount} />
+          <TabWithCount value={3} label="Token transfers" chipValue={transfersCount} />
+          <TabWithCount value={4} label="Token balances" chipValue={balancesCount} />
         </Tabs>
         <Box sx={{ marginX: -2 }}>
           <OutgoingMessagesTable
@@ -68,14 +55,19 @@ export function UserPage(props: UserPageProps) {
             open={activeTab === 1}
             onCountReady={setIncomingCount}
           />
-          <TokenTransfers
+          <SpawnedProcesses
             entityId={entityId}
             open={activeTab === 2}
+            onCountReady={setProcessesCount}
+          />
+          <TokenTransfers
+            entityId={entityId}
+            open={activeTab === 3}
             onCountReady={setTransfersCount}
           />
           <TokenBalances
             entityId={entityId}
-            open={activeTab === 3}
+            open={activeTab === 4}
             onCountReady={setBalancesCount}
           />
         </Box>

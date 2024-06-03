@@ -88,32 +88,6 @@ export async function getLatestAoEvents(
   }
 }
 
-export async function getLatestMessagesForProcess(
-  processId: string,
-): Promise<AoEvent[]> {
-  try {
-    let supabaseRq
-
-    supabaseRq = supabase
-      .from("ao_events")
-      .select("owner,id,tags_flat,target,owner_address,height,created_at")
-      .order("created_at", { ascending: false })
-      .eq("target", processId)
-      .range(0, 9)
-
-    const { data } = await supabaseRq
-
-    if (data) {
-      return data as AoEvent[]
-    }
-
-    return []
-  } catch (error) {
-    console.error(error)
-    return []
-  }
-}
-
 export function subscribeToEvents(callback: (data: AoEvent) => void) {
   const channel = supabase
     .channel("ao_events")
@@ -144,6 +118,7 @@ export async function getAoEventById(id: string): Promise<AoEvent | null> {
   return null
 }
 
+// TODO
 export async function getProcessById(id: string) {
   const { data, error } = await supabase
     .from("processes")
@@ -175,9 +150,7 @@ export async function getProcesses(
     supabaseRq = supabaseRq.eq("module", moduleId)
   }
 
-  const { data, error } = await supabaseRq
-    .range(skip, skip + limit - 1)
-    .returns<Process[]>()
+  const { data, error } = await supabaseRq.range(skip, skip + limit - 1).returns<Process[]>()
 
   if (error || !data) {
     console.error(error)
@@ -187,6 +160,7 @@ export async function getProcesses(
   return data
 }
 
+// TODO
 export async function getModuleById(id: string) {
   const { data, error } = await supabase
     .from("modules_extended")
@@ -202,6 +176,7 @@ export async function getModuleById(id: string) {
   return data[0]
 }
 
+// TODO
 export async function getModules(
   limit = 1000,
   skip = 0,
@@ -228,6 +203,7 @@ type LinkedMsgFilter = {
   to: string
 }
 
+// TODO
 export async function getLinkedMessages(
   limit = 1000,
   skip = 0,
@@ -241,12 +217,8 @@ export async function getLinkedMessages(
 
   if (filter) {
     supabaseRq = supabaseRq
-      .or(
-        `tags_flat ->> Forwarded-For.eq.${filter.from},tags_flat ->> Forwarded-For.is.null`,
-      )
-      .or(
-        `tags_flat ->> From-Process.eq.${filter.from},tags_flat ->> From-Process.is.null`,
-      )
+      .or(`tags_flat ->> Forwarded-For.eq.${filter.from},tags_flat ->> Forwarded-For.is.null`)
+      .or(`tags_flat ->> From-Process.eq.${filter.from},tags_flat ->> From-Process.is.null`)
       .or(`owner_address.eq.${filter.from}`)
       .eq("target", filter.to)
   } else {
@@ -255,9 +227,7 @@ export async function getLinkedMessages(
     )
   }
 
-  const { data, error } = await supabaseRq
-    .range(skip, skip + limit - 1)
-    .returns<AoEvent[]>()
+  const { data, error } = await supabaseRq.range(skip, skip + limit - 1).returns<AoEvent[]>()
 
   if (error || !data) {
     console.error(error)
