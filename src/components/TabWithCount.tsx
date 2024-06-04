@@ -1,6 +1,8 @@
 import { Chip, Fade, Tab, TabProps } from "@mui/material"
 import React, { useEffect } from "react"
 
+import { formatNumber } from "@/utils/number-utils"
+
 export function TabWithCount(props: TabProps & { chipValue?: number }) {
   const { chipValue, label, ...rest } = props
 
@@ -26,15 +28,15 @@ export function TabWithCount(props: TabProps & { chipValue?: number }) {
       label={
         <>
           <span>{label}</span>
-          {show && (
-            <Fade in={show}>
+          {show && chipValue !== undefined && (
+            <Fade in>
               <Chip
                 component="span"
                 size="small"
                 sx={{
                   marginY: -1,
                 }}
-                label={chipValue}
+                label={formatNumber(chipValue)}
               />
             </Fade>
           )}
