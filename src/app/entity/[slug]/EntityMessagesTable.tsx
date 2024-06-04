@@ -7,7 +7,7 @@ import { IdBlock } from "@/components/IdBlock"
 import { InOutLabel } from "@/components/InOutLabel"
 import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { TypeBadge } from "@/components/TypeBadge"
-import { NormalizedAoEvent } from "@/utils/ao-event-utils"
+import { AoMessage } from "@/utils/ao-event-utils"
 import { TYPE_PATH_MAP, truncateId } from "@/utils/data-utils"
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
 import { formatNumber } from "@/utils/number-utils"
@@ -29,10 +29,10 @@ export function EntityMessagesTable(props: EntityMessagesTableProps) {
       headerCells={[
         { label: "Type", sx: { width: 140 } },
         { label: "Action" },
-        { label: "ID", sx: { width: 200 } },
-        { label: "From", sx: { width: 200 } },
+        { label: "ID", sx: { width: 220 } },
+        { label: "From", sx: { width: 220 } },
         { label: "", sx: { width: 60 } },
-        { label: "To", sx: { width: 200 } },
+        { label: "To", sx: { width: 220 } },
         {
           label: "Block Height",
           sx: { width: 160 },
@@ -46,7 +46,7 @@ export function EntityMessagesTable(props: EntityMessagesTableProps) {
           sortable: true,
         },
       ]}
-      renderRow={(item: NormalizedAoEvent) => (
+      renderRow={(item: AoMessage) => (
         <TableRow
           sx={{ cursor: "pointer" }}
           key={item.id}

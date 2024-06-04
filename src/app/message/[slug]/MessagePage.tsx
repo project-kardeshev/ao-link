@@ -24,7 +24,7 @@ import { supabase } from "@/lib/supabase"
 
 import { AoEvent } from "@/services/aoscan"
 import {
-  NormalizedAoEvent,
+  AoMessage,
   normalizeAoEvent,
   normalizeTags,
 } from "@/utils/ao-event-utils"
@@ -55,7 +55,7 @@ export function MessagePage(props: MessagePageProps) {
 
   const [loading, setLoading] = useState(true)
   const [graphData, setChartData] = useState<ChartDataItem[]>([])
-  const [linkedMessages, setLinkedMessages] = useState<NormalizedAoEvent[]>([])
+  const [linkedMessages, setLinkedMessages] = useState<AoMessage[]>([])
 
   useEffect(() => {
     setLoading(true)

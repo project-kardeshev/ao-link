@@ -7,7 +7,7 @@ import { IdBlock } from "@/components/IdBlock"
 import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { TypeBadge } from "@/components/TypeBadge"
 import { getSpawnedProcesses } from "@/services/messages-api"
-import { NormalizedAoEvent } from "@/utils/ao-event-utils"
+import { AoMessage } from "@/utils/ao-event-utils"
 import { TYPE_PATH_MAP, truncateId } from "@/utils/data-utils"
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
 import { formatNumber } from "@/utils/number-utils"
@@ -51,7 +51,7 @@ export function SpawnedProcesses(props: SpawnedProcessesProps) {
       initialSortField="created"
       headerCells={[
         { label: "Type", sx: { width: 140 } },
-        { label: "ID", sx: { width: 200 } },
+        { label: "ID", sx: { width: 220 } },
         { label: "Name" },
         // { label: "Tags" },
         { label: "Module" },
@@ -68,7 +68,7 @@ export function SpawnedProcesses(props: SpawnedProcessesProps) {
           sortable: true,
         },
       ]}
-      renderRow={(item: NormalizedAoEvent) => (
+      renderRow={(item: AoMessage) => (
         <TableRow
           sx={{ cursor: "pointer" }}
           key={item.id}

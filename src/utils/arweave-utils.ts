@@ -1,4 +1,4 @@
-import { NormalizedAoEvent, TokenEvent } from "./ao-event-utils"
+import { AoMessage, TokenEvent } from "./ao-event-utils"
 
 export type Tag = {
   name: string
@@ -58,7 +58,7 @@ export type TransactionsResponse = {
   }
 }
 
-export function parseNormalizedAoEvent(edge: TransactionEdge): NormalizedAoEvent {
+export function parseNormalizedAoEvent(edge: TransactionEdge): AoMessage {
   const { node, cursor } = edge
 
   const tags = node.tags.reduce((acc: Record<string, string>, tag: Tag) => {
@@ -66,7 +66,7 @@ export function parseNormalizedAoEvent(edge: TransactionEdge): NormalizedAoEvent
     return acc
   }, {})
 
-  const type = tags["Type"] as NormalizedAoEvent["type"]
+  const type = tags["Type"] as AoMessage["type"]
   const blockHeight = node.block ? node.block.height : 0
   const from = tags["Forwarded-For"] || tags["From-Process"] || node.owner.address
   const schedulerId = tags["Scheduler"]

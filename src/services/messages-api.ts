@@ -1,6 +1,6 @@
 import { gql } from "urql"
 
-import { NormalizedAoEvent, TokenEvent } from "@/utils/ao-event-utils"
+import { AoMessage, TokenEvent } from "@/utils/ao-event-utils"
 
 import {
   TransactionsResponse,
@@ -80,7 +80,7 @@ export async function getOutgoingMessages(
   //
   entityId: string,
   isProcess?: boolean,
-): Promise<[number | undefined, NormalizedAoEvent[]]> {
+): Promise<[number | undefined, AoMessage[]]> {
   try {
     const result = await goldsky
       .query<TransactionsResponse>(outgoingMessagesQuery(!cursor, isProcess), {
@@ -135,7 +135,7 @@ export async function getIncomingMessages(
   ascending: boolean,
   //
   entityId: string,
-): Promise<[number | undefined, NormalizedAoEvent[]]> {
+): Promise<[number | undefined, AoMessage[]]> {
   try {
     const result = await goldsky
       .query<TransactionsResponse>(incomingMessagesQuery(!cursor), {
@@ -249,7 +249,7 @@ export async function getSpawnedProcesses(
   //
   entityId: string,
   isProcess?: boolean,
-): Promise<[number | undefined, NormalizedAoEvent[]]> {
+): Promise<[number | undefined, AoMessage[]]> {
   try {
     const result = await goldsky
       .query<TransactionsResponse>(spawnedProcessesQuery(!cursor, isProcess), {
@@ -273,7 +273,7 @@ export async function getSpawnedProcesses(
   }
 }
 
-export async function getMessageById(id: string): Promise<NormalizedAoEvent | undefined> {
+export async function getMessageById(id: string): Promise<AoMessage | undefined> {
   const { data, error } = await goldsky
     .query<TransactionsResponse>(
       gql`

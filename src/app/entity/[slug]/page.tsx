@@ -1,4 +1,4 @@
-import { getAoEventById, getProcessById } from "@/services/aoscan"
+import { redirect } from "next/navigation"
 
 import { getMessageById } from "@/services/messages-api"
 
@@ -20,14 +20,9 @@ export default async function EntityPageServer(props: EntityPageServerProps) {
     return <UserPage entityId={entityId} />
   }
 
-  const processId = entityId
-
-  const event = await getAoEventById(processId)
-  const process = await getProcessById(processId)
-
-  if (!event || !process) {
-    return <div>Not Found</div>
+  if (message.type === "Process") {
+    return <ProcessPage message={message} />
   }
 
-  return <ProcessPage event={event} process={process} />
+  return redirect(`/message/${entityId}`)
 }

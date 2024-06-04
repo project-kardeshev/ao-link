@@ -2,7 +2,7 @@ import { type AoEvent } from "@/services/aoscan"
 
 import { parseUtcString } from "./date-utils"
 
-export type NormalizedAoEvent = {
+export type AoMessage = {
   id: string
   type: "Message" | "Process" | "Checkpoint" | "Assignment"
   to: string
@@ -15,11 +15,11 @@ export type NormalizedAoEvent = {
   cursor?: string
 }
 
-export function normalizeAoEvent(event: AoEvent): NormalizedAoEvent {
+export function normalizeAoEvent(event: AoEvent): AoMessage {
   const { owner_address, id, tags_flat, height, created_at, target } = event
   const { Action, Type, Scheduler } = tags_flat
   //
-  const type = Type as NormalizedAoEvent["type"]
+  const type = Type as AoMessage["type"]
   const blockHeight = height
   const forwardedFor = tags_flat["Forwarded-For"]
   const fromProcess = tags_flat["From-Process"]

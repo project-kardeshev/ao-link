@@ -15,8 +15,8 @@ import { TabWithCount } from "@/components/TabWithCount"
 import { TagsSection } from "@/components/TagsSection"
 import { supabase } from "@/lib/supabase"
 
-import { AoEvent, Process } from "@/services/aoscan"
-import { normalizeAoEvent, normalizeTags } from "@/utils/ao-event-utils"
+import { AoEvent } from "@/services/aoscan"
+import { AoMessage } from "@/utils/ao-event-utils"
 import { truncateId } from "@/utils/data-utils"
 import { formatRelative } from "@/utils/date-utils"
 
@@ -28,17 +28,13 @@ import { TokenBalances } from "./TokenBalances"
 import { TokenTransfers } from "./TokenTransfers"
 
 type ProcessPageProps = {
-  event: AoEvent
-  process: Process
+  message: AoMessage
 }
 
 export function ProcessPage(props: ProcessPageProps) {
-  const { event, process } = props
+  const { message } = props
 
-  const normalizedEvent = normalizeAoEvent(event)
-
-  const { id: entityId, from: owner, type, blockHeight, created } = normalizedEvent
-  const { tags } = normalizeTags(event.tags_flat)
+  const { id: entityId, from: owner, type, blockHeight, created, tags } = message
 
   const [loading, setLoading] = useState(true)
   const [graphData, setChartData] = useState<ChartDataItem[]>([])
@@ -110,12 +106,13 @@ export function ProcessPage(props: ProcessPageProps) {
               title="Module"
               value={
                 <IdBlock
-                  label={truncateId(process.module)}
-                  value={process.module}
-                  href={`/module/${process.module}`}
+                  label={truncateId(tags.Module)}
+                  value={tags.Module}
+                  href={`/module/${tags.Module}`}
                 />
               }
             />
+            {tags.Name && <SectionInfo title="Name" value={<IdBlock label={tags.Name} />} />}
             {/* <SectionInfo
               title="Block Height"
               value={

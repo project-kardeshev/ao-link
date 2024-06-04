@@ -22,7 +22,7 @@ import {
 } from "@/services/aoscan"
 import { FilterOption } from "@/types"
 import {
-  type NormalizedAoEvent,
+  type AoMessage,
   normalizeAoEvent,
 } from "@/utils/ao-event-utils"
 
@@ -35,7 +35,7 @@ import { formatNumber } from "@/utils/number-utils"
 import { IdBlock } from "../../components/IdBlock"
 
 type EventTablesProps = {
-  initialData: NormalizedAoEvent[]
+  initialData: AoMessage[]
   blockHeight?: number
   ownerId?: string
   pageSize: number
@@ -98,7 +98,7 @@ const EventsTable = (props: EventTablesProps) => {
     return () => observer.disconnect()
   }, [])
 
-  const [data, setData] = useState<NormalizedAoEvent[]>(initialData)
+  const [data, setData] = useState<AoMessage[]>(initialData)
   const [streamingPaused, setStreamingPaused] = useState(false)
   const [realtime, setRealtime] = useState(
     (typeof window !== "undefined" &&

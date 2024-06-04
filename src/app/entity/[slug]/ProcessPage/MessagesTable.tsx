@@ -16,7 +16,7 @@ import { TypeBadge } from "@/components/TypeBadge"
 import { getLinkedMessages } from "@/services/aoscan"
 import {
   normalizeAoEvent,
-  type NormalizedAoEvent,
+  type AoMessage,
 } from "@/utils/ao-event-utils"
 
 import { TYPE_PATH_MAP, truncateId } from "@/utils/data-utils"
@@ -45,7 +45,7 @@ const MessagesTable = (props: MessagesTableProps) => {
 
   const [endReached, setEndReached] = useState(false)
 
-  const [data, setData] = useState<NormalizedAoEvent[]>([])
+  const [data, setData] = useState<AoMessage[]>([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
