@@ -351,3 +351,55 @@ export async function getSpawnedProcessesFromModule(
     return [0, []]
   }
 }
+
+/**
+ * WARN This query fails if both count and cursor are set
+ */
+const modulesQuery = (includeCount = false) => gql`
+  query (
+    $limit: Int!
+    $sortOrder: SortOrder!
+    $cursor: String
+  ) {
+    transactions(
+      sort: $sortOrder
+      first: $limit
+      after: $cursor
+
+      tags: [{ name: "Type", values: ["Module"]}]
+    ) {
+      ${includeCount ? "count" : ""}
+      ...MessageFields
+    }
+  }
+
+  ${messageFields}
+`
+
+export async function getModules(
+  limit = 100,
+  cursor = "",
+  ascending: boolean,
+  //
+): Promise<[number | undefined, AoMessage[]]> {
+  try {
+    const result = await goldsky
+      .query<TransactionsResponse>(modulesQuery(!cursor), {
+        limit,
+        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        cursor,
+        //
+      })
+      .toPromise()
+    const { data } = result
+
+    if (!data) return [0, []]
+
+    const { count, edges } = data.transactions
+    const events = edges.map(parseNormalizedAoEvent)
+
+    return [count, events]
+  } catch (error) {
+    return [0, []]
+  }
+}

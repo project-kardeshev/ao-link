@@ -1,16 +1,22 @@
-import ModulesTable from "@/page-components/ModulesPage/ModulesTable"
-import { getModules } from "@/services/aoscan"
+"use client"
 
-export const dynamic = "force-dynamic"
+import { Box, Stack } from "@mui/material"
 
-export default async function ModulesPage() {
-  const pageSize = 30
+import { useState } from "react"
 
-  const processes = await getModules(pageSize, 0)
+import { Subheading } from "@/components/Subheading"
+
+import { AllModules } from "./AllModules"
+
+export default function ModulesPage() {
+  const [modulesCount, setModulesCount] = useState<number>()
 
   return (
-    <main className="min-h-screen mb-6">
-      <ModulesTable initialData={processes} pageSize={pageSize} />
-    </main>
+    <Stack component="main" gap={2} paddingY={4}>
+      <Subheading type="Modules" value={modulesCount} />
+      <Box sx={{ marginX: -2 }}>
+        <AllModules open onCountReady={setModulesCount} />
+      </Box>
+    </Stack>
   )
 }

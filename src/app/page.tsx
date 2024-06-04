@@ -23,7 +23,7 @@ type HomePageProps = {
 export default async function HomePage(props: HomePageProps) {
   const { searchParams = {} } = props
   const { filter } = searchParams
-  const pageSize = 30
+  const pageSize = 25
 
   const [events, messages, totalMessages, modules, users, processes] =
     await Promise.all([

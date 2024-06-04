@@ -16,11 +16,7 @@ import { Module, getModules } from "@/services/aoscan"
 
 import { TYPE_PATH_MAP, truncateId } from "@/utils/data-utils"
 
-import {
-  formatFullDate,
-  formatRelative,
-  parseUtcString,
-} from "@/utils/date-utils"
+import { formatFullDate, formatRelative, parseUtcString } from "@/utils/date-utils"
 
 import { formatNumber } from "@/utils/number-utils"
 
@@ -31,6 +27,9 @@ type ModulesTableProps = {
   pageSize: number
 }
 
+/**
+ * @deprecated
+ */
 const ModulesTable = (props: ModulesTableProps) => {
   const { initialData, pageSize } = props
 
@@ -40,9 +39,9 @@ const ModulesTable = (props: ModulesTableProps) => {
   const [endReached, setEndReached] = useState(false)
 
   const [sortAscending, setSortAscending] = useState<boolean>(false)
-  const [sortField, setSortField] = useState<
-    "created_at" | "processes" | "incoming_messages"
-  >("incoming_messages")
+  const [sortField, setSortField] = useState<"created_at" | "processes" | "incoming_messages">(
+    "incoming_messages",
+  )
 
   const [data, setData] = useState<Module[]>(initialData)
 
@@ -53,12 +52,7 @@ const ModulesTable = (props: ModulesTableProps) => {
         const first = entries[0]
         if (first.isIntersecting) {
           console.log("Intersecting - Fetching more data")
-          getModules(
-            pageSize,
-            listSizeRef.current,
-            sortField,
-            sortAscending,
-          ).then((processes) => {
+          getModules(pageSize, listSizeRef.current, sortField, sortAscending).then((processes) => {
             console.log(`Fetched another page of ${processes.length} records`)
             if (processes.length === 0) {
               console.log("No more records to fetch")
@@ -231,20 +225,12 @@ const ModulesTable = (props: ModulesTableProps) => {
                     />
                   </td>
                   <td className="text-end p-2 ">
-                    <Typography
-                      fontFamily={MonoFontFF}
-                      component="div"
-                      variant="inherit"
-                    >
+                    <Typography fontFamily={MonoFontFF} component="div" variant="inherit">
                       <IdBlock label={item.memory_limit} />
                     </Typography>
                   </td>
                   <td className="text-end p-2 ">
-                    <Typography
-                      fontFamily={MonoFontFF}
-                      component="div"
-                      variant="inherit"
-                    >
+                    <Typography fontFamily={MonoFontFF} component="div" variant="inherit">
                       <IdBlock
                         label={formatNumber(item.compute_limit)}
                         value={String(item.compute_limit)}
@@ -252,11 +238,7 @@ const ModulesTable = (props: ModulesTableProps) => {
                     </Typography>
                   </td>
                   <td className="text-end p-2">
-                    <Typography
-                      fontFamily={MonoFontFF}
-                      component="div"
-                      variant="inherit"
-                    >
+                    <Typography fontFamily={MonoFontFF} component="div" variant="inherit">
                       <IdBlock
                         label={formatNumber(item.incoming_messages)}
                         value={String(item.incoming_messages)}
@@ -264,11 +246,7 @@ const ModulesTable = (props: ModulesTableProps) => {
                     </Typography>
                   </td>
                   <td className="text-end p-2">
-                    <Typography
-                      fontFamily={MonoFontFF}
-                      component="div"
-                      variant="inherit"
-                    >
+                    <Typography fontFamily={MonoFontFF} component="div" variant="inherit">
                       <IdBlock
                         label={formatNumber(item.processes)}
                         value={String(item.processes)}
@@ -298,9 +276,7 @@ const ModulesTable = (props: ModulesTableProps) => {
           >
             {!endReached && <CircularProgress size={12} color="primary" />}
             <Typography variant="body2" color="text.secondary">
-              {endReached
-                ? `Total rows: ${data.length}`
-                : "Loading more records..."}
+              {endReached ? `Total rows: ${data.length}` : "Loading more records..."}
             </Typography>
           </Stack>
         </div>

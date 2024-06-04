@@ -34,7 +34,7 @@ type MessagesTableProps = {
   setTableFilter: any
 }
 
-const pageSize = 30
+const pageSize = 25
 
 const MessagesTable = (props: MessagesTableProps) => {
   const { processId, tableFilter: filter, setTableFilter } = props

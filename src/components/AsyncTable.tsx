@@ -57,9 +57,7 @@ export function AsyncTable(props: AsyncTableProps) {
 
   const [endReached, setEndReached] = useState(false)
 
-  const [sortAscending, setSortAscending] = useState<boolean>(
-    initialSortDir === "asc",
-  )
+  const [sortAscending, setSortAscending] = useState<boolean>(initialSortDir === "asc")
   const [sortField, setSortField] = useState<string>(initialSortField)
 
   useEffect(() => {
@@ -69,28 +67,25 @@ export function AsyncTable(props: AsyncTableProps) {
         const first = entries[0]
         if (first.isIntersecting) {
           console.log("Intersecting - Fetching more data")
-          fetchFunction(
-            listSizeRef.current,
-            sortAscending,
-            sortField,
-            data[data.length - 1],
-          ).then((newPage) => {
-            console.log(`Fetched another page of ${newPage.length} records`)
+          fetchFunction(listSizeRef.current, sortAscending, sortField, data[data.length - 1]).then(
+            (newPage) => {
+              console.log(`Fetched another page of ${newPage.length} records`)
 
-            if (newPage.length === 0) {
-              console.log("No more records to fetch")
-              observer.disconnect()
-              setEndReached(true)
-              return
-            }
+              if (newPage.length === 0) {
+                console.log("No more records to fetch")
+                observer.disconnect()
+                setEndReached(true)
+                return
+              }
 
-            setData((prevData) => {
-              const newList = [...prevData, ...newPage]
-              listSizeRef.current = newList.length
-              return newList
-            })
-            isFirstFetch.current = false
-          })
+              setData((prevData) => {
+                const newList = [...prevData, ...newPage]
+                listSizeRef.current = newList.length
+                return newList
+              })
+              isFirstFetch.current = false
+            },
+          )
         } else {
           console.log("Not intersecting")
         }

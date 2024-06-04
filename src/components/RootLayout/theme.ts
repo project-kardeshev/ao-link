@@ -1,7 +1,7 @@
 import { colors } from "@mui/material"
 import { experimental_extendTheme as extendTheme } from "@mui/material/styles"
 
-import { MainFontFF } from "./fonts"
+import { MainFontFF, MonoFontFF } from "./fonts"
 
 const extraColors = {
   red: colors.red[200],
@@ -142,13 +142,19 @@ export const theme = extendTheme({
     },
     MuiTableCell: {
       styleOverrides: {
+        root: {
+          fontSize: "0.8125rem",
+          paddingTop: "10px",
+          paddingBottom: "10px",
+        },
         body: {
           border: 0,
-          padding: "12px 16px",
+          paddingLeft: "16px",
+          paddingRight: "16px",
+          fontFamily: MonoFontFF,
         },
         head: {
-          paddingTop: "12px",
-          paddingBottom: "12px",
+          fontWeight: 700,
         },
       },
     },

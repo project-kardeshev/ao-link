@@ -4,7 +4,7 @@ import { getProcesses } from "@/services/aoscan"
 export const dynamic = "force-dynamic"
 
 export default async function ProcessesPage() {
-  const pageSize = 30
+  const pageSize = 25
   const processes = await getProcesses(pageSize, 0)
 
   return (

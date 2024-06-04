@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic"
 export default async function BlockPage(props: BlockPageProps) {
   const { slug: blockHeight } = props.params
 
-  const pageSize = 30
+  const pageSize = 25
 
   const events = await getLatestAoEvents(
     pageSize,
