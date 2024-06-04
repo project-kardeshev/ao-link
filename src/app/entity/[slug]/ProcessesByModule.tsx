@@ -1,18 +1,17 @@
 import React from "react"
 
-import { getSpawnedProcesses } from "@/services/messages-api"
+import { getSpawnedProcessesFromModule } from "@/services/messages-api"
 
 import { ProcessesTable } from "./ProcessesTable"
 
-type SpawnedProcessesProps = {
-  entityId: string
+type ProcessesByModuleProps = {
+  moduleId: string
   open: boolean
   onCountReady?: (count: number) => void
-  isProcess?: boolean
 }
 
-export function SpawnedProcesses(props: SpawnedProcessesProps) {
-  const { entityId, open, onCountReady, isProcess } = props
+export function ProcessesByModule(props: ProcessesByModuleProps) {
+  const { moduleId, open, onCountReady } = props
 
   if (!open) return null
 
@@ -20,14 +19,14 @@ export function SpawnedProcesses(props: SpawnedProcessesProps) {
 
   return (
     <ProcessesTable
+      hideModuleColumn
       pageSize={pageSize}
       fetchFunction={async (offset, ascending, sortField, lastRecord) => {
-        const [count, records] = await getSpawnedProcesses(
+        const [count, records] = await getSpawnedProcessesFromModule(
           pageSize,
           lastRecord?.cursor,
           ascending,
-          entityId,
-          isProcess,
+          moduleId,
         )
 
         if (count !== undefined && onCountReady) {

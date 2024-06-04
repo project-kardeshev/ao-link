@@ -13,9 +13,9 @@ type EntityMessagesProps = {
 export function IncomingMessagesTable(props: EntityMessagesProps) {
   const { entityId, open, onCountReady } = props
 
-  const pageSize = 25
-
   if (!open) return null
+
+  const pageSize = 25
 
   return (
     <EntityMessagesTable

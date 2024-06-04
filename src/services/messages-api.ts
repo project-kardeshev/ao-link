@@ -296,3 +296,58 @@ export async function getMessageById(id: string): Promise<AoMessage | undefined>
 
   return parseNormalizedAoEvent(data.transactions.edges[0])
 }
+
+/**
+ * WARN This query fails if both count and cursor are set
+ */
+const spawnedProcessesFromModuleQuery = (includeCount = false) => gql`
+  query (
+    $moduleId: String!
+    $limit: Int!
+    $sortOrder: SortOrder!
+    $cursor: String
+  ) {
+    transactions(
+      sort: $sortOrder
+      first: $limit
+      after: $cursor
+
+      tags: [{ name: "Module", values: [$moduleId]}, { name: "Type", values: ["Process"]}]
+    ) {
+      ${includeCount ? "count" : ""}
+      ...MessageFields
+    }
+  }
+
+  ${messageFields}
+`
+
+export async function getSpawnedProcessesFromModule(
+  limit = 100,
+  cursor = "",
+  ascending: boolean,
+  //
+  moduleId: string,
+): Promise<[number | undefined, AoMessage[]]> {
+  try {
+    const result = await goldsky
+      .query<TransactionsResponse>(spawnedProcessesFromModuleQuery(!cursor), {
+        limit,
+        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        cursor,
+        //
+        moduleId,
+      })
+      .toPromise()
+    const { data } = result
+
+    if (!data) return [0, []]
+
+    const { count, edges } = data.transactions
+    const events = edges.map(parseNormalizedAoEvent)
+
+    return [count, events]
+  } catch (error) {
+    return [0, []]
+  }
+}

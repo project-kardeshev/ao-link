@@ -161,22 +161,6 @@ export async function getProcesses(
 }
 
 // TODO
-export async function getModuleById(id: string) {
-  const { data, error } = await supabase
-    .from("modules_extended")
-    .select("*")
-    .eq("id", id)
-    .returns<Module[]>()
-
-  if (error || !data) {
-    console.error(error)
-    return null
-  }
-
-  return data[0]
-}
-
-// TODO
 export async function getModules(
   limit = 1000,
   skip = 0,
