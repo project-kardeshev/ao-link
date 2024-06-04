@@ -16,10 +16,11 @@ type SpawnedProcessesProps = {
   entityId: string
   open: boolean
   onCountReady?: (count: number) => void
+  isProcess?: boolean
 }
 
 export function SpawnedProcesses(props: SpawnedProcessesProps) {
-  const { entityId, open, onCountReady } = props
+  const { entityId, open, onCountReady, isProcess } = props
   const router = useRouter()
 
   if (!open) return null
@@ -35,6 +36,7 @@ export function SpawnedProcesses(props: SpawnedProcessesProps) {
           lastRecord?.cursor,
           ascending,
           entityId,
+          isProcess,
         )
 
         if (count !== undefined && onCountReady) {

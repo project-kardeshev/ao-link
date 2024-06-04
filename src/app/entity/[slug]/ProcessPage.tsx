@@ -1,12 +1,5 @@
 "use client"
-import {
-  Box,
-  CircularProgress,
-  Paper,
-  Stack,
-  Tabs,
-  Typography,
-} from "@mui/material"
+import { Box, CircularProgress, Paper, Stack, Tabs, Typography } from "@mui/material"
 
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { useCallback, useEffect, useState } from "react"
@@ -30,6 +23,7 @@ import { formatRelative } from "@/utils/date-utils"
 import { IncomingMessagesTable } from "./IncomingMessagesTable"
 import { OutgoingMessagesTable } from "./OutgoingMessagesTable"
 import { FetchInfoHandler } from "./ProcessPage/FetchInfoHandler"
+import { SpawnedProcesses } from "./SpawnedProcesses"
 import { TokenBalances } from "./TokenBalances"
 import { TokenTransfers } from "./TokenTransfers"
 
@@ -43,13 +37,7 @@ export function ProcessPage(props: ProcessPageProps) {
 
   const normalizedEvent = normalizeAoEvent(event)
 
-  const {
-    id: entityId,
-    from: owner,
-    type,
-    blockHeight,
-    created,
-  } = normalizedEvent
+  const { id: entityId, from: owner, type, blockHeight, created } = normalizedEvent
   const { tags } = normalizeTags(event.tags_flat)
 
   const [loading, setLoading] = useState(true)
@@ -94,6 +82,7 @@ export function ProcessPage(props: ProcessPageProps) {
 
   const [outgoingCount, setOutgoingCount] = useState<number>()
   const [incomingCount, setIncomingCount] = useState<number>()
+  const [processesCount, setProcessesCount] = useState<number>()
   const [transfersCount, setTransfersCount] = useState<number>()
   const [balancesCount, setBalancesCount] = useState<number>()
 
@@ -105,11 +94,7 @@ export function ProcessPage(props: ProcessPageProps) {
           <Stack gap={4}>
             <Paper sx={{ height: 428, width: 428 }}>
               {loading ? (
-                <Stack
-                  justifyContent="center"
-                  alignItems="center"
-                  sx={{ height: "100%" }}
-                >
+                <Stack justifyContent="center" alignItems="center" sx={{ height: "100%" }}>
                   <CircularProgress size={24} color="primary" />
                 </Stack>
               ) : (
@@ -119,13 +104,7 @@ export function ProcessPage(props: ProcessPageProps) {
             <SectionInfoWithChip title="Type" value={type} />
             <SectionInfo
               title="Owner"
-              value={
-                <IdBlock
-                  label={truncateId(owner)}
-                  value={owner}
-                  href={`/entity/${owner}`}
-                />
-              }
+              value={<IdBlock label={truncateId(owner)} value={owner} href={`/entity/${owner}`} />}
             />
             <SectionInfo
               title="Module"
@@ -173,26 +152,11 @@ export function ProcessPage(props: ProcessPageProps) {
       </Grid2>
       <div>
         <Tabs value={activeTab} onChange={handleChange} textColor="primary">
-          <TabWithCount
-            value={0}
-            label="Outgoing messages"
-            chipValue={outgoingCount}
-          />
-          <TabWithCount
-            value={1}
-            label="Incoming messages"
-            chipValue={incomingCount}
-          />
-          <TabWithCount
-            value={2}
-            label="Token transfers"
-            chipValue={transfersCount}
-          />
-          <TabWithCount
-            value={3}
-            label="Token balances"
-            chipValue={balancesCount}
-          />
+          <TabWithCount value={0} label="Outgoing messages" chipValue={outgoingCount} />
+          <TabWithCount value={1} label="Incoming messages" chipValue={incomingCount} />
+          <TabWithCount value={2} label="Spawned processes" chipValue={processesCount} />
+          <TabWithCount value={3} label="Token transfers" chipValue={transfersCount} />
+          <TabWithCount value={4} label="Token balances" chipValue={balancesCount} />
         </Tabs>
         <Box sx={{ marginX: -2 }}>
           <OutgoingMessagesTable
@@ -206,14 +170,20 @@ export function ProcessPage(props: ProcessPageProps) {
             open={activeTab === 1}
             onCountReady={setIncomingCount}
           />
-          <TokenTransfers
+          <SpawnedProcesses
             entityId={entityId}
             open={activeTab === 2}
+            onCountReady={setProcessesCount}
+            isProcess
+          />
+          <TokenTransfers
+            entityId={entityId}
+            open={activeTab === 3}
             onCountReady={setTransfersCount}
           />
           <TokenBalances
             entityId={entityId}
-            open={activeTab === 3}
+            open={activeTab === 4}
             onCountReady={setBalancesCount}
           />
         </Box>

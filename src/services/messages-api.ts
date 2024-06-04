@@ -227,8 +227,12 @@ const spawnedProcessesQuery = (includeCount = false, isProcess?: boolean) => gql
       first: $limit
       after: $cursor
 
-      tags: [{ name: "SDK", values: ["aoconnect"]}, { name: "Type", values: ["Process"]}]
-      owners: [$entityId]
+      ${
+        isProcess
+          ? `tags: [{ name: "From-Process", values: [$entityId]}, { name: "Type", values: ["Process"]}]`
+          : `tags: [{ name: "SDK", values: ["aoconnect"]}, { name: "Type", values: ["Process"]}]
+             owners: [$entityId]`
+      }
     ) {
       ${includeCount ? "count" : ""}
       ...MessageFields
