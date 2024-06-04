@@ -1,12 +1,5 @@
 "use client"
-import {
-  Box,
-  Button,
-  CircularProgress,
-  LinearProgress,
-  Stack,
-  Typography,
-} from "@mui/material"
+import { Box, Button, CircularProgress, LinearProgress, Stack, Typography } from "@mui/material"
 import { useRouter } from "next/navigation"
 import React, { useEffect, useRef, useState } from "react"
 
@@ -14,10 +7,7 @@ import { IdBlock } from "@/components/IdBlock"
 import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { TypeBadge } from "@/components/TypeBadge"
 import { getLinkedMessages } from "@/services/aoscan"
-import {
-  normalizeAoEvent,
-  type AoMessage,
-} from "@/utils/ao-event-utils"
+import { normalizeAoEvent, type AoMessage } from "@/utils/ao-event-utils"
 
 import { TYPE_PATH_MAP, truncateId } from "@/utils/data-utils"
 
@@ -64,12 +54,7 @@ const MessagesTable = (props: MessagesTableProps) => {
         const first = entries[0]
         if (first.isIntersecting) {
           console.log("Intersecting - Fetching more data")
-          getLinkedMessages(
-            pageSize,
-            listSizeRef.current,
-            processId,
-            filter,
-          ).then((events) => {
+          getLinkedMessages(pageSize, listSizeRef.current, processId, filter).then((events) => {
             console.log(`Fetched another page of ${events.length} records`)
             if (events.length === 0) {
               console.log("No more records to fetch")
@@ -114,11 +99,7 @@ const MessagesTable = (props: MessagesTableProps) => {
               sx={{ textTransform: "uppercase", marginBottom: 3, marginTop: 6 }}
             ></Typography>
             {filter && (
-              <Button
-                size="small"
-                variant="outlined"
-                onClick={() => setTableFilter(null)}
-              >
+              <Button size="small" variant="outlined" onClick={() => setTableFilter(null)}>
                 Clear filter
               </Button>
             )}
@@ -184,11 +165,7 @@ const MessagesTable = (props: MessagesTableProps) => {
                       />
                     </td>
                     <td className="text-end p-2">
-                      <Typography
-                        fontFamily={MonoFontFF}
-                        component="div"
-                        variant="inherit"
-                      >
+                      <Typography fontFamily={MonoFontFF} component="div" variant="inherit">
                         <IdBlock
                           label={formatNumber(item.blockHeight)}
                           value={String(item.blockHeight)}
@@ -198,10 +175,7 @@ const MessagesTable = (props: MessagesTableProps) => {
                     </td>
                     <td className="text-end p-2">
                       {/* TODO */}
-                      <span
-                        className="tooltip"
-                        data-tip={formatFullDate(item.created)}
-                      >
+                      <span className="tooltip" data-tip={formatFullDate(item.created)}>
                         {formatRelative(item.created)}
                       </span>
                     </td>
@@ -226,9 +200,7 @@ const MessagesTable = (props: MessagesTableProps) => {
       >
         {!endReached && <CircularProgress size={12} color="primary" />}
         <Typography variant="body2" color="text.secondary">
-          {endReached
-            ? `Total rows: ${data.length}`
-            : "Loading more records..."}
+          {endReached ? `Total rows: ${data.length}` : "Loading more records..."}
         </Typography>
       </Stack>
     </>

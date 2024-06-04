@@ -85,9 +85,7 @@ export function InMemoryTable(props: InMemoryTableProps) {
     return () => observer.disconnect()
   }, [data.length, endReached, pageSize])
 
-  const [sortAscending, setSortAscending] = useState<boolean>(
-    initialSortDir === "asc",
-  )
+  const [sortAscending, setSortAscending] = useState<boolean>(initialSortDir === "asc")
   const [sortField, setSortField] = useState<string>(initialSortField)
 
   const visibleRows = useMemo(
@@ -148,11 +146,7 @@ export function InMemoryTable(props: InMemoryTableProps) {
           <TableRow hover={false}>
             <TableCell colSpan={99} sx={{ padding: 0, border: 0 }}>
               {loading ? (
-                <LinearProgress
-                  color="primary"
-                  variant="indeterminate"
-                  sx={{ height: 2 }}
-                />
+                <LinearProgress color="primary" variant="indeterminate" sx={{ height: 2 }} />
               ) : (
                 <Box sx={{ height: 2 }} />
               )}

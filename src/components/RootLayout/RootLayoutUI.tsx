@@ -8,11 +8,7 @@ import { theme } from "./theme"
 import { Footer } from "../Footer"
 import Header from "../Header"
 
-export default function RootLayoutUI({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayoutUI({ children }: { children: React.ReactNode }) {
   return (
     <>
       <CssVarsProvider theme={theme} defaultMode="light">

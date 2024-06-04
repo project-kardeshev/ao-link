@@ -11,12 +11,7 @@ export function TagsSection({ tags }: { tags: Record<string, string> }) {
       <Typography variant="subtitle2" color="text.secondary">
         Tags
       </Typography>
-      <Stack
-        direction="row"
-        flexWrap="wrap"
-        gap={1}
-        sx={{ maxHeight: 178, overflowY: "auto" }}
-      >
+      <Stack direction="row" flexWrap="wrap" gap={1} sx={{ maxHeight: 178, overflowY: "auto" }}>
         {Object.entries(tags).map(([key, value]) => (
           <Typography
             key={key}

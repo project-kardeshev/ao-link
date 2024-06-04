@@ -1,13 +1,6 @@
 "use client"
 
-import {
-  Button,
-  CircularProgress,
-  Paper,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material"
+import { Button, CircularProgress, Paper, Stack, TextField, Typography } from "@mui/material"
 
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { useCallback, useEffect, useMemo, useState } from "react"
@@ -23,11 +16,7 @@ import { TagsSection } from "@/components/TagsSection"
 import { supabase } from "@/lib/supabase"
 
 import { AoEvent } from "@/services/aoscan"
-import {
-  AoMessage,
-  normalizeAoEvent,
-  normalizeTags,
-} from "@/utils/ao-event-utils"
+import { AoMessage, normalizeAoEvent, normalizeTags } from "@/utils/ao-event-utils"
 import { truncateId } from "@/utils/data-utils"
 import { formatRelative } from "@/utils/date-utils"
 
@@ -43,14 +32,7 @@ export function MessagePage(props: MessagePageProps) {
   const { event, data } = props
   const normalizedEvent = useMemo(() => normalizeAoEvent(event), [event])
 
-  const {
-    id: messageId,
-    from,
-    type,
-    blockHeight,
-    created,
-    to,
-  } = normalizedEvent
+  const { id: messageId, from, type, blockHeight, created, to } = normalizedEvent
   const { tags, pushedFor } = normalizeTags(event.tags_flat)
 
   const [loading, setLoading] = useState(true)
@@ -103,11 +85,7 @@ export function MessagePage(props: MessagePageProps) {
             <Stack gap={4}>
               <Paper sx={{ height: 428, width: 428 }}>
                 {loading ? (
-                  <Stack
-                    justifyContent="center"
-                    alignItems="center"
-                    sx={{ height: "100%" }}
-                  >
+                  <Stack justifyContent="center" alignItems="center" sx={{ height: "100%" }}>
                     <CircularProgress size={24} color="primary" />
                   </Stack>
                 ) : (
@@ -117,24 +95,12 @@ export function MessagePage(props: MessagePageProps) {
               <SectionInfoWithChip title="Type" value={type} />
               <SectionInfo
                 title="From"
-                value={
-                  <IdBlock
-                    label={truncateId(from)}
-                    value={from}
-                    href={`/entity/${from}`}
-                  />
-                }
+                value={<IdBlock label={truncateId(from)} value={from} href={`/entity/${from}`} />}
               />
               {to && (
                 <SectionInfo
                   title="To"
-                  value={
-                    <IdBlock
-                      label={truncateId(to)}
-                      value={to}
-                      href={`/entity/${to}`}
-                    />
-                  }
+                  value={<IdBlock label={truncateId(to)} value={to} href={`/entity/${to}`} />}
                 />
               )}
               {pushedFor && (
@@ -151,12 +117,7 @@ export function MessagePage(props: MessagePageProps) {
               )}
               <SectionInfo
                 title="Block Height"
-                value={
-                  <IdBlock
-                    label={String(blockHeight)}
-                    href={`/block/${blockHeight}`}
-                  />
-                }
+                value={<IdBlock label={String(blockHeight)} href={`/block/${blockHeight}`} />}
               />
               <SectionInfo title="Created" value={formatRelative(created)} />
             </Stack>
@@ -201,11 +162,7 @@ export function MessagePage(props: MessagePageProps) {
         </Grid2>
         {linkedMessages.length > 0 && (
           <div>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Typography
                 variant="subtitle1"
                 sx={{
@@ -217,11 +174,7 @@ export function MessagePage(props: MessagePageProps) {
                 Linked messages
               </Typography>
               {tableFilter && (
-                <Button
-                  size="small"
-                  variant="outlined"
-                  onClick={() => setTableFilter(null)}
-                >
+                <Button size="small" variant="outlined" onClick={() => setTableFilter(null)}>
                   Clear filter
                 </Button>
               )}

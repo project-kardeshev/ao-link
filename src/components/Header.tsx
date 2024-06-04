@@ -98,11 +98,7 @@ const Header = () => {
                   setMode(nextMode)
                 }}
               >
-                {mode === "dark" ? (
-                  <Moon weight="bold" />
-                ) : (
-                  <Sun weight="bold" />
-                )}
+                {mode === "dark" ? <Moon weight="bold" /> : <Sun weight="bold" />}
               </IconButton>
             </Stack>
           </Stack>

@@ -23,12 +23,7 @@ export function Footer() {
         }}
       >
         <Stack justifyContent="space-between" direction="row">
-          <Stack
-            direction="row"
-            sx={{ color: "#D4D5D9" }}
-            gap={1.5}
-            alignItems="center"
-          >
+          <Stack direction="row" sx={{ color: "#D4D5D9" }} gap={1.5} alignItems="center">
             <Link
               href="/"
               sx={{
@@ -43,11 +38,7 @@ export function Footer() {
             >
               HOME
             </Link>
-            <Typography
-              component="span"
-              sx={{ opacity: 0.4 }}
-              variant="caption"
-            >
+            <Typography component="span" sx={{ opacity: 0.4 }} variant="caption">
               /
             </Typography>
             <Link
@@ -65,11 +56,7 @@ export function Footer() {
             >
               SPEC
             </Link>
-            <Typography
-              component="span"
-              sx={{ opacity: 0.4 }}
-              variant="caption"
-            >
+            <Typography component="span" sx={{ opacity: 0.4 }} variant="caption">
               /
             </Typography>
             <Link
@@ -87,11 +74,7 @@ export function Footer() {
             >
               GITHUB
             </Link>
-            <Typography
-              component="span"
-              sx={{ opacity: 0.4 }}
-              variant="caption"
-            >
+            <Typography component="span" sx={{ opacity: 0.4 }} variant="caption">
               /
             </Typography>
             <Link
@@ -109,11 +92,7 @@ export function Footer() {
             >
               AO
             </Link>
-            <Typography
-              component="span"
-              sx={{ opacity: 0.4 }}
-              variant="caption"
-            >
+            <Typography component="span" sx={{ opacity: 0.4 }} variant="caption">
               /
             </Typography>
             <Link
@@ -131,11 +110,7 @@ export function Footer() {
             >
               X
             </Link>
-            <Typography
-              component="span"
-              sx={{ opacity: 0.4 }}
-              variant="caption"
-            >
+            <Typography component="span" sx={{ opacity: 0.4 }} variant="caption">
               /
             </Typography>
             <Link
@@ -155,11 +130,7 @@ export function Footer() {
             </Link>
           </Stack>
           <Stack direction="row" gap={1}>
-            <Typography
-              component="span"
-              sx={{ color: "rgb(180, 180, 180)" }}
-              variant="caption"
-            >
+            <Typography component="span" sx={{ color: "rgb(180, 180, 180)" }} variant="caption">
               Powered by
             </Typography>
             <Link

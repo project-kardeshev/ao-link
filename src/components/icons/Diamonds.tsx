@@ -2,13 +2,7 @@ import React from "react"
 
 export function Diamonds() {
   return (
-    <svg
-      width="8"
-      height="8"
-      viewBox="0 0 8 8"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clipPath="url(#clip0_107_20)">
         <path
           d="M0.829586 4.16847L1.80716 5.02384C1.91358 5.11696 2.08612 5.11696 2.19253 5.02384L3.17011 4.16846C3.27653 4.07535 3.27653 3.92438 3.17011 3.83126L2.19253 2.97589C2.08612 2.88277 1.91358 2.88277 1.80716 2.97589L0.829586 3.83126C0.723168 3.92438 0.723168 4.07535 0.829586 4.16847Z"
@@ -41,12 +35,7 @@ export function Diamonds() {
       </g>
       <defs>
         <clipPath id="clip0_107_20">
-          <rect
-            width="7"
-            height="8"
-            fill="white"
-            transform="translate(0 7.5) rotate(-90)"
-          />
+          <rect width="7" height="8" fill="white" transform="translate(0 7.5) rotate(-90)" />
         </clipPath>
       </defs>
     </svg>

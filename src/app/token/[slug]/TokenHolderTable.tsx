@@ -43,10 +43,7 @@ export function TokenHolderTable(props: TokenHolderTableProps) {
               <EntityBlock entityId={tokenHolder.entityId} />
             </TableCell>
             <TableCell align="right">
-              <TokenAmountBlock
-                amount={tokenHolder.balance}
-                tokenInfo={tokenInfo}
-              />
+              <TokenAmountBlock amount={tokenHolder.balance} tokenInfo={tokenInfo} />
             </TableCell>
           </TableRow>
         )}

@@ -25,15 +25,14 @@ export default async function HomePage(props: HomePageProps) {
   const { filter } = searchParams
   const pageSize = 25
 
-  const [events, messages, totalMessages, modules, users, processes] =
-    await Promise.all([
-      getLatestAoEvents(pageSize, 0, filter),
-      getMessageStats(),
-      getTotalMessages(),
-      getModuleStats(),
-      getUserStats(),
-      getProcessStats(),
-    ])
+  const [events, messages, totalMessages, modules, users, processes] = await Promise.all([
+    getLatestAoEvents(pageSize, 0, filter),
+    getMessageStats(),
+    getTotalMessages(),
+    getModuleStats(),
+    getUserStats(),
+    getProcessStats(),
+  ])
 
   let initialTableData = events.map(normalizeAoEvent)
 
@@ -41,11 +40,7 @@ export default async function HomePage(props: HomePageProps) {
     <main>
       <div className="flex justify-between flex-wrap mt-[24px] mx-[-24px]">
         <div className="container w-1/2 lg:w-1/4 px-4 min-h-[150px] relative">
-          <AreaChart
-            data={messages}
-            titleText="TOTAL MESSAGES"
-            overrideValue={totalMessages}
-          />
+          <AreaChart data={messages} titleText="TOTAL MESSAGES" overrideValue={totalMessages} />
           <div className="separator"></div>
         </div>
         <div className="container w-1/2 lg:w-1/4 px-4 min-h-[150px] relative">

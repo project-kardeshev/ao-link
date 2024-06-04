@@ -14,12 +14,7 @@ export default async function BlockPage(props: BlockPageProps) {
 
   const pageSize = 25
 
-  const events = await getLatestAoEvents(
-    pageSize,
-    undefined,
-    undefined,
-    Number(blockHeight),
-  )
+  const events = await getLatestAoEvents(pageSize, undefined, undefined, Number(blockHeight))
   const initialTableData = events.map(normalizeAoEvent)
 
   return (

@@ -41,11 +41,7 @@ export function TokenAmountBlock(props: TokenAmountBlockProps) {
       >
         <Tooltip
           title={
-            <Typography
-              fontFamily={MonoFontFF}
-              component="span"
-              variant="inherit"
-            >
+            <Typography fontFamily={MonoFontFF} component="span" variant="inherit">
               <span>{longValue}</span>
             </Typography>
           }

@@ -6,10 +6,7 @@ import { TokenEvent } from "@/utils/ao-event-utils"
 
 import { TokenTransfersTableRow } from "./TokenTransfersTableRow"
 
-type TokenTransfersTableProps = Pick<
-  AsyncTableProps,
-  "fetchFunction" | "pageSize"
-> & {
+type TokenTransfersTableProps = Pick<AsyncTableProps, "fetchFunction" | "pageSize"> & {
   entityId: string
 }
 

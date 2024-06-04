@@ -12,9 +12,7 @@ export function InOutLabel({ outbound }: { outbound: boolean }) {
           padding: 0.5,
           width: 36,
           color: "black",
-          background: outbound
-            ? "var(--mui-palette-orange)"
-            : "var(--mui-palette-green)",
+          background: outbound ? "var(--mui-palette-orange)" : "var(--mui-palette-green)",
         }}
       >
         <Typography variant="caption" fontFamily={MonoFontFF}>

@@ -1,12 +1,6 @@
 "use client"
 
-import {
-  Backdrop,
-  Box,
-  CircularProgress,
-  InputAdornment,
-  TextField,
-} from "@mui/material"
+import { Backdrop, Box, CircularProgress, InputAdornment, TextField } from "@mui/material"
 import { ArrowUpRight, MagnifyingGlass } from "@phosphor-icons/react"
 import Link from "next/link"
 import React, { type ChangeEvent, useState } from "react"
@@ -17,14 +11,7 @@ import { getTokenInfo } from "@/services/token-api"
 import { normalizeAoEvent } from "@/utils/ao-event-utils"
 import { TYPE_PATH_MAP } from "@/utils/data-utils"
 
-type ResultType =
-  | "Message"
-  | "Entity"
-  | "Block"
-  | "Checkpoint"
-  | "Assignment"
-  | "Process"
-  | "Token"
+type ResultType = "Message" | "Entity" | "Block" | "Checkpoint" | "Assignment" | "Process" | "Token"
 
 type Result = {
   id: string
@@ -154,10 +141,7 @@ const SearchBar = () => {
                   setResults([])
                 }}
               >
-                <Link
-                  href={`/${TYPE_PATH_MAP[item.type]}/${item.id}`}
-                  className="w-full"
-                >
+                <Link href={`/${TYPE_PATH_MAP[item.type]}/${item.id}`} className="w-full">
                   <div className="flex justify-between w-full items-center">
                     <div className="flex items-center gap-4">
                       <TypeBadge type={item.type} />

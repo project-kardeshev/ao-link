@@ -29,9 +29,7 @@ export function TypeBadge(props: TypeBadgeProps) {
         >
           {type}
         </Typography>
-        {TYPE_ICON_MAP[type] && (
-          <Image alt="icon" width={8} height={8} src={TYPE_ICON_MAP[type]} />
-        )}
+        {TYPE_ICON_MAP[type] && <Image alt="icon" width={8} height={8} src={TYPE_ICON_MAP[type]} />}
       </Stack>
     </>
   )

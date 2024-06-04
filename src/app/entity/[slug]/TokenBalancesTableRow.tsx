@@ -36,9 +36,7 @@ export function TokenBalancesTableRow(props: TokenBalancesTableRowProps) {
         />
       </TableCell>
       <TableCell align="right">
-        {tokenInfo ? (
-          <RetryableBalance entityId={entityId} tokenInfo={tokenInfo} />
-        ) : null}
+        {tokenInfo ? <RetryableBalance entityId={entityId} tokenInfo={tokenInfo} /> : null}
       </TableCell>
       <TableCell align="right">
         <TokenBlock tokenId={tokenId} tokenInfo={tokenInfo} />

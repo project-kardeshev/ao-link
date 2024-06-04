@@ -3,9 +3,7 @@ import AccessibilityModule from "highcharts/modules/accessibility"
 import AnnotationsModule from "highcharts/modules/annotations"
 import HighchartsExporting from "highcharts/modules/exporting"
 import HighchartsTreemap from "highcharts/modules/treemap"
-import HighchartsReact, {
-  HighchartsReactProps,
-} from "highcharts-react-official"
+import HighchartsReact, { HighchartsReactProps } from "highcharts-react-official"
 import React from "react"
 
 if (typeof Highcharts === "object") {

@@ -48,11 +48,7 @@ export function TokenTransfersTableRow(props: TokenTransfersTableRowProps) {
       </TableCell>
       {/* <TableCell>{item.action}</TableCell> */}
       <TableCell>
-        <IdBlock
-          label={truncateId(item.id)}
-          value={item.id}
-          href={`/message/${item.id}`}
-        />
+        <IdBlock label={truncateId(item.id)} value={item.id} href={`/message/${item.id}`} />
       </TableCell>
       <TableCell>
         <IdBlock
@@ -80,11 +76,7 @@ export function TokenTransfersTableRow(props: TokenTransfersTableRowProps) {
             color: item.amount > 0 ? "success.main" : "error.main",
           }}
         >
-          <TokenAmountBlock
-            amount={item.amount}
-            tokenInfo={tokenInfo}
-            needsParsing
-          />
+          <TokenAmountBlock amount={item.amount} tokenInfo={tokenInfo} needsParsing />
         </Typography>
       </TableCell>
       <TableCell>

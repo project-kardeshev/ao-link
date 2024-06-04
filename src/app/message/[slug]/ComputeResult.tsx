@@ -1,12 +1,6 @@
 "use client"
 
-import {
-  Button,
-  CircularProgress,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material"
+import { Button, CircularProgress, Stack, TextField, Typography } from "@mui/material"
 import { Asterisk } from "@phosphor-icons/react"
 import React, { useCallback, useState } from "react"
 
@@ -41,10 +35,7 @@ export function ComputeResult(props: ComputeResultProps) {
 
       if (typeof json === "object" && json !== null && "Output" in json) {
         if (typeof json.Output === "object" && "data" in json.Output) {
-          if (
-            typeof json.Output.data === "object" &&
-            "output" in json.Output.data
-          ) {
+          if (typeof json.Output.data === "object" && "output" in json.Output.data) {
             setContent(json.Output.data.output)
           } else {
             setContent(JSON.stringify(json.Output.data, null, 2))
@@ -104,9 +95,7 @@ export function ComputeResult(props: ComputeResultProps) {
         rows={1}
         multiline
         variant="outlined"
-        placeholder={
-          loading ? "Loading..." : "Click 'Compute' to get the result."
-        }
+        placeholder={loading ? "Loading..." : "Click 'Compute' to get the result."}
         value={content
           ?.replace(/\\n/g, "\n")
           .replace(/\\"/g, '"')

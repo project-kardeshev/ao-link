@@ -69,9 +69,7 @@ export const defaultOpts: HighchartOptions = {
     shared: true,
     formatter: function () {
       const header = `<b style="font-size: 14px;">${
-        typeof this.x === "number"
-          ? dayjs(this.x).format("YYYY-MM-DD HH:mm")
-          : this.x
+        typeof this.x === "number" ? dayjs(this.x).format("YYYY-MM-DD HH:mm") : this.x
       }</b><br/><br/>`
 
       const pointsInfo = this.points
@@ -137,9 +135,7 @@ export function createOptionsForStat(
   overrideValue: number | undefined,
   exportServer = false,
 ): HighchartOptions {
-  const fontColor = exportServer
-    ? "rgb(255, 255, 255)"
-    : "var(--mui-palette-text-primary)"
+  const fontColor = exportServer ? "rgb(255, 255, 255)" : "var(--mui-palette-text-primary)"
   const backgroundColor = exportServer ? "#252424" : "transparent"
 
   const fontSizes = {
@@ -239,14 +235,11 @@ export function createOptionsForStat(
       shadow: false,
       shared: true,
       formatter: function () {
-        const formattedDateString = new Date(this.x as number).toLocaleString(
-          undefined,
-          {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          },
-        )
+        const formattedDateString = new Date(this.x as number).toLocaleString(undefined, {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        })
         const value = Intl.NumberFormat("en", {
           maximumSignificantDigits: 3,
           notation: "compact",

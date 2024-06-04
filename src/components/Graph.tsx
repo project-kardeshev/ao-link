@@ -18,14 +18,8 @@ function linkArc(d: Link) {
     A${r},${r} 0 0,1 ${d.target.x},${d.target.y}`
 }
 
-const drag = (
-  simulation: Simulation<CustomNode, undefined>,
-  largeGraph: boolean,
-) => {
-  function dragstarted(
-    event: d3.D3DragEvent<SVGGElement, CustomNode, CustomNode>,
-    d: CustomNode,
-  ) {
+const drag = (simulation: Simulation<CustomNode, undefined>, largeGraph: boolean) => {
+  function dragstarted(event: d3.D3DragEvent<SVGGElement, CustomNode, CustomNode>, d: CustomNode) {
     if (!event.active)
       simulation
         .alphaTarget(0.3)
@@ -36,18 +30,12 @@ const drag = (
     d.fy = d.y
   }
 
-  function dragged(
-    event: d3.D3DragEvent<SVGGElement, CustomNode, CustomNode>,
-    d: CustomNode,
-  ) {
+  function dragged(event: d3.D3DragEvent<SVGGElement, CustomNode, CustomNode>, d: CustomNode) {
     d.fx = event.x
     d.fy = event.y
   }
 
-  function dragended(
-    event: d3.D3DragEvent<SVGGElement, CustomNode, CustomNode>,
-    d: CustomNode,
-  ) {
+  function dragended(event: d3.D3DragEvent<SVGGElement, CustomNode, CustomNode>, d: CustomNode) {
     if (!event.active) simulation.alphaTarget(0)
     d.fx = null
     d.fy = null
@@ -113,9 +101,7 @@ function BaseGraph(props: GraphProps) {
       new Set(chartData.flatMap((l) => [l.source_id, l.target_id])),
       (id) => {
         // lookup original node and take the id column, which is actualy the label but is still named id for backwards compat in the api
-        const original = chartData.find(
-          (l) => l.source_id === id || l.target_id === id,
-        )
+        const original = chartData.find((l) => l.source_id === id || l.target_id === id)
         const label = original
           ? original.source_id === id
             ? original.source
@@ -141,16 +127,10 @@ function BaseGraph(props: GraphProps) {
         "link",
         d3
           .forceLink<CustomNode, CustomLink<CustomNode>>(links) // Assuming CustomLink is your link type
-          .id(
-            (
-              d: SimulationNodeDatum,
-              i?: number,
-              nodesData?: SimulationNodeDatum[],
-            ) => {
-              // Use type assertion here to tell TypeScript that `d` is indeed a CustomNode
-              return (d as CustomNode).id
-            },
-          )
+          .id((d: SimulationNodeDatum, i?: number, nodesData?: SimulationNodeDatum[]) => {
+            // Use type assertion here to tell TypeScript that `d` is indeed a CustomNode
+            return (d as CustomNode).id
+          })
           .distance(200),
       ) // Set fixed distance to 100
       .force("charge", d3.forceManyBody().strength(-400))
@@ -176,13 +156,8 @@ function BaseGraph(props: GraphProps) {
       .data(links)
       .join("path")
       .attr("id", (d) => `link-${d.source.id}-${d.target.id}`)
-      .attr("stroke", (d) =>
-        d.type === "User Message" ? "#57E51A" : "#6BB24C",
-      ) // Set "#57E51A" for "User Message", and "#6BB24C" as default
-      .attr(
-        "marker-end",
-        (d) => `url(${new URL(`#arrow-${d.type}`, location.href)})`,
-      )
+      .attr("stroke", (d) => (d.type === "User Message" ? "#57E51A" : "#6BB24C")) // Set "#57E51A" for "User Message", and "#6BB24C" as default
+      .attr("marker-end", (d) => `url(${new URL(`#arrow-${d.type}`, location.href)})`)
       .style("cursor", "pointer")
       .on("click", function (event, d) {
         onLinkClick(d.source.id, d.target.id)

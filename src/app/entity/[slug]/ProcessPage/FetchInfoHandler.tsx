@@ -1,12 +1,6 @@
 "use client"
 
-import {
-  Button,
-  CircularProgress,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material"
+import { Button, CircularProgress, Stack, TextField, Typography } from "@mui/material"
 import { Asterisk } from "@phosphor-icons/react"
 import React, { useCallback, useState } from "react"
 
@@ -24,34 +18,27 @@ export function FetchInfoHandler(props: FetchInfoHandlerProps) {
   const handleFetch = useCallback(async () => {
     setLoading(true)
     try {
-      const result = await fetch(
-        `https://cu.ao-testnet.xyz/dry-run?process-id=${processId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            Anchor: "0",
-            Data: "1234",
-            Id: "1234",
-            Owner: "1234",
-            Target: processId,
-            Tags: [{ name: "Action", value: "Info" }],
-          }),
+      const result = await fetch(`https://cu.ao-testnet.xyz/dry-run?process-id=${processId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      )
+        body: JSON.stringify({
+          Anchor: "0",
+          Data: "1234",
+          Id: "1234",
+          Owner: "1234",
+          Target: processId,
+          Tags: [{ name: "Action", value: "Info" }],
+        }),
+      })
       const json = await result.json()
 
       if ("error" in json) {
         throw new Error(json.error)
       }
 
-      if (
-        "Messages" in json &&
-        json.Messages.length > 0 &&
-        typeof json.Messages[0] === "object"
-      ) {
+      if ("Messages" in json && json.Messages.length > 0 && typeof json.Messages[0] === "object") {
         setContent(JSON.stringify(json.Messages[0], null, 2))
       } else {
         setContent(JSON.stringify(json, null, 2))
@@ -106,9 +93,7 @@ export function FetchInfoHandler(props: FetchInfoHandlerProps) {
         multiline
         variant="outlined"
         placeholder={
-          loading
-            ? "Loading..."
-            : "Click 'Fetch' to get information about this process."
+          loading ? "Loading..." : "Click 'Fetch' to get information about this process."
         }
         value={content}
       />

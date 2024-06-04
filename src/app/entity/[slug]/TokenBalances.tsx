@@ -20,20 +20,18 @@ export function TokenBalances(props: TokenBalancesProps) {
   useEffect(() => {
     if (!open || data.length > 0) return
 
-    getTokenTransfers(1000, undefined, false, entityId).then(
-      ([_count, transfers]) => {
-        let uniqueTokenIds = new Set<string>()
-        transfers.forEach((x) => {
-          uniqueTokenIds.add(x.tokenId)
-        })
-        const tokenIds = Array.from(uniqueTokenIds)
-        setData(tokenIds)
+    getTokenTransfers(1000, undefined, false, entityId).then(([_count, transfers]) => {
+      let uniqueTokenIds = new Set<string>()
+      transfers.forEach((x) => {
+        uniqueTokenIds.add(x.tokenId)
+      })
+      const tokenIds = Array.from(uniqueTokenIds)
+      setData(tokenIds)
 
-        if (tokenIds.length !== undefined && onCountReady) {
-          onCountReady(tokenIds.length)
-        }
-      },
-    )
+      if (tokenIds.length !== undefined && onCountReady) {
+        onCountReady(tokenIds.length)
+      }
+    })
   }, [data.length, entityId, onCountReady, open])
 
   if (!open) return null
@@ -50,11 +48,7 @@ export function TokenBalances(props: TokenBalancesProps) {
           { label: "Ticker", sx: { width: 220 } },
         ]}
         renderRow={(tokenId) => (
-          <TokenBalancesTableRow
-            key={tokenId}
-            tokenId={tokenId}
-            entityId={entityId}
-          />
+          <TokenBalancesTableRow key={tokenId} tokenId={tokenId} entityId={entityId} />
         )}
       />
     </Paper>

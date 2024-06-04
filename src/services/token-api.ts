@@ -17,11 +17,7 @@ export type TokenHolder = {
   balance: number
 }
 
-export async function getBalance(
-  tokenId: string,
-  entityId: string,
-  tokenV2 = true,
-) {
+export async function getBalance(tokenId: string, entityId: string, tokenV2 = true) {
   const result = await dryrun({
     process: tokenId,
     data: "",
@@ -33,15 +29,11 @@ export async function getBalance(
 
   try {
     const message = result.Messages[0]
-    const account = message.Tags?.find(
-      (tag: any) => tag.name === "Account",
-    )?.value
+    const account = message.Tags?.find((tag: any) => tag.name === "Account")?.value
     if (account !== entityId) {
       throw new Error("Account mismatch")
     }
-    const balance =
-      message.Data ||
-      message.Tags?.find((tag: any) => tag.name === "Balance")?.value
+    const balance = message.Data || message.Tags?.find((tag: any) => tag.name === "Balance")?.value
     const balanceNumber = parseFloat(balance)
     return balanceNumber
   } catch (err) {
@@ -56,9 +48,7 @@ type BalanceMap = {
   [key: string]: string | number
 }
 
-export async function getTokenHolders(
-  tokenInfo: TokenInfo,
-): Promise<TokenHolder[]> {
+export async function getTokenHolders(tokenInfo: TokenInfo): Promise<TokenHolder[]> {
   const result = await dryrun({
     process: tokenInfo.processId,
     data: "",
@@ -68,10 +58,7 @@ export async function getTokenHolders(
   try {
     const balanceMap = JSON.parse(result.Messages[0].Data) as BalanceMap
     const tokenHolders = Object.keys(balanceMap)
-      .filter(
-        (entityId) =>
-          balanceMap[entityId] !== "0" && balanceMap[entityId] !== 0,
-      )
+      .filter((entityId) => balanceMap[entityId] !== "0" && balanceMap[entityId] !== 0)
       .sort((a, b) => Number(balanceMap[b]) - Number(balanceMap[a]))
       .map((entityId, index) => ({
         rank: index + 1,
@@ -92,9 +79,7 @@ type Tag = {
   value: string
 }
 
-export async function getTokenInfo(
-  processId: string,
-): Promise<TokenInfo | undefined> {
+export async function getTokenInfo(processId: string): Promise<TokenInfo | undefined> {
   const result = await dryrun({
     process: processId,
     data: "",
@@ -129,9 +114,7 @@ export async function getTokenInfo(
 
 export type TokenInfoMap = Record<string, TokenInfo>
 
-export async function getTokenInfoMap(
-  processIds: string[],
-): Promise<TokenInfoMap> {
+export async function getTokenInfoMap(processIds: string[]): Promise<TokenInfoMap> {
   const map: TokenInfoMap = {}
 
   const results = await Promise.all(

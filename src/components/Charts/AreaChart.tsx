@@ -14,11 +14,7 @@ type AreaChartProps = {
   overrideValue?: number
 }
 
-export const AreaChart = ({
-  data,
-  titleText,
-  overrideValue,
-}: AreaChartProps) => {
+export const AreaChart = ({ data, titleText, overrideValue }: AreaChartProps) => {
   const options: HighchartOptions = createOptionsForStat(
     titleText,
     150,

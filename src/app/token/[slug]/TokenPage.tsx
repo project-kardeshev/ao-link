@@ -1,14 +1,6 @@
 "use client"
 
-import {
-  Avatar,
-  Paper,
-  Stack,
-  Tab,
-  Tabs,
-  Tooltip,
-  Typography,
-} from "@mui/material"
+import { Avatar, Paper, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import React, { useState } from "react"
 
@@ -31,10 +23,7 @@ export const dynamic = "force-dynamic"
 export default function TokenPage(props: TokenPageProps) {
   const { tokenInfo, tokenHolders } = props
 
-  const circulatingSupply = tokenHolders.reduce(
-    (acc, holder) => acc + holder.balance,
-    0,
-  )
+  const circulatingSupply = tokenHolders.reduce((acc, holder) => acc + holder.balance, 0)
 
   const [activeTab, setActiveTab] = useState(0)
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -43,10 +32,7 @@ export default function TokenPage(props: TokenPageProps) {
 
   return (
     <Stack component="main" gap={6} paddingY={4}>
-      <Subheading
-        type="TOKEN"
-        value={<IdBlock label={tokenInfo.processId} />}
-      />
+      <Subheading type="TOKEN" value={<IdBlock label={tokenInfo.processId} />} />
       <Grid2 container spacing={{ xs: 4 }}>
         <Grid2 xs={12} lg={6}>
           <Stack direction="row" gap={1} alignItems="center">
@@ -62,11 +48,7 @@ export default function TokenPage(props: TokenPageProps) {
                 </Typography>
               </Tooltip>
               <Tooltip title="Ticker" placement="right">
-                <Typography
-                  variant="body2"
-                  lineHeight={1.15}
-                  color="text.secondary"
-                >
+                <Typography variant="body2" lineHeight={1.15} color="text.secondary">
                   {tokenInfo.ticker}
                 </Typography>
               </Tooltip>
@@ -78,12 +60,7 @@ export default function TokenPage(props: TokenPageProps) {
             <SectionInfo title="Token holders" value={tokenHolders.length} />
             <SectionInfo
               title="Circulating supply"
-              value={
-                <TokenAmountBlock
-                  amount={circulatingSupply}
-                  tokenInfo={tokenInfo}
-                />
-              }
+              value={<TokenAmountBlock amount={circulatingSupply} tokenInfo={tokenInfo} />}
             />
           </Stack>
         </Grid2>
@@ -99,12 +76,8 @@ export default function TokenPage(props: TokenPageProps) {
           <Tab value={1} label="Token Holders Chart" />
         </Tabs>
         <Paper sx={{ marginX: -2 }}>
-          {activeTab === 0 && (
-            <TokenHolderTable data={tokenHolders} tokenInfo={tokenInfo} />
-          )}
-          {activeTab === 1 && (
-            <TokenHolderChart data={tokenHolders} tokenInfo={tokenInfo} />
-          )}
+          {activeTab === 0 && <TokenHolderTable data={tokenHolders} tokenInfo={tokenInfo} />}
+          {activeTab === 1 && <TokenHolderChart data={tokenHolders} tokenInfo={tokenInfo} />}
         </Paper>
       </div>
     </Stack>
