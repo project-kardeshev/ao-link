@@ -58,9 +58,7 @@ export type TransactionsResponse = {
   }
 }
 
-export function parseNormalizedAoEvent(
-  edge: TransactionEdge,
-): NormalizedAoEvent {
+export function parseNormalizedAoEvent(edge: TransactionEdge): NormalizedAoEvent {
   const { node, cursor } = edge
 
   const tags = node.tags.reduce((acc: Record<string, string>, tag: Tag) => {
@@ -70,13 +68,10 @@ export function parseNormalizedAoEvent(
 
   const type = tags["Type"] as NormalizedAoEvent["type"]
   const blockHeight = node.block ? node.block.height : 0
-  const from =
-    tags["Forwarded-For"] || tags["From-Process"] || node.owner.address
+  const from = tags["Forwarded-For"] || tags["From-Process"] || node.owner.address
   const schedulerId = tags["Scheduler"]
   const action = tags["Action"]
-  const created = new Date(
-    (node.block ? node.block.timestamp : node.ingested_at || 0) * 1000,
-  )
+  const created = new Date((node.block ? node.block.timestamp : node.ingested_at || 0) * 1000)
   const to = node.recipient.trim()
 
   return {

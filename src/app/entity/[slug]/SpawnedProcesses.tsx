@@ -43,6 +43,7 @@ export function SpawnedProcesses(props: SpawnedProcessesProps) {
           onCountReady(count)
         }
 
+        // console.log("📜 LOG > fetchFunction={ > records:", records)
         return records
       }}
       component={Paper}
@@ -50,8 +51,9 @@ export function SpawnedProcesses(props: SpawnedProcessesProps) {
       initialSortField="created"
       headerCells={[
         { label: "Type", sx: { width: 140 } },
+        { label: "ID", sx: { width: 200 } },
         { label: "Name" },
-        { label: "ID" },
+        // { label: "Tags" },
         { label: "Module" },
         {
           label: "Block Height",
@@ -77,10 +79,13 @@ export function SpawnedProcesses(props: SpawnedProcessesProps) {
           <TableCell>
             <TypeBadge type={item.type} />
           </TableCell>
-          <TableCell>{item.tags["Name"]}</TableCell>
           <TableCell>
             <IdBlock label={truncateId(item.id)} value={item.id} href={`/entity/${item.id}`} />
           </TableCell>
+          <TableCell>{item.tags["Name"]}</TableCell>
+          {/* <TableCell>
+       TODO
+          </TableCell> */}
           <TableCell>
             <IdBlock
               label={truncateId(item.tags["Module"])}

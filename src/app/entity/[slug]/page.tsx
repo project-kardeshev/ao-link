@@ -1,5 +1,6 @@
-import { supabase } from "@/lib/supabase"
 import { getAoEventById, getProcessById } from "@/services/aoscan"
+
+import { getMessageById } from "@/services/messages-api"
 
 import { ProcessPage } from "./ProcessPage"
 import { UserPage } from "./UserPage"
@@ -13,18 +14,9 @@ export const dynamic = "force-dynamic"
 export default async function EntityPageServer(props: EntityPageServerProps) {
   const { slug: entityId } = props.params
 
-  const { data, error } = await supabase
-    .rpc("determine_entity_type", {
-      entity_id: entityId,
-    })
-    .returns<"user" | "process">()
+  const message = await getMessageById(entityId)
 
-  if (error || !data) {
-    console.error("Error calling Supabase RPC:", error.message)
-    return <>Entity not found</>
-  }
-
-  if (data === "user") {
+  if (!message) {
     return <UserPage entityId={entityId} />
   }
 

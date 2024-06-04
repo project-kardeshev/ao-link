@@ -12,10 +12,7 @@ import { TYPE_PATH_MAP, truncateId } from "@/utils/data-utils"
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
 import { formatNumber } from "@/utils/number-utils"
 
-type EntityMessagesTableProps = Pick<
-  AsyncTableProps,
-  "fetchFunction" | "pageSize"
-> & {
+type EntityMessagesTableProps = Pick<AsyncTableProps, "fetchFunction" | "pageSize"> & {
   entityId: string
 }
 
@@ -32,10 +29,10 @@ export function EntityMessagesTable(props: EntityMessagesTableProps) {
       headerCells={[
         { label: "Type", sx: { width: 140 } },
         { label: "Action" },
-        { label: "ID", sx: { width: 220 } },
-        { label: "From", sx: { width: 220 } },
+        { label: "ID", sx: { width: 200 } },
+        { label: "From", sx: { width: 200 } },
         { label: "", sx: { width: 60 } },
-        { label: "To", sx: { width: 220 } },
+        { label: "To", sx: { width: 200 } },
         {
           label: "Block Height",
           sx: { width: 160 },
@@ -62,11 +59,7 @@ export function EntityMessagesTable(props: EntityMessagesTableProps) {
           </TableCell>
           <TableCell>{item.action}</TableCell>
           <TableCell>
-            <IdBlock
-              label={truncateId(item.id)}
-              value={item.id}
-              href={`/message/${item.id}`}
-            />
+            <IdBlock label={truncateId(item.id)} value={item.id} href={`/message/${item.id}`} />
           </TableCell>
           <TableCell>
             <IdBlock
@@ -79,18 +72,10 @@ export function EntityMessagesTable(props: EntityMessagesTableProps) {
             <InOutLabel outbound={entityId === item.from} />
           </TableCell>
           <TableCell>
-            <IdBlock
-              label={truncateId(item.to)}
-              value={item.to}
-              href={`/entity/${item.to}`}
-            />
+            <IdBlock label={truncateId(item.to)} value={item.to} href={`/entity/${item.to}`} />
           </TableCell>
           <TableCell align="right">
-            <Typography
-              fontFamily={MonoFontFF}
-              component="div"
-              variant="inherit"
-            >
+            <Typography fontFamily={MonoFontFF} component="div" variant="inherit">
               <IdBlock
                 label={formatNumber(item.blockHeight)}
                 value={String(item.blockHeight)}

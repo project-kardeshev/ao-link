@@ -51,9 +51,9 @@ const MessagesTable = (props: MessagesTableProps) => {
             headerCells={[
               { label: "Type", sx: { width: 140 } },
               { label: "Action" },
-              { label: "ID", sx: { width: 220 } },
-              { label: "From", sx: { width: 220 } },
-              { label: "To", sx: { width: 220 } },
+              { label: "ID", sx: { width: 200 } },
+              { label: "From", sx: { width: 200 } },
+              { label: "To", sx: { width: 200 } },
               {
                 label: "Block Height",
                 sx: { width: 160 },
@@ -101,11 +101,7 @@ const MessagesTable = (props: MessagesTableProps) => {
                   />
                 </td>
                 <td className="text-end p-2">
-                  <Typography
-                    fontFamily={MonoFontFF}
-                    component="div"
-                    variant="inherit"
-                  >
+                  <Typography fontFamily={MonoFontFF} component="div" variant="inherit">
                     <IdBlock
                       label={formatNumber(item.blockHeight)}
                       value={String(item.blockHeight)}
@@ -115,10 +111,7 @@ const MessagesTable = (props: MessagesTableProps) => {
                 </td>
                 <td className="text-end p-2">
                   {/* TODO */}
-                  <span
-                    className="tooltip"
-                    data-tip={formatFullDate(item.created)}
-                  >
+                  <span className="tooltip" data-tip={formatFullDate(item.created)}>
                     {formatRelative(item.created)}
                   </span>
                 </td>

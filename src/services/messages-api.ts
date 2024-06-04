@@ -272,3 +272,27 @@ export async function getSpawnedProcesses(
     return [0, []]
   }
 }
+
+export async function getMessageById(id: string): Promise<NormalizedAoEvent | undefined> {
+  const { data, error } = await goldsky
+    .query<TransactionsResponse>(
+      gql`
+        query ($id: ID!) {
+          transactions(ids: [$id]) {
+            ...MessageFields
+          }
+        }
+
+        ${messageFields}
+      `,
+      { id },
+    )
+    .toPromise()
+
+  if (error) throw new Error(error.message)
+
+  if (!data) return
+  if (!data.transactions.edges.length) return
+
+  return parseNormalizedAoEvent(data.transactions.edges[0])
+}
