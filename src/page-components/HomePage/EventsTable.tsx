@@ -1,16 +1,8 @@
 "use client"
-import {
-  CircularProgress,
-  FormControlLabel,
-  MenuItem,
-  Select,
-  Stack,
-  Typography,
-} from "@mui/material"
+import { CircularProgress, MenuItem, Select, Stack, Typography } from "@mui/material"
 import { useRouter, useSearchParams } from "next/navigation"
 import React, { useEffect, useRef, useState } from "react"
 
-import { AntSwitch } from "@/components/AntSwitch"
 import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { TypeBadge } from "@/components/TypeBadge"
 import { useUpdateSearch } from "@/hooks/useUpdateSearch"
@@ -21,10 +13,7 @@ import {
   targetEmptyValue,
 } from "@/services/aoscan"
 import { FilterOption } from "@/types"
-import {
-  type AoMessage,
-  normalizeAoEvent,
-} from "@/utils/ao-event-utils"
+import { type AoMessage, normalizeAoEvent } from "@/utils/ao-event-utils"
 
 import { TYPE_PATH_MAP, truncateId } from "@/utils/data-utils"
 
@@ -51,9 +40,7 @@ const EventsTable = (props: EventTablesProps) => {
 
   const [endReached, setEndReached] = useState(false)
 
-  const filterRef = useRef<FilterOption>(
-    (searchParams?.get("filter") as FilterOption) || "",
-  )
+  const filterRef = useRef<FilterOption>((searchParams?.get("filter") as FilterOption) || "")
 
   useEffect(() => {
     if (endReached) return
@@ -100,11 +87,7 @@ const EventsTable = (props: EventTablesProps) => {
 
   const [data, setData] = useState<AoMessage[]>(initialData)
   const [streamingPaused, setStreamingPaused] = useState(false)
-  const [realtime, setRealtime] = useState(
-    (typeof window !== "undefined" &&
-      window.localStorage.getItem("realtime") === "true") ||
-      false,
-  )
+  const [realtime, setRealtime] = useState(false)
 
   useEffect(() => {
     if (!realtime) return
@@ -112,19 +95,13 @@ const EventsTable = (props: EventTablesProps) => {
     function handleVisibilityChange() {
       if (document.visibilityState === "visible") {
         console.log("Resuming realtime streaming")
-        getLatestAoEvents(
-          listSizeRef.current,
-          0,
-          filterRef.current,
-          blockHeight,
-          ownerId,
-        ).then((events) => {
-          console.log(
-            `Fetched ${events.length} records, listSize=${listSizeRef.current}`,
-          )
-          setData(events.map(normalizeAoEvent))
-          setStreamingPaused(false)
-        })
+        getLatestAoEvents(listSizeRef.current, 0, filterRef.current, blockHeight, ownerId).then(
+          (events) => {
+            console.log(`Fetched ${events.length} records, listSize=${listSizeRef.current}`)
+            setData(events.map(normalizeAoEvent))
+            setStreamingPaused(false)
+          },
+        )
       } else {
         console.log("Pausing realtime streaming")
         setStreamingPaused(true)
@@ -146,16 +123,10 @@ const EventsTable = (props: EventTablesProps) => {
     const unsubscribe = subscribeToEvents((event: AoEvent) => {
       if (blockHeight && event.height !== blockHeight) return
       if (ownerId && event.owner_address !== ownerId) return
-      if (
-        filterRef.current === "message" &&
-        event.target === targetEmptyValue
-      ) {
+      if (filterRef.current === "message" && event.target === targetEmptyValue) {
         return
       }
-      if (
-        filterRef.current === "process" &&
-        event.target !== targetEmptyValue
-      ) {
+      if (filterRef.current === "process" && event.target !== targetEmptyValue) {
         return
       }
 
@@ -184,7 +155,7 @@ const EventsTable = (props: EventTablesProps) => {
           Latest events
         </Typography>
         <Stack direction="row" gap={2} alignItems="center">
-          <FormControlLabel
+          {/* <FormControlLabel
             sx={{ marginY: 0.5 }}
             slotProps={{ typography: { variant: "body2" } }}
             onChange={() => {
@@ -200,7 +171,7 @@ const EventsTable = (props: EventTablesProps) => {
             }
             labelPlacement="start"
             label="Live data"
-          />
+          /> */}
           <Select
             size="small"
             sx={{
@@ -215,18 +186,14 @@ const EventsTable = (props: EventTablesProps) => {
               const newValue = event.target.value as FilterOption
               filterRef.current = newValue
               updateSearch("filter", newValue)
-              getLatestAoEvents(
-                listSizeRef.current,
-                0,
-                newValue,
-                blockHeight,
-                ownerId,
-              ).then((events) => {
-                console.log(
-                  `Fetched ${events.length} records, listSize=${listSizeRef.current} (filter changed)`,
-                )
-                setData(events.map(normalizeAoEvent))
-              })
+              getLatestAoEvents(listSizeRef.current, 0, newValue, blockHeight, ownerId).then(
+                (events) => {
+                  console.log(
+                    `Fetched ${events.length} records, listSize=${listSizeRef.current} (filter changed)`,
+                  )
+                  setData(events.map(normalizeAoEvent))
+                },
+              )
             }}
           >
             <MenuItem value="">
@@ -247,9 +214,7 @@ const EventsTable = (props: EventTablesProps) => {
                 <th className="text-start p-2 w-[220px]">ID</th>
                 <th className="text-start p-2 w-[220px]">From</th>
                 <th className="text-start p-2 w-[220px]">To</th>
-                {!blockHeight && (
-                  <th className="text-end p-2 w-[160px]">Block Height</th>
-                )}
+                {!blockHeight && <th className="text-end p-2 w-[160px]">Block Height</th>}
                 <th className="text-end p-2 w-[160px]">Created</th>
               </tr>
             </thead>
@@ -291,11 +256,7 @@ const EventsTable = (props: EventTablesProps) => {
                   </td>
                   {!blockHeight && (
                     <td className="text-end p-2">
-                      <Typography
-                        fontFamily={MonoFontFF}
-                        component="div"
-                        variant="inherit"
-                      >
+                      <Typography fontFamily={MonoFontFF} component="div" variant="inherit">
                         <IdBlock
                           label={formatNumber(item.blockHeight)}
                           value={String(item.blockHeight)}
@@ -305,10 +266,7 @@ const EventsTable = (props: EventTablesProps) => {
                     </td>
                   )}
                   <td className="text-end p-2">
-                    <span
-                      className="tooltip"
-                      data-tip={formatFullDate(item.created)}
-                    >
+                    <span className="tooltip" data-tip={formatFullDate(item.created)}>
                       {formatRelative(item.created)}
                     </span>
                   </td>
@@ -328,9 +286,7 @@ const EventsTable = (props: EventTablesProps) => {
           >
             {!endReached && <CircularProgress size={12} color="primary" />}
             <Typography variant="body2" color="text.secondary">
-              {endReached
-                ? `Total rows: ${data.length}`
-                : "Loading more records..."}
+              {endReached ? `Total rows: ${data.length}` : "Loading more records..."}
             </Typography>
           </Stack>
         </div>

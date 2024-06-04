@@ -2,7 +2,6 @@
 import {
   Box,
   CircularProgress,
-  FormControlLabel,
   LinearProgress,
   Stack,
   TableSortLabel,
@@ -11,18 +10,13 @@ import {
 import { useRouter } from "next/navigation"
 import React, { useEffect, useRef, useState } from "react"
 
-import { AntSwitch } from "@/components/AntSwitch"
 import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { TypeBadge } from "@/components/TypeBadge"
 import { Process, getProcesses, subscribeToProcesses } from "@/services/aoscan"
 
 import { TYPE_PATH_MAP, truncateId } from "@/utils/data-utils"
 
-import {
-  formatFullDate,
-  formatRelative,
-  parseUtcString,
-} from "@/utils/date-utils"
+import { formatFullDate, formatRelative, parseUtcString } from "@/utils/date-utils"
 
 import { formatNumber } from "@/utils/number-utils"
 
@@ -43,9 +37,9 @@ const ProcessesTable = (props: ProcessesTableProps) => {
   const [endReached, setEndReached] = useState(false)
 
   const [sortAscending, setSortAscending] = useState<boolean>(false)
-  const [sortField, setSortField] = useState<
-    "created_at" | "latest_message" | "incoming_messages"
-  >("incoming_messages")
+  const [sortField, setSortField] = useState<"created_at" | "latest_message" | "incoming_messages">(
+    "incoming_messages",
+  )
 
   const [data, setData] = useState<Process[]>(initialData)
 
@@ -56,28 +50,24 @@ const ProcessesTable = (props: ProcessesTableProps) => {
         const first = entries[0]
         if (first.isIntersecting) {
           console.log("Intersecting - Fetching more data")
-          getProcesses(
-            pageSize,
-            listSizeRef.current,
-            moduleId,
-            sortField,
-            sortAscending,
-          ).then((processes) => {
-            console.log(`Fetched another page of ${processes.length} records`)
-            if (processes.length === 0) {
-              console.log("No more records to fetch")
-              observer.disconnect()
-              setEndReached(true)
-              return
-            }
+          getProcesses(pageSize, listSizeRef.current, moduleId, sortField, sortAscending).then(
+            (processes) => {
+              console.log(`Fetched another page of ${processes.length} records`)
+              if (processes.length === 0) {
+                console.log("No more records to fetch")
+                observer.disconnect()
+                setEndReached(true)
+                return
+              }
 
-            setData((prevData) => {
-              const newData = processes
-              const newList = [...prevData, ...newData]
-              listSizeRef.current = newList.length
-              return newList
-            })
-          })
+              setData((prevData) => {
+                const newData = processes
+                const newList = [...prevData, ...newData]
+                listSizeRef.current = newList.length
+                return newList
+              })
+            },
+          )
         } else {
           console.log("Not intersecting")
         }
@@ -113,11 +103,7 @@ const ProcessesTable = (props: ProcessesTableProps) => {
   }, [sortField, sortAscending, moduleId])
 
   const [streamingPaused, setStreamingPaused] = useState(false)
-  const [realtime, setRealtime] = useState(
-    (typeof window !== "undefined" &&
-      window.localStorage.getItem("realtime") === "true") ||
-      false,
-  )
+  const [realtime, setRealtime] = useState(false)
 
   useEffect(() => {
     if (!realtime) return
@@ -125,19 +111,13 @@ const ProcessesTable = (props: ProcessesTableProps) => {
     function handleVisibilityChange() {
       if (document.visibilityState === "visible") {
         console.log("Resuming realtime streaming")
-        getProcesses(
-          listSizeRef.current,
-          0,
-          moduleId,
-          sortField,
-          sortAscending,
-        ).then((processes) => {
-          console.log(
-            `Fetched ${processes.length} records, listSize=${listSizeRef.current}`,
-          )
-          setData(processes)
-          setStreamingPaused(false)
-        })
+        getProcesses(listSizeRef.current, 0, moduleId, sortField, sortAscending).then(
+          (processes) => {
+            console.log(`Fetched ${processes.length} records, listSize=${listSizeRef.current}`)
+            setData(processes)
+            setStreamingPaused(false)
+          },
+        )
       } else {
         console.log("Pausing realtime streaming")
         setStreamingPaused(true)
@@ -181,7 +161,7 @@ const ProcessesTable = (props: ProcessesTableProps) => {
         <Typography variant="subtitle1" sx={{ textTransform: "uppercase" }}>
           Processes
         </Typography>
-        <FormControlLabel
+        {/* <FormControlLabel
           sx={{ marginY: 0.5 }}
           slotProps={{ typography: { variant: "body2" } }}
           onChange={() => {
@@ -199,7 +179,7 @@ const ProcessesTable = (props: ProcessesTableProps) => {
           }
           labelPlacement="start"
           label="Live data"
-        />
+        /> */}
       </Stack>
       {data.length ? (
         <div>
@@ -301,11 +281,7 @@ const ProcessesTable = (props: ProcessesTableProps) => {
                     />
                   </td>
                   <td className="text-end p-2">
-                    <Typography
-                      fontFamily={MonoFontFF}
-                      component="div"
-                      variant="inherit"
-                    >
+                    <Typography fontFamily={MonoFontFF} component="div" variant="inherit">
                       <IdBlock
                         label={formatNumber(item.incoming_messages)}
                         value={String(item.incoming_messages)}
@@ -315,9 +291,7 @@ const ProcessesTable = (props: ProcessesTableProps) => {
                   <td className="text-end p-2">
                     <span
                       className="tooltip"
-                      data-tip={formatFullDate(
-                        parseUtcString(item.latest_message),
-                      )}
+                      data-tip={formatFullDate(parseUtcString(item.latest_message))}
                     >
                       {formatRelative(parseUtcString(item.latest_message))}
                     </span>
@@ -345,9 +319,7 @@ const ProcessesTable = (props: ProcessesTableProps) => {
           >
             {!endReached && <CircularProgress size={12} color="primary" />}
             <Typography variant="body2" color="text.secondary">
-              {endReached
-                ? `Total rows: ${data.length}`
-                : "Loading more records..."}
+              {endReached ? `Total rows: ${data.length}` : "Loading more records..."}
             </Typography>
           </Stack>
         </div>

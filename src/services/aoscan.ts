@@ -118,22 +118,6 @@ export async function getAoEventById(id: string): Promise<AoEvent | null> {
   return null
 }
 
-// TODO
-export async function getProcessById(id: string) {
-  const { data, error } = await supabase
-    .from("processes")
-    .select("*")
-    .eq("id", id)
-    .returns<Process[]>()
-
-  if (error || !data) {
-    console.error(error)
-    return null
-  }
-
-  return data[0]
-}
-
 export async function getProcesses(
   limit = 1000,
   skip = 0,
