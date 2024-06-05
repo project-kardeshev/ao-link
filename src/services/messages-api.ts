@@ -1,10 +1,13 @@
 import { gql } from "urql"
 
-import { AoMessage, TokenEvent } from "@/utils/ao-event-utils"
+import { AoMessage, TokenTransferMessage } from "@/types"
 
 import { TransactionsResponse, parseAoMessage, parseTokenEvent } from "@/utils/arweave-utils"
 
 import { goldsky } from "./graphql-client"
+
+// const AO_NETWORK_IDENTIFIER = '{ name: "SDK", values: ["aoconnect"] }'
+const AO_NETWORK_IDENTIFIER = '{ name: "Variant", values: ["ao.TN.1"] }'
 
 // TODO
 // { name: "owner_address", values: [$entityId] }
@@ -54,7 +57,7 @@ const outgoingMessagesQuery = (includeCount = false, isProcess?: boolean) => gql
       ${
         isProcess
           ? `tags: [{ name: "From-Process", values: [$entityId] }]`
-          : `tags: [{ name: "SDK", values: ["aoconnect"] }]
+          : `tags: [${AO_NETWORK_IDENTIFIER}]
              owners: [$entityId]`
       }
     ) {
@@ -181,7 +184,7 @@ export async function getTokenTransfers(
   ascending: boolean,
   //
   entityId: string,
-): Promise<[number | undefined, TokenEvent[]]> {
+): Promise<[number | undefined, TokenTransferMessage[]]> {
   try {
     const result = await goldsky
       .query<TransactionsResponse>(tokenTransfersQuery(!cursor), {
@@ -223,7 +226,7 @@ const spawnedProcessesQuery = (includeCount = false, isProcess?: boolean) => gql
       ${
         isProcess
           ? `tags: [{ name: "From-Process", values: [$entityId]}, { name: "Type", values: ["Process"]}]`
-          : `tags: [{ name: "SDK", values: ["aoconnect"]}, { name: "Type", values: ["Process"]}]
+          : `tags: [${AO_NETWORK_IDENTIFIER}, { name: "Type", values: ["Process"]}]
              owners: [$entityId]`
       }
     ) {
@@ -437,6 +440,62 @@ export async function getResultingMessages(
         cursor,
         //
         messageId,
+      })
+      .toPromise()
+    const { data } = result
+
+    if (!data) return [0, []]
+
+    const { count, edges } = data.transactions
+    const events = edges.map(parseAoMessage)
+
+    return [count, events]
+  } catch (error) {
+    return [0, []]
+  }
+}
+
+/**
+ * WARN This query fails if both count and cursor are set
+ */
+const messagesForBlockQuery = (includeCount = false) => gql`
+  query (
+    $blockHeight: Int
+    $limit: Int!
+    $sortOrder: SortOrder!
+    $cursor: String
+  ) {
+    transactions(
+      sort: $sortOrder
+      first: $limit
+      after: $cursor
+
+      block: { min: $blockHeight, max: $blockHeight }
+      tags: [${AO_NETWORK_IDENTIFIER}]
+    ) {
+      ${includeCount ? "count" : ""}
+      ...MessageFields
+    }
+  }
+
+  ${messageFields}
+`
+
+export async function getMessages(
+  limit = 100,
+  cursor = "",
+  ascending: boolean,
+  //
+  blockHeight?: number,
+): Promise<[number | undefined, AoMessage[]]> {
+  try {
+    const result = await goldsky
+      .query<TransactionsResponse>(messagesForBlockQuery(!cursor), {
+        limit,
+        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        cursor,
+        //
+        blockHeight,
       })
       .toPromise()
     const { data } = result

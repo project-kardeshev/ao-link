@@ -14,7 +14,7 @@ import {
 import { Moon, Sun } from "@phosphor-icons/react"
 import Link from "next/link"
 
-import SearchBar from "@/page-components/HomePage/SearchBar"
+import SearchBar from "@/app/SearchBar"
 
 import { Logo } from "./Logo"
 

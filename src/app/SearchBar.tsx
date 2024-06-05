@@ -6,9 +6,8 @@ import Link from "next/link"
 import React, { type ChangeEvent, useState } from "react"
 
 import { TypeBadge } from "@/components/TypeBadge"
-import { getAoEventById, getLatestAoEvents } from "@/services/aoscan"
+import { getMessageById } from "@/services/messages-api"
 import { getTokenInfo } from "@/services/token-api"
-import { normalizeAoEvent } from "@/utils/ao-event-utils"
 import { TYPE_PATH_MAP } from "@/utils/data-utils"
 
 type ResultType = "Message" | "Entity" | "Block" | "Checkpoint" | "Assignment" | "Process" | "Token"
@@ -21,18 +20,14 @@ type Result = {
 async function findByText(text: string): Promise<Result[]> {
   if (!text || !text.trim()) return Promise.resolve([])
 
-  const [event, ownerEvents, tokenInfo] = await Promise.all([
-    getAoEventById(text),
-    getLatestAoEvents(1, 0, undefined, undefined, text),
-    getTokenInfo(text),
-  ])
+  const [msg, tokenInfo] = await Promise.all([getMessageById(text), getTokenInfo(text)])
 
   const results = []
 
-  if (event) {
+  if (msg) {
     results.push({
-      id: event.id,
-      type: normalizeAoEvent(event).type,
+      id: msg.id,
+      type: msg.type,
     })
   }
 
@@ -43,7 +38,7 @@ async function findByText(text: string): Promise<Result[]> {
     })
   }
 
-  if (ownerEvents && ownerEvents.length > 0) {
+  if (!msg) {
     results.push({
       id: text,
       type: "Entity" as ResultType,

@@ -28,6 +28,7 @@ export const TYPE_COLOR_MAP: Record<string, string> = {
   Owner: "bg-[#FFADAD]",
   Block: "bg-[#FEEEE5]",
   Entity: "bg-[#9EA2AA]",
+  Token: "bg-[#ffeb84]",
 }
 
 export const TYPE_PATH_MAP: Record<string, string> = {
@@ -39,4 +40,5 @@ export const TYPE_PATH_MAP: Record<string, string> = {
   Owner: "entity",
   Block: "block",
   Entity: "entity",
+  Token: "token",
 }

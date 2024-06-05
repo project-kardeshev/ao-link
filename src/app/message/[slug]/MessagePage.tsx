@@ -26,8 +26,7 @@ import { TabWithCount } from "@/components/TabWithCount"
 import { TagsSection } from "@/components/TagsSection"
 import { supabase } from "@/lib/supabase"
 
-import { AoEvent } from "@/services/aoscan"
-import { AoMessage } from "@/utils/ao-event-utils"
+import { AoMessage } from "@/types"
 import { truncateId } from "@/utils/data-utils"
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
 
@@ -69,7 +68,7 @@ export function MessagePage(props: MessagePageProps) {
         p_id: messageId,
         is_process: false,
       })
-      .returns<{ graph: ChartDataItem[]; messages: AoEvent[] }>()
+      .returns<{ graph: ChartDataItem[]; messages: any[] }>()
       .then(({ data, error }) => {
         if (error || !data) {
           console.error("Error calling Supabase RPC:", error.message)

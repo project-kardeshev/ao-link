@@ -10,7 +10,7 @@ import { SectionInfoWithChip } from "@/components/SectionInfoWithChip"
 import { Subheading } from "@/components/Subheading"
 
 import { TabWithCount } from "@/components/TabWithCount"
-import { AoMessage } from "@/utils/ao-event-utils"
+import { AoMessage } from "@/types"
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
 import { formatNumber } from "@/utils/number-utils"
 

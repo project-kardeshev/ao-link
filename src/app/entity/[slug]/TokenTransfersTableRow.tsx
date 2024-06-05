@@ -8,13 +8,13 @@ import { TokenAmountBlock } from "@/components/TokenAmountBlock"
 import { TokenBlock } from "@/components/TokenBlock"
 import { TypeBadge } from "@/components/TypeBadge"
 import { TokenInfo, getTokenInfo } from "@/services/token-api"
-import { TokenEvent } from "@/utils/ao-event-utils"
+import { TokenTransferMessage } from "@/types"
 import { TYPE_PATH_MAP, truncateId } from "@/utils/data-utils"
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
 import { nativeTokenInfo } from "@/utils/native-token"
 
 type TokenTransfersTableRowProps = {
-  item: TokenEvent
+  item: TokenTransferMessage
   entityId: string
 }
 

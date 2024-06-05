@@ -1,4 +1,4 @@
-import { AoMessage, TokenEvent } from "./ao-event-utils"
+import { AoMessage, TokenTransferMessage } from "@/types"
 
 export type Tag = {
   name: string
@@ -123,7 +123,7 @@ export function parseAoMessage(edge: TransactionEdge): AoMessage {
   }
 }
 
-export function parseTokenEvent(edge: TransactionEdge): TokenEvent {
+export function parseTokenEvent(edge: TransactionEdge): TokenTransferMessage {
   const normalizedEvent = parseAoMessage(edge)
 
   const { id, created, action, from, to, tags } = normalizedEvent as any // TODO

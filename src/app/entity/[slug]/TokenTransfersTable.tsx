@@ -2,7 +2,7 @@ import { Paper } from "@mui/material"
 import React from "react"
 
 import { AsyncTable, AsyncTableProps } from "@/components/AsyncTable"
-import { TokenEvent } from "@/utils/ao-event-utils"
+import { TokenTransferMessage } from "@/types"
 
 import { TokenTransfersTableRow } from "./TokenTransfersTableRow"
 
@@ -61,7 +61,7 @@ export function TokenTransfersTable(props: TokenTransfersTableProps) {
           sortable: true,
         },
       ]}
-      renderRow={(item: TokenEvent) => (
+      renderRow={(item: TokenTransferMessage) => (
         <TokenTransfersTableRow key={item.id} item={item} entityId={entityId} />
       )}
     />

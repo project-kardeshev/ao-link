@@ -30,3 +30,29 @@ export type HighchartAreaData = [number, number]
 export type HighchartPieData = { y: number; name: string }
 
 export type FilterOption = "" | "message" | "process"
+
+export type AoMessage = {
+  id: string
+  type: "Message" | "Process" | "Checkpoint" | "Assignment"
+  to: string
+  from: string
+  blockHeight: number | null
+  schedulerId: string
+  created: Date
+  action: string
+  tags: Record<string, string>
+  systemTags: Record<string, string>
+  userTags: Record<string, string>
+  cursor?: string
+}
+
+export type TokenTransferMessage = {
+  id: string
+  type: "Message"
+  created: Date
+  action: string
+  sender: string
+  recipient: string
+  amount: number
+  tokenId: string
+}
