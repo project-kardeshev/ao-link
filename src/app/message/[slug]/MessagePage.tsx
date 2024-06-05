@@ -154,9 +154,13 @@ export function MessagePage(props: MessagePageProps) {
               <SectionInfo
                 title="Created"
                 value={
-                  <Tooltip title={formatFullDate(created)}>
-                    <span>{formatRelative(created)}</span>
-                  </Tooltip>
+                  created === null ? (
+                    "Processing"
+                  ) : (
+                    <Tooltip title={formatFullDate(created)}>
+                      <span>{formatRelative(created)}</span>
+                    </Tooltip>
+                  )
                 }
               />
             </Stack>

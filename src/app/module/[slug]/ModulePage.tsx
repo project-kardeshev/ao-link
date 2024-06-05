@@ -40,9 +40,13 @@ export function ModulePage(props: ModulePageProps) {
             <SectionInfo
               title="Created"
               value={
-                <Tooltip title={formatFullDate(created)}>
-                  <span>{formatRelative(created)}</span>
-                </Tooltip>
+                created === null ? (
+                  "Processing"
+                ) : (
+                  <Tooltip title={formatFullDate(created)}>
+                    <span>{formatRelative(created)}</span>
+                  </Tooltip>
+                )
               }
             />
             {/* <SectionInfo title="Incoming messages" value={formatNumber(message.incoming_messages)} /> */}

@@ -91,9 +91,13 @@ export function ProcessesTable(props: ProcessesTableProps) {
             )}
           </TableCell>
           <TableCell align="right">
-            <Tooltip title={formatFullDate(item.created)}>
-              <span>{formatRelative(item.created)}</span>
-            </Tooltip>
+            {item.created === null ? (
+              "Processing"
+            ) : (
+              <Tooltip title={formatFullDate(item.created)}>
+                <span>{formatRelative(item.created)}</span>
+              </Tooltip>
+            )}
           </TableCell>
         </TableRow>
       )}
