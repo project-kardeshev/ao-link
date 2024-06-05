@@ -1,5 +1,5 @@
 "use client"
-import { Box, CircularProgress, Paper, Stack, Tabs, Typography } from "@mui/material"
+import { Box, CircularProgress, Paper, Stack, Tabs, Tooltip, Typography } from "@mui/material"
 
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { useCallback, useEffect, useState } from "react"
@@ -18,7 +18,7 @@ import { supabase } from "@/lib/supabase"
 import { AoEvent } from "@/services/aoscan"
 import { AoMessage } from "@/utils/ao-event-utils"
 import { truncateId } from "@/utils/data-utils"
-import { formatRelative } from "@/utils/date-utils"
+import { formatFullDate, formatRelative } from "@/utils/date-utils"
 
 import { IncomingMessagesTable } from "./IncomingMessagesTable"
 import { OutgoingMessagesTable } from "./OutgoingMessagesTable"
@@ -34,7 +34,16 @@ type ProcessPageProps = {
 export function ProcessPage(props: ProcessPageProps) {
   const { message } = props
 
-  const { id: entityId, from: owner, type, blockHeight, created, tags } = message
+  const {
+    id: entityId,
+    from: owner,
+    type,
+    blockHeight,
+    created,
+    tags,
+    userTags,
+    systemTags,
+  } = message
 
   const [loading, setLoading] = useState(true)
   const [graphData, setChartData] = useState<ChartDataItem[]>([])
@@ -113,25 +122,20 @@ export function ProcessPage(props: ProcessPageProps) {
               }
             />
             {tags.Name && <SectionInfo title="Name" value={<IdBlock label={tags.Name} />} />}
-            {/* <SectionInfo
-              title="Block Height"
+            <SectionInfo
+              title="Created"
               value={
-                <IdBlock
-                  label={String(blockHeight)}
-                  href={`/block/${blockHeight}`}
-                />
+                <Tooltip title={formatFullDate(created)}>
+                  <span>{formatRelative(created)}</span>
+                </Tooltip>
               }
-            /> */}
-            <SectionInfo title="Created" value={formatRelative(created)} />
-            {/* <SectionInfo
-              title="Incoming messages"
-              value={formatNumber(process.incoming_messages)}
-            /> */}
+            />
           </Stack>
         </Grid2>
         <Grid2 xs={12} lg={6}>
           <Stack gap={4}>
-            <TagsSection tags={tags} />
+            <TagsSection label="Tags" tags={userTags} />
+            <TagsSection label="System Tags" tags={systemTags} />
             <FetchInfoHandler processId={entityId} />
             <Stack gap={1} justifyContent="stretch">
               <Typography variant="subtitle2" color="text.secondary">

@@ -8,6 +8,7 @@ const config = {
     // "plugin:@typescript-eslint/stylistic-type-checked",
     "prettier",
   ],
+  ignorePatterns: [".next"],
   rules: {
     // "@typescript-eslint/array-type": "off",
     // "@typescript-eslint/consistent-type-definitions": "off",

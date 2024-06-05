@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react"
 
 import { IdBlock } from "@/components/IdBlock"
 import { InOutLabel } from "@/components/InOutLabel"
-import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { TokenAmountBlock } from "@/components/TokenAmountBlock"
 import { TokenBlock } from "@/components/TokenBlock"
 import { TypeBadge } from "@/components/TypeBadge"
@@ -69,7 +68,6 @@ export function TokenTransfersTableRow(props: TokenTransfersTableRowProps) {
       </TableCell>
       <TableCell align="right">
         <Typography
-          fontFamily={MonoFontFF}
           component="div"
           variant="inherit"
           sx={{

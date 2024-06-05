@@ -1,11 +1,10 @@
-import { Paper, TableCell, TableRow, Tooltip, Typography } from "@mui/material"
+import { Paper, TableCell, TableRow, Tooltip } from "@mui/material"
 import { useRouter } from "next/navigation"
 import React from "react"
 
 import { AsyncTable, AsyncTableProps } from "@/components/AsyncTable"
 import { IdBlock } from "@/components/IdBlock"
 import { InOutLabel } from "@/components/InOutLabel"
-import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { TypeBadge } from "@/components/TypeBadge"
 import { AoMessage } from "@/utils/ao-event-utils"
 import { TYPE_PATH_MAP, truncateId } from "@/utils/data-utils"
@@ -69,19 +68,17 @@ export function EntityMessagesTable(props: EntityMessagesTableProps) {
             />
           </TableCell>
           <TableCell>
-            <InOutLabel outbound={entityId === item.from} />
+            <InOutLabel outbound={entityId !== item.to} />
           </TableCell>
           <TableCell>
             <IdBlock label={truncateId(item.to)} value={item.to} href={`/entity/${item.to}`} />
           </TableCell>
           <TableCell align="right">
-            <Typography fontFamily={MonoFontFF} component="div" variant="inherit">
-              <IdBlock
-                label={formatNumber(item.blockHeight)}
-                value={String(item.blockHeight)}
-                href={`/block/${item.blockHeight}`}
-              />
-            </Typography>
+            <IdBlock
+              label={formatNumber(item.blockHeight)}
+              value={String(item.blockHeight)}
+              href={`/block/${item.blockHeight}`}
+            />
           </TableCell>
           <TableCell align="right">
             <Tooltip title={formatFullDate(item.created)}>

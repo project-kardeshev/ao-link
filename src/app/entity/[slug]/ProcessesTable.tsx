@@ -1,10 +1,9 @@
-import { Paper, TableCell, TableRow, Tooltip, Typography } from "@mui/material"
+import { Paper, TableCell, TableRow, Tooltip } from "@mui/material"
 import { useRouter } from "next/navigation"
 import React from "react"
 
 import { AsyncTable, AsyncTableProps, HeaderCell } from "@/components/AsyncTable"
 import { IdBlock } from "@/components/IdBlock"
-import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { TypeBadge } from "@/components/TypeBadge"
 import { AoMessage } from "@/utils/ao-event-utils"
 import { TYPE_PATH_MAP, truncateId } from "@/utils/data-utils"
@@ -78,13 +77,11 @@ export function ProcessesTable(props: ProcessesTableProps) {
             </TableCell>
           )}
           <TableCell align="right">
-            <Typography fontFamily={MonoFontFF} component="div" variant="inherit">
-              <IdBlock
-                label={formatNumber(item.blockHeight)}
-                value={String(item.blockHeight)}
-                href={`/block/${item.blockHeight}`}
-              />
-            </Typography>
+            <IdBlock
+              label={formatNumber(item.blockHeight)}
+              value={String(item.blockHeight)}
+              href={`/block/${item.blockHeight}`}
+            />
           </TableCell>
           <TableCell align="right">
             <Tooltip title={formatFullDate(item.created)}>

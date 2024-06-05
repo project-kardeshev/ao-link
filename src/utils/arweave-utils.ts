@@ -58,13 +58,46 @@ export type TransactionsResponse = {
   }
 }
 
+export const systemTagNames = [
+  "Type",
+  "Data-Protocol",
+  "SDK",
+  "Content-Type",
+  "Variant",
+  "Pushed-For",
+  "Ref_",
+  "From-Module",
+  "From-Process",
+  "Module",
+  "Scheduler",
+  "aos-Version",
+  "App-Name",
+  "Scheduler",
+  "Name",
+]
+
 export function parseNormalizedAoEvent(edge: TransactionEdge): AoMessage {
   const { node, cursor } = edge
 
-  const tags = node.tags.reduce((acc: Record<string, string>, tag: Tag) => {
-    acc[tag.name] = tag.value
-    return acc
-  }, {})
+  const systemTags: Record<string, string> = {}
+  const userTags: Record<string, string> = {}
+  const tags: Record<string, string> = {}
+
+  node.tags.forEach((tag) => {
+    tags[tag.name] = tag.value
+
+    if (systemTagNames.includes(tag.name)) {
+      systemTags[tag.name] = tag.value
+    } else {
+      userTags[tag.name] = tag.value
+    }
+  })
+
+  // delete systemTags["Pushed-For"]
+  // delete systemTags["Data-Protocol"]
+  delete systemTags["Type"]
+  delete systemTags["Module"]
+  delete systemTags["Name"]
 
   const type = tags["Type"] as AoMessage["type"]
   const blockHeight = node.block ? node.block.height : 0
@@ -84,6 +117,8 @@ export function parseNormalizedAoEvent(edge: TransactionEdge): AoMessage {
     created,
     action,
     tags,
+    systemTags,
+    userTags,
     cursor,
   }
 }

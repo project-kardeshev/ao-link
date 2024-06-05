@@ -23,6 +23,9 @@ type MessagesTableProps = {
   } | null
 }
 
+/**
+ * @deprecated
+ */
 const MessagesTable = (props: MessagesTableProps) => {
   const { data, tableFilter } = props
 

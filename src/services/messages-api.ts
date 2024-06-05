@@ -39,15 +39,6 @@ const messageFields = gql`
   }
 `
 
-const processIdentifier = `
-  tags: [{ name: "From-Process", values: [$entityId] }]
-`
-
-const userIdentifier = `
-  tags: [{ name: "SDK", values: ["aoconnect"] }]
-  owners: [$entityId]
-`
-
 /**
  * WARN This query fails if both count and cursor are set
  */
@@ -63,7 +54,12 @@ const outgoingMessagesQuery = (includeCount = false, isProcess?: boolean) => gql
       first: $limit
       after: $cursor
 
-      ${isProcess ? processIdentifier : userIdentifier}
+      ${
+        isProcess
+          ? `tags: [{ name: "From-Process", values: [$entityId] }]`
+          : `tags: [{ name: "SDK", values: ["aoconnect"] }]
+             owners: [$entityId]`
+      }
     ) {
       ${includeCount ? "count" : ""}
       ...MessageFields
@@ -389,6 +385,61 @@ export async function getModules(
         sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
         cursor,
         //
+      })
+      .toPromise()
+    const { data } = result
+
+    if (!data) return [0, []]
+
+    const { count, edges } = data.transactions
+    const events = edges.map(parseNormalizedAoEvent)
+
+    return [count, events]
+  } catch (error) {
+    return [0, []]
+  }
+}
+
+/**
+ * WARN This query fails if both count and cursor are set
+ */
+const resultingMessagesQuery = (includeCount = false) => gql`
+  query (
+    $messageId: String!
+    $limit: Int!
+    $sortOrder: SortOrder!
+    $cursor: String
+  ) {
+    transactions(
+      sort: $sortOrder
+      first: $limit
+      after: $cursor
+
+      tags: [{ name: "Pushed-For", values: [$messageId] }]
+    ) {
+      ${includeCount ? "count" : ""}
+      ...MessageFields
+    }
+  }
+
+  ${messageFields}
+`
+
+export async function getResultingMessages(
+  limit = 100,
+  cursor = "",
+  ascending: boolean,
+  //
+  messageId: string,
+): Promise<[number | undefined, AoMessage[]]> {
+  try {
+    const result = await goldsky
+      .query<TransactionsResponse>(resultingMessagesQuery(!cursor), {
+        limit,
+        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        cursor,
+        //
+        messageId,
       })
       .toPromise()
     const { data } = result

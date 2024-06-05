@@ -1,5 +1,5 @@
 "use client"
-import { Box, Stack, Tabs } from "@mui/material"
+import { Box, Stack, Tabs, Tooltip } from "@mui/material"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import React, { useState } from "react"
 
@@ -11,7 +11,7 @@ import { Subheading } from "@/components/Subheading"
 
 import { TabWithCount } from "@/components/TabWithCount"
 import { AoMessage } from "@/utils/ao-event-utils"
-import { formatRelative } from "@/utils/date-utils"
+import { formatFullDate, formatRelative } from "@/utils/date-utils"
 import { formatNumber } from "@/utils/number-utils"
 
 type ModulePageProps = {
@@ -21,7 +21,7 @@ type ModulePageProps = {
 export function ModulePage(props: ModulePageProps) {
   const { message } = props
 
-  const { id: moduleId } = message
+  const { id: moduleId, created } = message
 
   const [activeTab, setActiveTab] = useState(0)
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -37,7 +37,14 @@ export function ModulePage(props: ModulePageProps) {
         <Grid2 xs={12} lg={6}>
           <Stack gap={4}>
             <SectionInfoWithChip title="Type" value={"Module"} />
-            <SectionInfo title="Created" value={formatRelative(message.created)} />
+            <SectionInfo
+              title="Created"
+              value={
+                <Tooltip title={formatFullDate(created)}>
+                  <span>{formatRelative(created)}</span>
+                </Tooltip>
+              }
+            />
             {/* <SectionInfo title="Incoming messages" value={formatNumber(message.incoming_messages)} /> */}
             {/* <SectionInfo title="Processes" value={formatNumber(message.processes)} /> */}
           </Stack>

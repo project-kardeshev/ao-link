@@ -20,9 +20,9 @@ export const TYPE_ICON_MAP: Record<string, any> = {
 }
 
 export const TYPE_COLOR_MAP: Record<string, string> = {
-  Module: "bg-[#B8C3E050]",
-  Assignment: "bg-[#B8C3E050]",
-  Checkpoint: "bg-[#B8C3E050]",
+  Module: "bg-[#d1b8e0]",
+  Assignment: "bg-[#e0b8b8]",
+  Checkpoint: "bg-[#e0b8b8]",
   Process: "bg-[#B8C3E0]",
   Message: "bg-[#E2F0DC]",
   Owner: "bg-[#FFADAD]",

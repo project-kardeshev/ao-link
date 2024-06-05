@@ -1,4 +1,4 @@
-import { getAoEventById } from "@/services/aoscan"
+import { getMessageById } from "@/services/messages-api"
 
 import { MessagePage } from "./MessagePage"
 
@@ -11,12 +11,13 @@ export const dynamic = "force-dynamic"
 export default async function MessagePageServer(props: MessagePageServerProps) {
   const { slug: messageId } = props.params
 
-  const event = await getAoEventById(messageId)
+  const message = await getMessageById(messageId)
 
-  if (!event) {
+  if (!message) {
     return <div>Not Found</div>
   }
 
+  // TODO move inside
   let data = ""
   try {
     const dataResponse = await fetch(`https://arweave.net/${messageId}`)
@@ -25,5 +26,5 @@ export default async function MessagePageServer(props: MessagePageServerProps) {
     console.log("Arweave.net error:", error)
   }
 
-  return <MessagePage event={event} data={data} />
+  return <MessagePage message={message} data={data} />
 }

@@ -1,9 +1,19 @@
 "use client"
 
-import { Button, CircularProgress, Paper, Stack, TextField, Typography } from "@mui/material"
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Paper,
+  Stack,
+  Tabs,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material"
 
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import { ChartDataItem, Graph } from "@/components/Graph"
 import { IdBlock } from "@/components/IdBlock"
@@ -12,32 +22,44 @@ import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { SectionInfo } from "@/components/SectionInfo"
 import { SectionInfoWithChip } from "@/components/SectionInfoWithChip"
 import { Subheading } from "@/components/Subheading"
+import { TabWithCount } from "@/components/TabWithCount"
 import { TagsSection } from "@/components/TagsSection"
 import { supabase } from "@/lib/supabase"
 
 import { AoEvent } from "@/services/aoscan"
-import { AoMessage, normalizeAoEvent, normalizeTags } from "@/utils/ao-event-utils"
+import { AoMessage } from "@/utils/ao-event-utils"
 import { truncateId } from "@/utils/data-utils"
-import { formatRelative } from "@/utils/date-utils"
+import { formatFullDate, formatRelative } from "@/utils/date-utils"
+
+import { formatNumber } from "@/utils/number-utils"
 
 import { ComputeResult } from "./ComputeResult"
-import MessagesTable from "./MessagesTable"
+import { ResultingMessages } from "./ResultingMessages"
 
 type MessagePageProps = {
-  event: AoEvent
+  message: AoMessage
   data: string
 }
 
 export function MessagePage(props: MessagePageProps) {
-  const { event, data } = props
-  const normalizedEvent = useMemo(() => normalizeAoEvent(event), [event])
+  const { message, data } = props
 
-  const { id: messageId, from, type, blockHeight, created, to } = normalizedEvent
-  const { tags, pushedFor } = normalizeTags(event.tags_flat)
+  const {
+    id: messageId,
+    from,
+    type,
+    blockHeight,
+    created,
+    to,
+    tags,
+    systemTags,
+    userTags,
+  } = message
+
+  const pushedFor = tags["Pushed-For"]
 
   const [loading, setLoading] = useState(true)
   const [graphData, setChartData] = useState<ChartDataItem[]>([])
-  const [linkedMessages, setLinkedMessages] = useState<AoMessage[]>([])
 
   useEffect(() => {
     setLoading(true)
@@ -57,12 +79,6 @@ export function MessagePage(props: MessagePageProps) {
         const { graph, messages } = data
 
         setChartData(graph)
-        setLinkedMessages(
-          messages
-            // .filter((x) => x.id !== messageId)
-            .map(normalizeAoEvent)
-            .sort((a, b) => b.created.getTime() - a.created.getTime()),
-        )
         setLoading(false)
       })
   }, [messageId])
@@ -75,6 +91,13 @@ export function MessagePage(props: MessagePageProps) {
   const handleLinkClick = useCallback((from: string, to: string) => {
     setTableFilter({ from, to })
   }, [])
+
+  const [activeTab, setActiveTab] = useState(0)
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setActiveTab(newValue)
+  }
+
+  const [resultingCount, setResultingCount] = useState<number>()
 
   return (
     <>
@@ -117,14 +140,28 @@ export function MessagePage(props: MessagePageProps) {
               )}
               <SectionInfo
                 title="Block Height"
-                value={<IdBlock label={String(blockHeight)} href={`/block/${blockHeight}`} />}
+                value={
+                  <IdBlock
+                    label={formatNumber(blockHeight)}
+                    value={String(blockHeight)}
+                    href={`/block/${blockHeight}`}
+                  />
+                }
               />
-              <SectionInfo title="Created" value={formatRelative(created)} />
+              <SectionInfo
+                title="Created"
+                value={
+                  <Tooltip title={formatFullDate(created)}>
+                    <span>{formatRelative(created)}</span>
+                  </Tooltip>
+                }
+              />
             </Stack>
           </Grid2>
           <Grid2 xs={12} lg={6}>
             <Stack gap={4}>
-              <TagsSection tags={tags} />
+              <TagsSection label="Tags" tags={userTags} />
+              <TagsSection label="System Tags" tags={systemTags} />
               <ComputeResult messageId={messageId} processId={to} />
               <Stack gap={1} justifyContent="stretch">
                 <Typography variant="subtitle2" color="text.secondary">
@@ -160,28 +197,26 @@ export function MessagePage(props: MessagePageProps) {
             </Stack>
           </Grid2>
         </Grid2>
-        {linkedMessages.length > 0 && (
-          <div>
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
-              <Typography
-                variant="subtitle1"
-                sx={{
-                  textTransform: "uppercase",
-                  marginBottom: 3,
-                  marginTop: 6,
-                }}
-              >
-                Linked messages
-              </Typography>
-              {tableFilter && (
-                <Button size="small" variant="outlined" onClick={() => setTableFilter(null)}>
-                  Clear filter
-                </Button>
-              )}
-            </Stack>
-            <MessagesTable data={linkedMessages} tableFilter={tableFilter} />
-          </div>
-        )}
+        <div>
+          <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Tabs value={activeTab} onChange={handleChange} textColor="primary">
+              <TabWithCount value={0} label="Resulting messages" chipValue={resultingCount} />
+            </Tabs>
+            {tableFilter && (
+              <Button size="small" variant="outlined" onClick={() => setTableFilter(null)}>
+                Clear filter
+              </Button>
+            )}
+          </Stack>
+          <Box sx={{ marginX: -2 }}>
+            <ResultingMessages
+              messageId={messageId}
+              entityId={from}
+              open={activeTab === 0}
+              onCountReady={setResultingCount}
+            />
+          </Box>
+        </div>
       </Stack>
     </>
   )

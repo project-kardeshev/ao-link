@@ -11,7 +11,9 @@ export type AoMessage = {
   schedulerId: string
   created: Date
   action: string
-  tags: Record<string, any>
+  tags: Record<string, string>
+  systemTags: Record<string, string>
+  userTags: Record<string, string>
   cursor?: string
 }
 
@@ -39,6 +41,8 @@ export function normalizeAoEvent(event: AoEvent): AoMessage {
     created,
     action,
     tags: tags_flat,
+    systemTags: {},
+    userTags: {},
   }
 }
 
