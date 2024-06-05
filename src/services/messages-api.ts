@@ -4,10 +4,11 @@ import { AoMessage, TokenTransferMessage } from "@/types"
 
 import { TransactionsResponse, parseAoMessage, parseTokenEvent } from "@/utils/arweave-utils"
 
-import { goldsky } from "./graphql-client"
+import { arweaveNet, goldsky } from "./graphql-client"
 
 // const AO_NETWORK_IDENTIFIER = '{ name: "SDK", values: ["aoconnect"] }'
-const AO_NETWORK_IDENTIFIER = '{ name: "Variant", values: ["ao.TN.1"] }'
+// const AO_NETWORK_IDENTIFIER = '{ name: "Variant", values: ["ao.TN.1"] }'
+const AO_NETWORK_IDENTIFIER = '{ name: "Data-Protocol", values: ["ao"] }'
 
 // TODO
 // { name: "owner_address", values: [$entityId] }
@@ -481,7 +482,7 @@ const messagesForBlockQuery = (includeCount = false) => gql`
   ${messageFields}
 `
 
-export async function getMessages(
+export async function getMessagesForBlock(
   limit = 100,
   cursor = "",
   ascending: boolean,
@@ -496,6 +497,68 @@ export async function getMessages(
         cursor,
         //
         blockHeight,
+      })
+      .toPromise()
+    const { data } = result
+
+    if (!data) return [0, []]
+
+    const { count, edges } = data.transactions
+    const events = edges.map(parseAoMessage)
+
+    return [count, events]
+  } catch (error) {
+    return [0, []]
+  }
+}
+
+const allMessagesQuery = gql`
+  query (
+    $limit: Int!
+    $sortOrder: SortOrder!
+    $cursor: String
+  ) {
+    transactions(
+      sort: $sortOrder
+      first: $limit
+      after: $cursor
+
+      tags: [${AO_NETWORK_IDENTIFIER}]
+    ) {
+      edges {
+        cursor
+        node {
+          id
+          recipient
+          block {
+            timestamp
+            height
+          }
+          tags {
+            name
+            value
+          }
+          owner {
+            address
+          }
+        }
+      }
+    }
+  }
+`
+
+export async function getAllMessages(
+  limit = 100,
+  cursor = "",
+  ascending: boolean,
+): Promise<[number | undefined, AoMessage[]]> {
+  try {
+    const result = await arweaveNet
+      .query<TransactionsResponse>(allMessagesQuery, {
+        limit,
+        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        cursor,
+        //
       })
       .toPromise()
     const { data } = result

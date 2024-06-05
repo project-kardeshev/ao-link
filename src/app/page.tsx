@@ -1,6 +1,12 @@
+"use client"
+
+import { Box, Skeleton, Stack } from "@mui/material"
+
+import { useEffect, useState } from "react"
+
 import { AreaChart } from "@/components/Charts/AreaChart"
 
-import EventsTable from "@/page-components/HomePage/EventsTable"
+import { Subheading } from "@/components/Subheading"
 import {
   getMessageStats,
   getModuleStats,
@@ -8,54 +14,72 @@ import {
   getTotalMessages,
   getUserStats,
 } from "@/services/aometrics"
-import { getLatestAoEvents } from "@/services/aoscan"
-import { FilterOption } from "@/types"
-import { normalizeAoEvent } from "@/utils/ao-event-utils"
+
+import { HighchartAreaDataServer } from "@/types"
+
+import { AllMessagesTable } from "./AllMessagesTable"
 
 export const dynamic = "force-dynamic"
 
-type HomePageProps = {
-  searchParams?: {
-    filter?: FilterOption
-  }
-}
+export default function HomePage() {
+  const [stats, setStats] = useState<
+    [
+      HighchartAreaDataServer[],
+      number,
+      HighchartAreaDataServer[],
+      HighchartAreaDataServer[],
+      HighchartAreaDataServer[],
+    ]
+  >([[], 0, [], [], [], []] as any)
 
-export default async function HomePage(props: HomePageProps) {
-  const { searchParams = {} } = props
-  const { filter } = searchParams
-  const pageSize = 25
+  useEffect(() => {
+    Promise.all([
+      getMessageStats(),
+      getTotalMessages(),
+      getModuleStats(),
+      getUserStats(),
+      getProcessStats(),
+    ]).then(setStats)
+  }, [])
 
-  const [events, messages, totalMessages, modules, users, processes] = await Promise.all([
-    getLatestAoEvents(pageSize, 0, filter),
-    getMessageStats(),
-    getTotalMessages(),
-    getModuleStats(),
-    getUserStats(),
-    getProcessStats(),
-  ])
-
-  let initialTableData = events.map(normalizeAoEvent)
+  const [messages, totalMessages, modules, users, processes] = stats
 
   return (
-    <main>
-      <div className="flex justify-between flex-wrap mt-[24px] mx-[-24px]">
-        <div className="container w-1/2 lg:w-1/4 px-4 min-h-[150px] relative">
-          <AreaChart data={messages} titleText="TOTAL MESSAGES" overrideValue={totalMessages} />
-          <div className="separator"></div>
+    <Stack component="main" gap={2}>
+      {messages.length === 0 ? (
+        <div className="flex justify-between flex-wrap mt-[24px] mx-[-24px]">
+          <div className="container px-4 min-h-[150px] relative">
+            <Stack gap={10} direction="row">
+              <Skeleton width={"100%"} />
+              <Skeleton width={"100%"} />
+              <Skeleton width={"100%"} />
+              <Skeleton width={"100%"} />
+            </Stack>
+          </div>
         </div>
-        <div className="container w-1/2 lg:w-1/4 px-4 min-h-[150px] relative">
-          <AreaChart data={users} titleText="USERS" />
-          <div className="separator hidden lg:block"></div>
+      ) : (
+        <div className="flex justify-between flex-wrap mt-[24px] mx-[-24px]">
+          <div className="container w-1/2 lg:w-1/4 px-4 min-h-[150px] relative">
+            <AreaChart data={messages} titleText="TOTAL MESSAGES" overrideValue={totalMessages} />
+            <div className="separator"></div>
+          </div>
+          <div className="container w-1/2 lg:w-1/4 px-4 min-h-[150px] relative">
+            <AreaChart data={users} titleText="USERS" />
+            <div className="separator hidden lg:block"></div>
+          </div>
+          <div className="container w-1/2 lg:w-1/4 px-4 min-h-[150px] relative">
+            <AreaChart data={processes} titleText="PROCESSES" />
+            <div className="separator"></div>
+          </div>
+          <div className="container w-1/2 lg:w-1/4 px-4 min-h-[150px] relative">
+            <AreaChart data={modules} titleText="MODULES" />
+          </div>
         </div>
-        <div className="container w-1/2 lg:w-1/4 px-4 min-h-[150px] relative">
-          <AreaChart data={processes} titleText="PROCESSES" />
-          <div className="separator"></div>
-        </div>
-        <div className="container w-1/2 lg:w-1/4 px-4 min-h-[150px] relative">
-          <AreaChart data={modules} titleText="MODULES" />
-        </div>
-      </div>
-      <EventsTable initialData={initialTableData} pageSize={pageSize} />
-    </main>
+      )}
+      <Subheading type="Latest messages" />
+      <Box sx={{ marginX: -2 }}>
+        <AllMessagesTable open />
+      </Box>
+    </Stack>
   )
 }

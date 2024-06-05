@@ -38,7 +38,7 @@ export type AoMessage = {
   from: string
   blockHeight: number | null
   schedulerId: string
-  created: Date
+  created: Date | null
   action: string
   tags: Record<string, string>
   systemTags: Record<string, string>

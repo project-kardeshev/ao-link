@@ -20,7 +20,7 @@ export type Block = {
 export type TransactionNode = {
   id: string
   anchor?: string
-  ingested_at: number
+  ingested_at?: number
   signature?: string
   recipient: string
   owner: Owner
@@ -104,7 +104,8 @@ export function parseAoMessage(edge: TransactionEdge): AoMessage {
   const from = tags["Forwarded-For"] || tags["From-Process"] || node.owner.address
   const schedulerId = tags["Scheduler"]
   const action = tags["Action"]
-  const created = new Date((node.block ? node.block.timestamp : node.ingested_at || 0) * 1000)
+  const createdTimestamp = node.block ? node.block.timestamp : node.ingested_at
+  const created = createdTimestamp ? new Date(createdTimestamp * 1000) : null
   const to = node.recipient.trim()
 
   return {
