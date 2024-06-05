@@ -54,7 +54,7 @@ export function ModulePage(props: ModulePageProps) {
             <SectionInfo title="Memory limit" value={message.tags["Memory-Limit"]} />
             <SectionInfo
               title="Compute limit"
-              value={formatNumber(message.tags["Compute-Limit"])}
+              value={formatNumber(parseInt(message.tags["Compute-Limit"]))}
             />
             <SectionInfo title="Data protocol" value={message.tags["Data-Protocol"]} />
             <SectionInfo title="Input encoding" value={message.tags["Input-Encoding"]} />

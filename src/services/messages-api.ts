@@ -2,11 +2,7 @@ import { gql } from "urql"
 
 import { AoMessage, TokenEvent } from "@/utils/ao-event-utils"
 
-import {
-  TransactionsResponse,
-  parseNormalizedAoEvent,
-  parseTokenEvent,
-} from "@/utils/arweave-utils"
+import { TransactionsResponse, parseAoMessage, parseTokenEvent } from "@/utils/arweave-utils"
 
 import { goldsky } from "./graphql-client"
 
@@ -27,6 +23,7 @@ const messageFields = gql`
           timestamp
           height
         }
+        ingested_at
         tags {
           name
           value
@@ -92,7 +89,7 @@ export async function getOutgoingMessages(
     if (!data) return [0, []]
 
     const { count, edges } = data.transactions
-    const events = edges.map(parseNormalizedAoEvent)
+    const events = edges.map(parseAoMessage)
 
     return [count, events]
   } catch (error) {
@@ -147,7 +144,7 @@ export async function getIncomingMessages(
     if (!data) return [0, []]
 
     const { count, edges } = data.transactions
-    const events = edges.map(parseNormalizedAoEvent)
+    const events = edges.map(parseAoMessage)
 
     return [count, events]
   } catch (error) {
@@ -261,7 +258,7 @@ export async function getSpawnedProcesses(
     if (!data) return [0, []]
 
     const { count, edges } = data.transactions
-    const events = edges.map(parseNormalizedAoEvent)
+    const events = edges.map(parseAoMessage)
 
     return [count, events]
   } catch (error) {
@@ -290,7 +287,7 @@ export async function getMessageById(id: string): Promise<AoMessage | undefined>
   if (!data) return
   if (!data.transactions.edges.length) return
 
-  return parseNormalizedAoEvent(data.transactions.edges[0])
+  return parseAoMessage(data.transactions.edges[0])
 }
 
 /**
@@ -340,7 +337,7 @@ export async function getSpawnedProcessesFromModule(
     if (!data) return [0, []]
 
     const { count, edges } = data.transactions
-    const events = edges.map(parseNormalizedAoEvent)
+    const events = edges.map(parseAoMessage)
 
     return [count, events]
   } catch (error) {
@@ -392,7 +389,7 @@ export async function getModules(
     if (!data) return [0, []]
 
     const { count, edges } = data.transactions
-    const events = edges.map(parseNormalizedAoEvent)
+    const events = edges.map(parseAoMessage)
 
     return [count, events]
   } catch (error) {
@@ -447,7 +444,7 @@ export async function getResultingMessages(
     if (!data) return [0, []]
 
     const { count, edges } = data.transactions
-    const events = edges.map(parseNormalizedAoEvent)
+    const events = edges.map(parseAoMessage)
 
     return [count, events]
   } catch (error) {

@@ -7,7 +7,7 @@ export type AoMessage = {
   type: "Message" | "Process" | "Checkpoint" | "Assignment"
   to: string
   from: string
-  blockHeight: number
+  blockHeight: number | null
   schedulerId: string
   created: Date
   action: string

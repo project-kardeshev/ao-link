@@ -76,7 +76,7 @@ export const systemTagNames = [
   "Name",
 ]
 
-export function parseNormalizedAoEvent(edge: TransactionEdge): AoMessage {
+export function parseAoMessage(edge: TransactionEdge): AoMessage {
   const { node, cursor } = edge
 
   const systemTags: Record<string, string> = {}
@@ -100,7 +100,7 @@ export function parseNormalizedAoEvent(edge: TransactionEdge): AoMessage {
   delete systemTags["Name"]
 
   const type = tags["Type"] as AoMessage["type"]
-  const blockHeight = node.block ? node.block.height : 0
+  const blockHeight = node.block ? node.block.height : null
   const from = tags["Forwarded-For"] || tags["From-Process"] || node.owner.address
   const schedulerId = tags["Scheduler"]
   const action = tags["Action"]
@@ -124,7 +124,7 @@ export function parseNormalizedAoEvent(edge: TransactionEdge): AoMessage {
 }
 
 export function parseTokenEvent(edge: TransactionEdge): TokenEvent {
-  const normalizedEvent = parseNormalizedAoEvent(edge)
+  const normalizedEvent = parseAoMessage(edge)
 
   const { id, created, action, from, to, tags } = normalizedEvent as any // TODO
 

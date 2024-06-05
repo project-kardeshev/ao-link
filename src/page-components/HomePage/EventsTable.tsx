@@ -258,7 +258,7 @@ const EventsTable = (props: EventTablesProps) => {
                     <td className="text-end p-2">
                       <Typography fontFamily={MonoFontFF} component="div" variant="inherit">
                         <IdBlock
-                          label={formatNumber(item.blockHeight)}
+                          label={formatNumber(item.blockHeight || 0)}
                           value={String(item.blockHeight)}
                           href={`/block/${item.blockHeight}`}
                         />

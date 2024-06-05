@@ -77,11 +77,15 @@ export function ProcessesTable(props: ProcessesTableProps) {
             </TableCell>
           )}
           <TableCell align="right">
-            <IdBlock
-              label={formatNumber(item.blockHeight)}
-              value={String(item.blockHeight)}
-              href={`/block/${item.blockHeight}`}
-            />
+            {item.blockHeight === null ? (
+              "Processing"
+            ) : (
+              <IdBlock
+                label={formatNumber(item.blockHeight)}
+                value={String(item.blockHeight)}
+                href={`/block/${item.blockHeight}`}
+              />
+            )}
           </TableCell>
           <TableCell align="right">
             <Tooltip title={formatFullDate(item.created)}>

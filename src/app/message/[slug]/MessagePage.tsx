@@ -141,11 +141,15 @@ export function MessagePage(props: MessagePageProps) {
               <SectionInfo
                 title="Block Height"
                 value={
-                  <IdBlock
-                    label={formatNumber(blockHeight)}
-                    value={String(blockHeight)}
-                    href={`/block/${blockHeight}`}
-                  />
+                  blockHeight === null ? (
+                    "Processing"
+                  ) : (
+                    <IdBlock
+                      label={formatNumber(blockHeight)}
+                      value={String(blockHeight)}
+                      href={`/block/${blockHeight}`}
+                    />
+                  )
                 }
               />
               <SectionInfo

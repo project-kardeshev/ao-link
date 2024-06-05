@@ -60,17 +60,21 @@ export function ModulesTable(props: ModulesTableProps) {
           <TableCell align="right">
             {item.tags["Compute-Limit"] === undefined
               ? "Unknown"
-              : formatNumber(item.tags["Compute-Limit"])}
+              : formatNumber(parseInt(item.tags["Compute-Limit"]))}
           </TableCell>
           <TableCell align="right">
             <RetryableProcessCount moduleId={item.id} />
           </TableCell>
           <TableCell align="right">
-            <IdBlock
-              label={formatNumber(item.blockHeight)}
-              value={String(item.blockHeight)}
-              href={`/block/${item.blockHeight}`}
-            />
+            {item.blockHeight === null ? (
+              "Processing"
+            ) : (
+              <IdBlock
+                label={formatNumber(item.blockHeight)}
+                value={String(item.blockHeight)}
+                href={`/block/${item.blockHeight}`}
+              />
+            )}
           </TableCell>
           <TableCell align="right">
             <Tooltip title={formatFullDate(item.created)}>
