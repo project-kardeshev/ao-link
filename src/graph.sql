@@ -3,7 +3,7 @@ WITH RECURSIVE related_messages AS (
     SELECT *
     FROM public.ao_events e
     WHERE
-        NOT is_process AND e.tags_flat ->> 'Cranked-For' = p_id
+        NOT is_process AND e.tags_flat ->> 'Pushed-For' = p_id
     UNION DISTINCT
     SELECT *
     FROM public.ao_events e
@@ -35,7 +35,7 @@ WITH RECURSIVE related_messages AS (
         AS src,
         target AS dest,
         tags_flat ->> 'Action' AS action,
-        tags_flat ->> 'Cranked-For' AS cranked_for,
+        tags_flat ->> 'Pushed-For' AS cranked_for,
         height
     FROM recent_messages
     WHERE (NOT is_process AND id = p_id) OR (is_process AND target = p_id)
@@ -45,10 +45,10 @@ WITH RECURSIVE related_messages AS (
         e.tags_flat ->> 'From-Process' AS src,
         e.target AS dest,
         e.tags_flat ->> 'Action' AS action,
-        COALESCE(e.tags_flat ->> 'Cranked-For', e.tags_flat ->> 'Pushed-For') AS cranked_for,
+        COALESCE(e.tags_flat ->> 'Pushed-For', e.tags_flat ->> 'Pushed-For') AS cranked_for,
         e.height
     FROM recent_messages e
-    INNER JOIN initial_messages im ON COALESCE(e.tags_flat ->> 'Cranked-For', e.tags_flat ->> 'Pushed-For') = im.id
+    INNER JOIN initial_messages im ON COALESCE(e.tags_flat ->> 'Pushed-For', e.tags_flat ->> 'Pushed-For') = im.id
 ), aggregated_messages AS (
     SELECT * FROM initial_messages
 ), processes_users AS (
