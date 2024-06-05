@@ -1,15 +1,15 @@
 import { Box, Link, Skeleton, Tooltip } from "@mui/material"
 import React, { useCallback, useEffect } from "react"
 
-import { getProcesses } from "@/services/messages-api"
+import { getIncomingMessages } from "@/services/messages-api"
 import { timeout } from "@/utils/utils"
 
-type RetryableProcessCountProps = {
-  moduleId: string
+type RetryableMsgCountProps = {
+  processId: string
 }
 
-export function RetryableProcessCount(props: RetryableProcessCountProps) {
-  const { moduleId } = props
+export function RetryableMsgCount(props: RetryableMsgCountProps) {
+  const { processId } = props
 
   const [loading, setLoading] = React.useState(true)
   const [error, setError] = React.useState("")
@@ -18,7 +18,7 @@ export function RetryableProcessCount(props: RetryableProcessCountProps) {
   const fetchValue = useCallback(async () => {
     setLoading(true)
     setError("")
-    Promise.race([getProcesses(1, undefined, true, moduleId), timeout(5_000)])
+    Promise.race([getIncomingMessages(1, undefined, true, processId), timeout(5_000)])
       .then((value: any) => {
         setCount(value[0])
       })
@@ -26,7 +26,7 @@ export function RetryableProcessCount(props: RetryableProcessCountProps) {
         setError(String(error))
       })
       .finally(() => setLoading(false))
-  }, [moduleId])
+  }, [processId])
 
   useEffect(() => {
     fetchValue()

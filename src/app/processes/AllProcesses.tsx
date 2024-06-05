@@ -1,17 +1,18 @@
+"use client"
+
 import React from "react"
 
 import { getProcesses } from "@/services/messages-api"
 
-import { ProcessesTable } from "./ProcessesTable"
+import { ProcessesTable } from "../entity/[slug]/ProcessesTable"
 
-type ProcessesByModuleProps = {
-  moduleId: string
+type AllProcessesProps = {
   open: boolean
   onCountReady?: (count: number) => void
 }
 
-export function ProcessesByModule(props: ProcessesByModuleProps) {
-  const { moduleId, open, onCountReady } = props
+export function AllProcesses(props: AllProcessesProps) {
+  const { open, onCountReady } = props
 
   if (!open) return null
 
@@ -19,15 +20,9 @@ export function ProcessesByModule(props: ProcessesByModuleProps) {
 
   return (
     <ProcessesTable
-      hideModuleColumn
       pageSize={pageSize}
       fetchFunction={async (offset, ascending, sortField, lastRecord) => {
-        const [count, records] = await getProcesses(
-          pageSize,
-          lastRecord?.cursor,
-          ascending,
-          moduleId,
-        )
+        const [count, records] = await getProcesses(pageSize, lastRecord?.cursor, ascending)
 
         if (count !== undefined && onCountReady) {
           onCountReady(count)

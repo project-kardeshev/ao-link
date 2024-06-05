@@ -293,7 +293,7 @@ export async function getMessageById(id: string): Promise<AoMessage | undefined>
 /**
  * WARN This query fails if both count and cursor are set
  */
-const spawnedProcessesFromModuleQuery = (includeCount = false) => gql`
+const processesQuery = (includeCount = false) => gql`
   query (
     $moduleId: String!
     $limit: Int!
@@ -315,16 +315,16 @@ const spawnedProcessesFromModuleQuery = (includeCount = false) => gql`
   ${messageFields}
 `
 
-export async function getSpawnedProcessesFromModule(
+export async function getProcesses(
   limit = 100,
   cursor = "",
   ascending: boolean,
   //
-  moduleId: string,
+  moduleId = "",
 ): Promise<[number | undefined, AoMessage[]]> {
   try {
     const result = await goldsky
-      .query<TransactionsResponse>(spawnedProcessesFromModuleQuery(!cursor), {
+      .query<TransactionsResponse>(processesQuery(!cursor), {
         limit,
         sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
         cursor,
@@ -337,9 +337,9 @@ export async function getSpawnedProcessesFromModule(
     if (!data) return [0, []]
 
     const { count, edges } = data.transactions
-    const events = edges.map(parseAoMessage)
+    const records = edges.map(parseAoMessage)
 
-    return [count, events]
+    return [count, records]
   } catch (error) {
     return [0, []]
   }

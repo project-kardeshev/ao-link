@@ -1,15 +1,24 @@
-import ProcessesTable from "@/page-components/ProcessesPage/ProcessesTable"
-import { getProcesses } from "@/services/aoscan"
+"use client"
 
-export const dynamic = "force-dynamic"
+import { Box, Stack } from "@mui/material"
 
-export default async function ProcessesPage() {
-  const pageSize = 25
-  const processes = await getProcesses(pageSize, 0)
+import { useState } from "react"
+
+import { Subheading } from "@/components/Subheading"
+
+import { formatNumber } from "@/utils/number-utils"
+
+import { AllProcesses } from "./AllProcesses"
+
+export default function ModulesPage() {
+  const [totalCount, setTotalCount] = useState<number>()
 
   return (
-    <main className="min-h-screen mb-6">
-      <ProcessesTable initialData={processes} pageSize={pageSize} />
-    </main>
+    <Stack component="main" gap={2} paddingY={4}>
+      <Subheading type="Processes" value={totalCount && formatNumber(totalCount)} />
+      <Box sx={{ marginX: -2 }}>
+        <AllProcesses open onCountReady={setTotalCount} />
+      </Box>
+    </Stack>
   )
 }

@@ -16,7 +16,7 @@ export function RetryableBalance(props: RetryableBalanceProps) {
   const { entityId, tokenInfo } = props
 
   const [loading, setLoading] = React.useState(true)
-  const [error, setError] = React.useState("asd")
+  const [error, setError] = React.useState("")
   const [balance, setBalance] = React.useState<number | null>(null)
 
   const fetchBalance = useCallback(async () => {

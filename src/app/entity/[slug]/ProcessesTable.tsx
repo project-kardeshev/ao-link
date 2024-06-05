@@ -10,6 +10,8 @@ import { TYPE_PATH_MAP, truncateId } from "@/utils/data-utils"
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
 import { formatNumber } from "@/utils/number-utils"
 
+import { RetryableMsgCount } from "./RetryableMsgCount"
+
 type ProcessesTableProps = Pick<AsyncTableProps, "fetchFunction" | "pageSize"> & {
   hideModuleColumn?: boolean
 }
@@ -24,6 +26,7 @@ export function ProcessesTable(props: ProcessesTableProps) {
     { label: "Name" },
     // { label: "Tags" },
     { label: "Module" },
+    { label: "Incoming messages", align: "right", sx: { width: 160 } },
     {
       label: "Block Height",
       sx: { width: 160 },
@@ -64,9 +67,6 @@ export function ProcessesTable(props: ProcessesTableProps) {
             <IdBlock label={truncateId(item.id)} value={item.id} href={`/entity/${item.id}`} />
           </TableCell>
           <TableCell>{item.tags["Name"]}</TableCell>
-          {/* <TableCell>
-       TODO
-          </TableCell> */}
           {!hideModuleColumn && (
             <TableCell>
               <IdBlock
@@ -76,6 +76,9 @@ export function ProcessesTable(props: ProcessesTableProps) {
               />
             </TableCell>
           )}
+          <TableCell align="right">
+            <RetryableMsgCount processId={item.id} />
+          </TableCell>
           <TableCell align="right">
             {item.blockHeight === null ? (
               "Processing"

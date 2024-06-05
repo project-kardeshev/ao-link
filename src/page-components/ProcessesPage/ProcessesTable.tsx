@@ -28,6 +28,9 @@ type ProcessesTableProps = {
   moduleId?: string
 }
 
+/**
+ * @deprecated
+ */
 const ProcessesTable = (props: ProcessesTableProps) => {
   const { initialData, pageSize, moduleId } = props
 
