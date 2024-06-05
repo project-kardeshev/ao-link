@@ -19,11 +19,15 @@ export default async function MessagePageServer(props: MessagePageServerProps) {
 
   // TODO move inside
   let data = ""
-  try {
-    const dataResponse = await fetch(`https://arweave.net/${messageId}`)
-    data = await dataResponse.text()
-  } catch (error) {
-    console.log("Arweave.net error:", error)
+  if (message.type === "Checkpoint") {
+    data = "Message too long"
+  } else {
+    try {
+      const dataResponse = await fetch(`https://arweave.net/${messageId}`)
+      data = await dataResponse.text()
+    } catch (error) {
+      console.log("Arweave.net error:", error)
+    }
   }
 
   return <MessagePage message={message} data={data} />
