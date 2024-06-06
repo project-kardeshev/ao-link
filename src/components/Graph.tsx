@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 "use client"
 import * as d3 from "d3"
 import { type Simulation, type SimulationNodeDatum } from "d3-force"
@@ -50,21 +48,33 @@ const drag = (simulation: Simulation<CustomNode, undefined>, largeGraph: boolean
 
 export interface ChartDataItem {
   source: string
+  source_id: string
   target: string
-  type: string
+  target_id: string
+  type: "User Message" | "Cranked Message"
   action: string
 }
 
 interface CustomNode extends SimulationNodeDatum {
   id: string
   label: string
+  x: number
+  y: number
 }
 
 interface CustomLink extends SimulationNodeDatum {
-  source: string | CustomNode
-  target: string | CustomNode
-  type: string
+  source: CustomNode
+  target: CustomNode
+  type: "User Message" | "Cranked Message"
   action: string
+}
+
+const COLORS = {
+  lightGreen: "#57E51A",
+  green: "#6BB24C",
+  lightRed: "#596EA6",
+  red: "#D52C2C",
+  blue: "#0046FF",
 }
 
 const defaultAlphaDecay = 0.0228
@@ -74,10 +84,28 @@ interface GraphProps {
   onLinkClick: (from: string, to: string) => void
 }
 
+const SIZES = {
+  nodeRadius: 8,
+  linkWidth: 2,
+  arrowWidth: 4,
+  arrowDistance: 20,
+  distance: 200,
+  fontSize: "0.75rem",
+}
+
+// const SIZES = {
+//   nodeRadius: 16,
+//   linkWidth: 8,
+//   arrowWidth: 4,
+//   arrowDistance: 14,
+//   distance: 300,
+// fontSize: "1rem",
+// }
+
 function BaseGraph(props: GraphProps) {
   const { data: chartData, onLinkClick } = props
 
-  const svgRef = useRef(null)
+  const svgRef = useRef<SVGSVGElement>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -107,15 +135,15 @@ function BaseGraph(props: GraphProps) {
             ? original.source
             : original.target
           : ""
-        return { id, label }
+        return { id, label, x: 0, y: 0 }
       },
     )
     const links: CustomLink[] = chartData.map((d) => ({
       ...d,
-      source: nodes.find((n) => n.id === d.source_id),
-      target: nodes.find((n) => n.id === d.target_id),
+      source: nodes.find((n) => n.id === d.source_id) as CustomNode,
+      target: nodes.find((n) => n.id === d.target_id) as CustomNode,
     }))
-    const myColors = ["#6BB24C"]
+    const myColors = [COLORS.green]
     const color = d3.scaleOrdinal(types, myColors)
 
     const largeGraph = nodes.length > 20
@@ -126,16 +154,42 @@ function BaseGraph(props: GraphProps) {
       .force(
         "link",
         d3
-          .forceLink<CustomNode, CustomLink<CustomNode>>(links) // Assuming CustomLink is your link type
+          .forceLink<CustomNode, CustomLink>(links) // Assuming CustomLink is your link type
           .id((d: SimulationNodeDatum, i?: number, nodesData?: SimulationNodeDatum[]) => {
             // Use type assertion here to tell TypeScript that `d` is indeed a CustomNode
             return (d as CustomNode).id
           })
-          .distance(200),
-      ) // Set fixed distance to 100
+          .distance(SIZES.distance),
+      )
       .force("charge", d3.forceManyBody().strength(-400))
       .force("x", d3.forceX())
       .force("y", d3.forceY())
+
+    // Link curves
+    const link = svg
+      .append("g")
+      .attr("fill", "none")
+      .attr("stroke-width", SIZES.linkWidth)
+      .selectAll("path")
+      .data(links)
+      .join("path")
+      .attr("id", (d) => `link-${d.source.id}-${d.target.id}`)
+      .attr("stroke", (d) => (d.type === "User Message" ? COLORS.red : COLORS.green))
+      .attr("marker-end", (d) => `url(${new URL(`#arrow-${d.type}`, location.href)})`)
+      .style("cursor", "pointer")
+      .on("click", function (event, d) {
+        onLinkClick(d.source.id, d.target.id)
+      })
+      .on("mouseover", function (event, d) {
+        svg
+          .select(`#${CSS.escape(`link-text-${d.source.id}-${d.target.id}`)}`)
+          .attr("visibility", "visible")
+      })
+      .on("mouseout", function (event, d) {
+        svg
+          .select(`#${CSS.escape(`link-text-${d.source.id}-${d.target.id}`)}`)
+          .attr("visibility", "hidden")
+      })
 
     const linkText = svg
       .append("g")
@@ -144,33 +198,15 @@ function BaseGraph(props: GraphProps) {
       .data(links)
       .join("text")
       .attr("id", (d) => `link-text-${d.source.id}-${d.target.id}`)
+      .style("font-size", SIZES.fontSize)
+      .style("font-weight", "bold")
+      .style("paint-order", "stroke")
+      .style("stroke", "#fff")
+      .style("stroke-width", "4px")
       .attr("visibility", "hidden")
       .text((d) => d.action) // Use the 'action' property for labeling
 
-    // Per-type markers, as they don't inherit styles.
-    const link = svg
-      .append("g")
-      .attr("fill", "none")
-      .attr("stroke-width", 2)
-      .selectAll("path")
-      .data(links)
-      .join("path")
-      .attr("id", (d) => `link-${d.source.id}-${d.target.id}`)
-      .attr("stroke", (d) => (d.type === "User Message" ? "#57E51A" : "#6BB24C")) // Set "#57E51A" for "User Message", and "#6BB24C" as default
-      .attr("marker-end", (d) => `url(${new URL(`#arrow-${d.type}`, location.href)})`)
-      .style("cursor", "pointer")
-      .on("click", function (event, d) {
-        onLinkClick(d.source.id, d.target.id)
-        // svg
-        //   .select(`#${CSS.escape(`#link-text-${d.source.id}-${d.target.id}`)}`)
-        //   .attr("visibility", "visible")
-      })
-      .on("mouseout", function (event, d) {
-        svg
-          .select(`#${CSS.escape(`#link-text-${d.source.id}-${d.target.id}`)}`)
-          .attr("visibility", "hidden")
-      })
-
+    // Node circles
     svg
       .append("defs")
       .selectAll("marker")
@@ -178,13 +214,13 @@ function BaseGraph(props: GraphProps) {
       .join("marker")
       .attr("id", (d) => `arrow-${d}`)
       .attr("viewBox", "0 -5 10 10")
-      .attr("refX", 20)
-      .attr("refY", -0.5)
-      .attr("markerWidth", 4)
-      .attr("markerHeight", 4)
+      .attr("refX", SIZES.arrowDistance)
+      .attr("refY", 0)
+      .attr("markerWidth", SIZES.arrowWidth)
+      .attr("markerHeight", SIZES.arrowWidth)
       .attr("orient", "auto")
       .append("path")
-      .attr("fill", (d) => (d === "User Message" ? "#57E51A" : color(d)))
+      .attr("fill", (d) => (d === "User Message" ? COLORS.red : color(d)))
       .attr("d", "M0,-5L10,0L0,5")
 
     const node = svg
@@ -202,20 +238,26 @@ function BaseGraph(props: GraphProps) {
       .append("circle")
       .attr("stroke", "white")
       .attr("stroke-width", 1.5)
-      .attr("r", 8)
+      .attr("r", SIZES.nodeRadius)
       .attr("fill", (d) => {
-        if (d.label === "This Process") return "#0046FF"
-        else if (d.label.startsWith("Process")) return "#596EA6"
-        else if (d.label === "User") return "#D52C2C"
-        else if (d.label.startsWith("User")) return "#6BB24C"
-        else return color(d.type) // Default color assignment for other cases
+        if (d.label === "This Process") return COLORS.blue
+        else if (d.label.startsWith("Process")) return COLORS.lightRed
+        else if (d.label === "User") return COLORS.red
+        else if (d.label.startsWith("User")) return COLORS.green
+        return "black"
       })
 
-    const text = node
+    // Add text to the nodes
+    node
       .append("text")
-      .attr("x", 10)
-      .attr("y", "0.31em")
       .text((d) => d.label)
+      .attr("x", 0)
+      .attr("y", 60)
+      .style("font-size", SIZES.fontSize)
+      .style("font-weight", "bold")
+      .style("paint-order", "stroke")
+      .style("stroke", "#fff")
+      .style("stroke-width", "4px")
       .style("visibility", "hidden") // Initially hide the text
       .style("pointer-events", "none") // Ensure the text doesn't interfere with mouse events
 
@@ -240,10 +282,16 @@ function BaseGraph(props: GraphProps) {
 
     // invalidation.then(() => simulation.stop());
     // Clean up the effect
+    const svgRefSaved = svgRef.current
+
     return () => {
-      svg.remove()
+      while (svgRefSaved?.firstChild) {
+        svgRefSaved.firstChild.remove()
+      }
       // Stop the simulation or any intervals/timers here
+      simulation.stop()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chartData]) // Re-run the effect when 'chartData' data changes
 
   return <svg ref={svgRef}></svg>
