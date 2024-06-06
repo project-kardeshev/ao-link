@@ -17,6 +17,7 @@
     "@permaweb/aoconnect": "^0.0.47",
     "@phosphor-icons/react": "^2.0.15",
     "@supabase/supabase-js": "^2.39.0",
+    "arweave-wallet-kit": "^1.0.4",
     "clsx": "^2.1.0",
     "d3": "^7.8.5",
     "date-fns": "^3.3.1",
