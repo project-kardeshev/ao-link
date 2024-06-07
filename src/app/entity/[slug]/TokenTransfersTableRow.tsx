@@ -2,6 +2,7 @@ import { TableCell, TableRow, Tooltip, Typography } from "@mui/material"
 import { useRouter } from "next/navigation"
 import React, { useEffect, useState } from "react"
 
+import { EntityBlock } from "@/components/EntityBlock"
 import { IdBlock } from "@/components/IdBlock"
 import { InOutLabel } from "@/components/InOutLabel"
 import { TokenAmountBlock } from "@/components/TokenAmountBlock"
@@ -50,21 +51,13 @@ export function TokenTransfersTableRow(props: TokenTransfersTableRowProps) {
         <IdBlock label={truncateId(item.id)} value={item.id} href={`/message/${item.id}`} />
       </TableCell>
       <TableCell>
-        <IdBlock
-          label={truncateId(item.sender)}
-          value={item.sender}
-          href={`/entity/${item.sender}`}
-        />
+        <EntityBlock entityId={item.sender} />
       </TableCell>
       <TableCell>
         <InOutLabel outbound={entityId === item.sender} />
       </TableCell>
       <TableCell>
-        <IdBlock
-          label={truncateId(item.recipient)}
-          value={item.recipient}
-          href={`/entity/${item.recipient}`}
-        />
+        <EntityBlock entityId={item.recipient} />
       </TableCell>
       <TableCell align="right">
         <Typography

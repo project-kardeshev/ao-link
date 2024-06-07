@@ -81,6 +81,8 @@ export const theme = extendTheme({
         tooltip: {
           fontSize: "0.9rem",
           textAlign: "center",
+          maxWidth: 400,
+          fontFamily: MonoFontFF,
         },
       },
     },

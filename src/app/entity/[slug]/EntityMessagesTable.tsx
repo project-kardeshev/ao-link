@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation"
 import React from "react"
 
 import { AsyncTable, AsyncTableProps, HeaderCell } from "@/components/AsyncTable"
+import { EntityBlock } from "@/components/EntityBlock"
 import { IdBlock } from "@/components/IdBlock"
 import { InOutLabel } from "@/components/InOutLabel"
 import { TypeBadge } from "@/components/TypeBadge"
@@ -68,17 +69,13 @@ export function EntityMessagesTable(props: EntityMessagesTableProps) {
           </TableCell>
           <TableCell>{item.action}</TableCell>
           <TableCell>
-            <IdBlock
-              label={truncateId(item.from)}
-              value={item.from}
-              href={`/entity/${item.from}`}
-            />
+            <EntityBlock entityId={item.from} />
           </TableCell>
           <TableCell>
             {entityId !== undefined && <InOutLabel outbound={entityId !== item.to} />}
           </TableCell>
           <TableCell>
-            <IdBlock label={truncateId(item.to)} value={item.to} href={`/entity/${item.to}`} />
+            <EntityBlock entityId={item.to} />
           </TableCell>
           {!hideBlockColumn && (
             <TableCell align="right">

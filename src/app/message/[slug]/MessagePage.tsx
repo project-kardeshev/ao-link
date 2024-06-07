@@ -14,6 +14,7 @@ import {
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { useEffect, useMemo, useState } from "react"
 
+import { EntityBlock } from "@/components/EntityBlock"
 import { ChartDataItem, Graph } from "@/components/Graph"
 import { IdBlock } from "@/components/IdBlock"
 
@@ -132,16 +133,8 @@ export function MessagePage(props: MessagePageProps) {
                 )}
               </Paper>
               <SectionInfoWithChip title="Type" value={type} />
-              <SectionInfo
-                title="From"
-                value={<IdBlock label={truncateId(from)} value={from} href={`/entity/${from}`} />}
-              />
-              {to && (
-                <SectionInfo
-                  title="To"
-                  value={<IdBlock label={truncateId(to)} value={to} href={`/entity/${to}`} />}
-                />
-              )}
+              <SectionInfo title="From" value={<EntityBlock entityId={from} />} />
+              {to && <SectionInfo title="To" value={<EntityBlock entityId={to} />} />}
               {pushedFor && (
                 <SectionInfo
                   title="Pushed for"

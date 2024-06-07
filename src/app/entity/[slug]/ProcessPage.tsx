@@ -5,6 +5,7 @@ import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { useMemo, useState } from "react"
 
 import { BalanceSection } from "@/components/BalanceSection"
+import { EntityBlock } from "@/components/EntityBlock"
 import { ChartDataItem, Graph } from "@/components/Graph"
 import { IdBlock } from "@/components/IdBlock"
 import { MonoFontFF } from "@/components/RootLayout/fonts"
@@ -107,10 +108,7 @@ export function ProcessPage(props: ProcessPageProps) {
               )}
             </Paper>
             <SectionInfoWithChip title="Type" value={type} />
-            <SectionInfo
-              title="Owner"
-              value={<IdBlock label={truncateId(owner)} value={owner} href={`/entity/${owner}`} />}
-            />
+            <SectionInfo title="Owner" value={<EntityBlock entityId={owner} />} />
             <SectionInfo
               title="Module"
               value={

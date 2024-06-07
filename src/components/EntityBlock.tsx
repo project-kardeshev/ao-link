@@ -1,9 +1,19 @@
 import React from "react"
 
+import { truncateId } from "@/utils/data-utils"
+
 import { IdBlock } from "./IdBlock"
 
-export function EntityBlock(props: { entityId: string }) {
-  const { entityId: entityId } = props
+type EntityBlockProps = { entityId: string; fullId?: boolean }
 
-  return <IdBlock label={entityId} value={entityId} href={`/entity/${entityId}`} />
+export function EntityBlock(props: EntityBlockProps) {
+  const { entityId, fullId } = props
+
+  return (
+    <IdBlock
+      label={fullId ? entityId : truncateId(entityId)}
+      value={entityId}
+      href={`/entity/${entityId}`}
+    />
+  )
 }

@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation"
 import React from "react"
 
 import { AsyncTable, AsyncTableProps, HeaderCell } from "@/components/AsyncTable"
+import { EntityBlock } from "@/components/EntityBlock"
 import { IdBlock } from "@/components/IdBlock"
 import { TypeBadge } from "@/components/TypeBadge"
 import { AoMessage } from "@/types"
@@ -64,7 +65,7 @@ export function ProcessesTable(props: ProcessesTableProps) {
             <TypeBadge type={item.type} />
           </TableCell>
           <TableCell>
-            <IdBlock label={truncateId(item.id)} value={item.id} href={`/entity/${item.id}`} />
+            <EntityBlock entityId={item.id} />
           </TableCell>
           <TableCell>{item.tags["Name"]}</TableCell>
           {!hideModuleColumn && (
