@@ -1,6 +1,7 @@
 "use client"
 
 import { Button, CircularProgress, Stack, TextField, Typography } from "@mui/material"
+import { result } from "@permaweb/aoconnect/browser"
 import { Asterisk } from "@phosphor-icons/react"
 import React, { useCallback, useState } from "react"
 
@@ -19,33 +20,13 @@ export function ComputeResult(props: ComputeResultProps) {
   const handleCompute = useCallback(async () => {
     setLoading(true)
     try {
-      const result = await fetch(
-        `https://cu.ao-testnet.xyz/result/${messageId}?process-id=${processId}`,
-      )
-      const json = await result.json()
+      const json = await result({
+        message: messageId,
+        process: processId,
+      })
       console.log("📜 LOG > handleCompute > json:", json)
 
-      if ("error" in json) {
-        throw new Error(json.error)
-      }
-
-      if ("Error" in json) {
-        throw new Error(json.Error)
-      }
-
-      if (typeof json === "object" && json !== null && "Output" in json) {
-        if (typeof json.Output === "object" && "data" in json.Output) {
-          if (typeof json.Output.data === "object" && "output" in json.Output.data) {
-            setContent(json.Output.data.output)
-          } else {
-            setContent(JSON.stringify(json.Output.data, null, 2))
-          }
-        } else {
-          setContent(JSON.stringify(json.Output, null, 2))
-        }
-      } else {
-        setContent(JSON.stringify(json, null, 2))
-      }
+      setContent(JSON.stringify(json, null, 2))
     } catch (error) {
       setContent(String(error))
     }
