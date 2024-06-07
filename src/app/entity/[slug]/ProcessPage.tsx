@@ -21,6 +21,7 @@ import { formatFullDate, formatRelative } from "@/utils/date-utils"
 
 import { IncomingMessagesTable } from "./IncomingMessagesTable"
 import { OutgoingMessagesTable } from "./OutgoingMessagesTable"
+import { ProcessInteraction } from "./ProcessInteraction"
 import { FetchInfoHandler } from "./ProcessPage/FetchInfoHandler"
 import { SpawnedProcesses } from "./SpawnedProcesses"
 import { TokenBalances } from "./TokenBalances"
@@ -161,6 +162,8 @@ export function ProcessPage(props: ProcessPageProps) {
           <TabWithCount value={2} label="Spawned processes" chipValue={processesCount} />
           <TabWithCount value={3} label="Token transfers" chipValue={transfersCount} />
           <TabWithCount value={4} label="Token balances" chipValue={balancesCount} />
+          <TabWithCount value={5} label="Read" sx={{ marginLeft: "auto" }} />
+          <TabWithCount value={6} label="Write" />
         </Tabs>
         <Box sx={{ marginX: -2 }}>
           <OutgoingMessagesTable
@@ -190,6 +193,8 @@ export function ProcessPage(props: ProcessPageProps) {
             open={activeTab === 4}
             onCountReady={setBalancesCount}
           />
+          {activeTab === 5 && <ProcessInteraction processId={entityId} readOnly />}
+          {activeTab === 6 && <ProcessInteraction processId={entityId} />}
         </Box>
       </div>
     </Stack>

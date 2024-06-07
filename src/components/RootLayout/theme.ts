@@ -64,6 +64,11 @@ export const theme = extendTheme({
     fontFamily: MainFontFF,
   },
   components: {
+    MuiCircularProgress: {
+      defaultProps: {
+        disableShrink: true,
+      },
+    },
     MuiTooltip: {
       defaultProps: {
         placement: "top",
