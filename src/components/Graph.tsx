@@ -47,12 +47,14 @@ const drag = (simulation: Simulation<CustomNode, undefined>, largeGraph: boolean
 }
 
 export interface ChartDataItem {
+  id: string
   source: string
   source_id: string
   target: string
   target_id: string
   type: "User Message" | "Cranked Message"
   action: string
+  highlight?: boolean
 }
 
 interface CustomNode extends SimulationNodeDatum {
@@ -67,6 +69,8 @@ interface CustomLink extends SimulationNodeDatum {
   target: CustomNode
   type: "User Message" | "Cranked Message"
   action: string
+  id: string
+  highlight?: boolean
 }
 
 const COLORS = {
@@ -81,29 +85,45 @@ const defaultAlphaDecay = 0.0228
 
 interface GraphProps {
   data: ChartDataItem[]
-  onLinkClick: (from: string, to: string) => void
 }
 
-const SIZES = {
+const SMALL_GRAPH = {
   nodeRadius: 8,
   linkWidth: 2,
   arrowWidth: 4,
   arrowDistance: 20,
   distance: 200,
   fontSize: "0.75rem",
+  chargeStrength: -40,
 }
 
-// const SIZES = {
-//   nodeRadius: 16,
-//   linkWidth: 8,
-//   arrowWidth: 4,
-//   arrowDistance: 14,
-//   distance: 300,
-// fontSize: "1rem",
-// }
+const MEDIUM_GRAPH = {
+  nodeRadius: 12,
+  linkWidth: 8,
+  arrowWidth: 4,
+  arrowDistance: 12,
+  distance: 100,
+  fontSize: "1rem",
+  chargeStrength: -400,
+}
+
+const LARGE_GRAPH = {
+  nodeRadius: 16,
+  linkWidth: 8,
+  arrowWidth: 4,
+  arrowDistance: 14,
+  distance: 300,
+  fontSize: "1rem",
+  chargeStrength: -50,
+}
 
 function BaseGraph(props: GraphProps) {
-  const { data: chartData, onLinkClick } = props
+  const { data: chartData } = props
+
+  // const sizes =
+  //   chartData.length < 4 ? LARGE_GRAPH : chartData.length < 8 ? MEDIUM_GRAPH : SMALL_GRAPH
+
+  const sizes = SMALL_GRAPH
 
   const svgRef = useRef<SVGSVGElement>(null)
   const router = useRouter()
@@ -159,9 +179,11 @@ function BaseGraph(props: GraphProps) {
             // Use type assertion here to tell TypeScript that `d` is indeed a CustomNode
             return (d as CustomNode).id
           })
-          .distance(SIZES.distance),
+          .distance(sizes.distance),
       )
-      .force("charge", d3.forceManyBody().strength(-400))
+      .force("charge", d3.forceManyBody().strength(sizes.chargeStrength))
+      .force("collision", d3.forceCollide().radius((sizes.distance * 2) / nodes.length))
+      .force("center", d3.forceCenter(0, 0))
       .force("x", d3.forceX())
       .force("y", d3.forceY())
 
@@ -169,16 +191,17 @@ function BaseGraph(props: GraphProps) {
     const link = svg
       .append("g")
       .attr("fill", "none")
-      .attr("stroke-width", SIZES.linkWidth)
+      .attr("stroke-width", sizes.linkWidth)
       .selectAll("path")
       .data(links)
       .join("path")
       .attr("id", (d) => `link-${d.source.id}-${d.target.id}`)
       .attr("stroke", (d) => (d.type === "User Message" ? COLORS.red : COLORS.green))
+      .attr("opacity", (d) => (d.highlight ? 1 : 0.5))
       .attr("marker-end", (d) => `url(${new URL(`#arrow-${d.type}`, location.href)})`)
       .style("cursor", "pointer")
       .on("click", function (event, d) {
-        onLinkClick(d.source.id, d.target.id)
+        router.push(`/message/${d.id}`)
       })
       .on("mouseover", function (event, d) {
         svg
@@ -191,21 +214,6 @@ function BaseGraph(props: GraphProps) {
           .attr("visibility", "hidden")
       })
 
-    const linkText = svg
-      .append("g")
-      .attr("class", "link-texts")
-      .selectAll("text")
-      .data(links)
-      .join("text")
-      .attr("id", (d) => `link-text-${d.source.id}-${d.target.id}`)
-      .style("font-size", SIZES.fontSize)
-      .style("font-weight", "bold")
-      .style("paint-order", "stroke")
-      .style("stroke", "#fff")
-      .style("stroke-width", "4px")
-      .attr("visibility", "hidden")
-      .text((d) => d.action) // Use the 'action' property for labeling
-
     // Node circles
     svg
       .append("defs")
@@ -214,10 +222,10 @@ function BaseGraph(props: GraphProps) {
       .join("marker")
       .attr("id", (d) => `arrow-${d}`)
       .attr("viewBox", "0 -5 10 10")
-      .attr("refX", SIZES.arrowDistance)
+      .attr("refX", sizes.arrowDistance)
       .attr("refY", 0)
-      .attr("markerWidth", SIZES.arrowWidth)
-      .attr("markerHeight", SIZES.arrowWidth)
+      .attr("markerWidth", sizes.arrowWidth)
+      .attr("markerHeight", sizes.arrowWidth)
       .attr("orient", "auto")
       .append("path")
       .attr("fill", (d) => (d === "User Message" ? COLORS.red : color(d)))
@@ -234,11 +242,12 @@ function BaseGraph(props: GraphProps) {
       .style("cursor", "pointer")
       .call(drag(simulation, largeGraph))
 
+    // Nodes
     node
       .append("circle")
       .attr("stroke", "white")
       .attr("stroke-width", 1.5)
-      .attr("r", SIZES.nodeRadius)
+      .attr("r", sizes.nodeRadius)
       .attr("fill", (d) => {
         if (d.label === "This Process") return COLORS.blue
         else if (d.label.startsWith("Process")) return COLORS.lightRed
@@ -253,13 +262,32 @@ function BaseGraph(props: GraphProps) {
       .text((d) => d.label)
       .attr("x", 0)
       .attr("y", 60)
-      .style("font-size", SIZES.fontSize)
+      .style("font-size", sizes.fontSize)
       .style("font-weight", "bold")
       .style("paint-order", "stroke")
-      .style("stroke", "#fff")
+      .style("fill", "var(--mui-palette-text-primary)")
+      .style("stroke", "var(--mui-palette-background-paper)")
       .style("stroke-width", "4px")
-      .style("visibility", "hidden") // Initially hide the text
+      .attr("visibility", "hidden") // Initially hide the text
       .style("pointer-events", "none") // Ensure the text doesn't interfere with mouse events
+
+    // Add text to links
+    const linkText = svg
+      .append("g")
+      .attr("class", "link-texts")
+      .selectAll("text")
+      .data(links)
+      .join("text")
+      .attr("id", (d) => `link-text-${d.source.id}-${d.target.id}`)
+      .style("font-size", sizes.fontSize)
+      .style("font-weight", "bold")
+      .style("paint-order", "stroke")
+      .style("fill", "var(--mui-palette-text-primary)")
+      .style("stroke", "var(--mui-palette-background-paper)")
+      .style("stroke-width", "4px")
+      .attr("visibility", "hidden") // Initially hide the text
+      .style("pointer-events", "none") // Ensure the text doesn't interfere with mouse events
+      .text((d) => d.action) // Use the 'action' property for labeling
 
     node
       .on("mouseover", function () {
@@ -279,6 +307,12 @@ function BaseGraph(props: GraphProps) {
         .attr("x", (d) => (d.source.x + d.target.x) / 2)
         .attr("y", (d) => (d.source.y + d.target.y) / 2)
     })
+
+    // center the first node
+    if (nodes[0]) {
+      nodes[0].fx = 0
+      nodes[0].fy = 0
+    }
 
     // invalidation.then(() => simulation.stop());
     // Clean up the effect
