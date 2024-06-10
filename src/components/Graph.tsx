@@ -4,16 +4,14 @@ import { type Simulation, type SimulationNodeDatum } from "d3-force"
 import { useRouter } from "next/navigation"
 import React, { memo, useEffect, useRef } from "react"
 
-interface Link {
-  source: { x: number; y: number }
-  target: { x: number; y: number }
-}
-
-function linkArc(d: Link) {
-  const r = Math.hypot(d.target.x - d.source.x, d.target.y - d.source.y)
+function linkArc(d: CustomLink) {
+  const dx = d.target.x - d.source.x
+  const dy = d.target.y - d.source.y
+  const dr = Math.sqrt(dx * dx + dy * dy) * (1 + Math.abs(d.curvature)) // Increase the distance based on curvature
+  const sweepFlag = d.curvature > 0 ? 1 : 0
   return `
     M${d.source.x},${d.source.y}
-    A${r},${r} 0 0,1 ${d.target.x},${d.target.y}`
+    A${dr},${dr} 0 0,${sweepFlag} ${d.target.x},${d.target.y}`
 }
 
 const drag = (simulation: Simulation<CustomNode, undefined>, largeGraph: boolean) => {
@@ -71,6 +69,7 @@ interface CustomLink extends SimulationNodeDatum {
   action: string
   id: string
   highlight?: boolean
+  curvature: number
 }
 
 const COLORS = {
@@ -158,11 +157,22 @@ function BaseGraph(props: GraphProps) {
         return { id, label, x: 0, y: 0 }
       },
     )
-    const links: CustomLink[] = chartData.map((d) => ({
-      ...d,
-      source: nodes.find((n) => n.id === d.source_id) as CustomNode,
-      target: nodes.find((n) => n.id === d.target_id) as CustomNode,
-    }))
+    const links: CustomLink[] = chartData.map((d, i, arr) => {
+      const sameLinks = arr.filter(
+        (link) =>
+          (link.source_id === d.source_id && link.target_id === d.target_id) ||
+          (link.source_id === d.target_id && link.target_id === d.source_id),
+      )
+      const sameIndex = sameLinks.findIndex((link) => link === d)
+      const curvature = (sameIndex - (sameLinks.length - 1) / 2) * 0.5 // Adjust curvature factor as needed
+      return {
+        ...d,
+        source: nodes.find((n) => n.id === d.source_id) as CustomNode,
+        target: nodes.find((n) => n.id === d.target_id) as CustomNode,
+        curvature,
+      }
+    })
+
     const myColors = [COLORS.green]
     const color = d3.scaleOrdinal(types, myColors)
 
