@@ -99,7 +99,7 @@ export function AsyncTable(props: AsyncTableProps) {
 
     return () => observer.disconnect()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data.length, endReached, pageSize, sortAscending, sortField])
+  }, [data, endReached, pageSize, sortAscending, sortField])
 
   useEffect(() => {
     fetchFunction(0, sortAscending, sortField, undefined).then((newPage) => {
