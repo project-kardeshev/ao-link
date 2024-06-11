@@ -2,6 +2,7 @@ import { Box, Link, Skeleton, Tooltip } from "@mui/material"
 import React, { useCallback, useEffect } from "react"
 
 import { getProcesses } from "@/services/messages-api"
+import { formatNumber } from "@/utils/number-utils"
 import { timeout } from "@/utils/utils"
 
 type RetryableProcessCountProps = {
@@ -43,7 +44,7 @@ export function RetryableProcessCount(props: RetryableProcessCountProps) {
           </Link>
         </Tooltip>
       ) : (
-        <span>{count}</span>
+        <span>{formatNumber(count)}</span>
       )}
     </Box>
   )
