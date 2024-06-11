@@ -4,7 +4,7 @@ import { AoMessage, TokenTransferMessage } from "@/types"
 
 import { TransactionsResponse, parseAoMessage, parseTokenEvent } from "@/utils/arweave-utils"
 
-import { arweaveNet, goldsky } from "./graphql-client"
+import { goldsky } from "./graphql-client"
 
 // const AO_NETWORK_IDENTIFIER = '{ name: "SDK", values: ["aoconnect"] }'
 // const AO_NETWORK_IDENTIFIER = '{ name: "Variant", values: ["ao.TN.1"] }'
@@ -553,7 +553,7 @@ export async function getAllMessages(
   ascending: boolean,
 ): Promise<[number | undefined, AoMessage[]]> {
   try {
-    const result = await arweaveNet
+    const result = await goldsky
       .query<TransactionsResponse>(allMessagesQuery, {
         limit,
         sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",

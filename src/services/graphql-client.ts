@@ -5,7 +5,7 @@ export const goldsky = new Client({
   exchanges: [cacheExchange, fetchExchange],
 })
 
-export const arweaveNet = new Client({
-  url: "https://arweave.net/graphql",
-  exchanges: [cacheExchange, fetchExchange],
-})
+// export const arweaveNet = new Client({
+//   url: "https://arweave.net/graphql",
+//   exchanges: [cacheExchange, fetchExchange],
+// })
