@@ -10,11 +10,12 @@ export type Owner = {
   key?: string
 }
 
-export type Block = {
-  id?: string
-  timestamp: number
+export type ArweaveBlock = {
+  id: string
+  timestamp: Date | null
   height: number
   previous?: string
+  cursor?: string
 }
 
 export type TransactionNode = {
@@ -37,7 +38,7 @@ export type TransactionNode = {
     type?: string
   }
   tags: Tag[]
-  block: Block
+  block: BlockEdge["node"]
   parent?: {
     id: string
   }
@@ -55,6 +56,12 @@ export type TransactionsResponse = {
   transactions: {
     count: number | undefined
     edges: TransactionEdge[]
+  }
+}
+
+export type BlocksResponse = {
+  blocks: {
+    edges: BlockEdge[]
   }
 }
 
@@ -162,5 +169,29 @@ export function parseTokenEvent(edge: TransactionEdge): TokenTransferMessage {
     recipient,
     amount,
     tokenId,
+  }
+}
+
+type BlockEdge = {
+  cursor: string
+  node: {
+    id: string
+    height: number
+    previous?: string
+    timestamp: number
+  }
+}
+
+export function parseArweaveBlock(edge: BlockEdge): ArweaveBlock {
+  const { node, cursor } = edge
+
+  const timestamp = node.timestamp ? new Date(node.timestamp * 1000) : null
+
+  return {
+    cursor,
+    id: node.id,
+    timestamp,
+    height: node.height,
+    previous: node.previous,
   }
 }

@@ -91,6 +91,21 @@ const Header = () => {
               >
                 MODULES
               </MuiLink>
+              <MuiLink
+                component={Link}
+                href="/blocks"
+                sx={{
+                  color: "#9EA2AA",
+                  "&:hover": {
+                    color: "var(--mui-palette-text-primary)",
+                  },
+                }}
+                fontWeight={500}
+                underline="none"
+                variant="body2"
+              >
+                BLOCKS
+              </MuiLink>
             </Stack>
             <Stack direction="row" gap={2} alignItems="stretch">
               <SearchBar />
