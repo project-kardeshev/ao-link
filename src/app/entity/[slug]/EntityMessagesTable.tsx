@@ -29,16 +29,16 @@ export function EntityMessagesTable(props: EntityMessagesTableProps) {
     { label: "", sx: { width: 60 } },
     { label: "To", sx: { width: 220 } },
     {
+      field: "blockHeight",
       label: "Block Height",
       sx: { width: 160 },
       align: "right",
+      sortable: true,
     },
     {
-      field: "created",
       label: "Created",
       sx: { width: 160 },
       align: "right",
-      sortable: true,
     },
   ]
 
@@ -51,7 +51,7 @@ export function EntityMessagesTable(props: EntityMessagesTableProps) {
       {...rest}
       component={Paper}
       initialSortDir="desc"
-      initialSortField="created"
+      initialSortField="blockHeight"
       headerCells={headerCells}
       renderRow={(item: AoMessage) => (
         <TableRow

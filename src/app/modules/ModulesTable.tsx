@@ -22,7 +22,7 @@ export function ModulesTable(props: ModulesTableProps) {
       {...props}
       component={Paper}
       initialSortDir="desc"
-      initialSortField="created"
+      initialSortField="blockHeight"
       headerCells={[
         { label: "Type", sx: { width: 140 } },
         { label: "ID", sx: { width: 220 } },
@@ -30,16 +30,16 @@ export function ModulesTable(props: ModulesTableProps) {
         { label: "Compute limit", align: "right" },
         { label: "Processes", align: "right", sx: { width: 160 } },
         {
+          field: "blockHeight",
           label: "Block Height",
           sx: { width: 160 },
           align: "right",
+          sortable: true,
         },
         {
-          field: "created",
           label: "Created",
           sx: { width: 160 },
           align: "right",
-          sortable: true,
         },
       ]}
       renderRow={(item: AoMessage) => (

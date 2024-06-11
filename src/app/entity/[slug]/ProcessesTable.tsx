@@ -29,16 +29,16 @@ export function ProcessesTable(props: ProcessesTableProps) {
     { label: "Module" },
     { label: "Incoming messages", align: "right", sx: { width: 160 } },
     {
+      field: "blockHeight",
       label: "Block Height",
       sx: { width: 160 },
       align: "right",
+      sortable: true,
     },
     {
-      field: "created",
       label: "Created",
       sx: { width: 160 },
       align: "right",
-      sortable: true,
     },
   ]
 
@@ -51,7 +51,7 @@ export function ProcessesTable(props: ProcessesTableProps) {
       {...props}
       component={Paper}
       initialSortDir="desc"
-      initialSortField="created"
+      initialSortField="blockHeight"
       headerCells={headerCells}
       renderRow={(item: AoMessage) => (
         <TableRow
