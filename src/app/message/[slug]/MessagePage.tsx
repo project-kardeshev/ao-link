@@ -221,7 +221,6 @@ export function MessagePage(props: MessagePageProps) {
           <Box sx={{ marginX: -2 }}>
             <ResultingMessages
               messageId={pushedFor || messageId}
-              entityId={from}
               open={activeTab === 0}
               onCountReady={setResultingCount}
               onDataReady={setResultingMessages}
