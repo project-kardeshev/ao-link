@@ -3,16 +3,14 @@ import React from "react"
 
 import { useNavigate } from "react-router-dom"
 
+import { RetryableMsgCount } from "./RetryableMsgCount"
 import { AsyncTable, AsyncTableProps, HeaderCell } from "@/components/AsyncTable"
-import { EntityBlock } from "@/components/EntityBlock"
 import { IdBlock } from "@/components/IdBlock"
 import { TypeBadge } from "@/components/TypeBadge"
 import { AoMessage } from "@/types"
 import { TYPE_PATH_MAP, truncateId } from "@/utils/data-utils"
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
 import { formatNumber } from "@/utils/number-utils"
-
-import { RetryableMsgCount } from "./RetryableMsgCount"
 
 type ProcessesTableProps = Pick<AsyncTableProps, "fetchFunction" | "pageSize"> & {
   hideModuleColumn?: boolean
@@ -24,7 +22,7 @@ export function ProcessesTable(props: ProcessesTableProps) {
 
   const headerCells: HeaderCell[] = [
     { label: "Type", sx: { width: 140 } },
-    { label: "ID", sx: { width: 220 } },
+    { label: "ID", sx: { width: 240 } },
     { label: "Name" },
     // { label: "Tags" },
     { label: "Module" },
@@ -66,7 +64,7 @@ export function ProcessesTable(props: ProcessesTableProps) {
             <TypeBadge type={item.type} />
           </TableCell>
           <TableCell>
-            <EntityBlock entityId={item.id} />
+            <IdBlock label={truncateId(item.id)} value={item.id} href={`/entity/${item.id}`} />
           </TableCell>
           <TableCell>{item.tags["Name"]}</TableCell>
           {!hideModuleColumn && (

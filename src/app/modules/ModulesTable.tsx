@@ -26,7 +26,7 @@ export function ModulesTable(props: ModulesTableProps) {
       initialSortField="blockHeight"
       headerCells={[
         { label: "Type", sx: { width: 140 } },
-        { label: "ID", sx: { width: 220 } },
+        { label: "ID", sx: { width: 240 } },
         { label: "Memory limit", align: "right" },
         { label: "Compute limit", align: "right" },
         { label: "Processes", align: "right", sx: { width: 160 } },

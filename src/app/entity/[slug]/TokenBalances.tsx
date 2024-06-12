@@ -45,7 +45,7 @@ export function TokenBalances(props: TokenBalancesProps) {
         headerCells={[
           { field: "tokenId", label: "Token name" },
           { label: "Balance", align: "right" },
-          { label: "Ticker", sx: { width: 220 } },
+          { label: "Ticker", sx: { width: 240 } },
         ]}
         renderRow={(tokenId) => (
           <TokenBalancesTableRow key={tokenId} tokenId={tokenId} entityId={entityId} />

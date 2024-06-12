@@ -28,19 +28,19 @@ export function TokenTransfersTable(props: TokenTransfersTableProps) {
         // },
         {
           label: "ID",
-          sx: { width: 220 },
+          sx: { width: 240 },
 
           sortable: true,
           field: "id",
         },
         {
           label: "From",
-          sx: { width: 220 },
+          sx: { width: 240 },
           sortable: true,
           field: "sender",
         },
         { label: "", sx: { width: 60 } },
-        { label: "To", sx: { width: 220 }, sortable: true, field: "recipient" },
+        { label: "To", sx: { width: 240 }, sortable: true, field: "recipient" },
         {
           label: "Quantity",
           align: "right",
@@ -51,7 +51,7 @@ export function TokenTransfersTable(props: TokenTransfersTableProps) {
           label: "Token",
           sortable: true,
           field: "tokenId",
-          sx: { width: 220 },
+          sx: { width: 240 },
         },
         {
           field: "created",

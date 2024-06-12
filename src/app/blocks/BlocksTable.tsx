@@ -26,7 +26,7 @@ export function BlocksTable(props: BlocksTableProps) {
       initialSortField="blockHeight"
       headerCells={[
         { label: "Type", sx: { width: 140 } },
-        { label: "ID", sx: { width: 220 } },
+        { label: "ID", sx: { width: 240 } },
         { label: "Messages", align: "right", sx: { width: 160 } },
         {
           field: "blockHeight",

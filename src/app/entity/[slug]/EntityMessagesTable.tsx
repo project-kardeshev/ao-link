@@ -24,11 +24,11 @@ export function EntityMessagesTable(props: EntityMessagesTableProps) {
 
   const headerCells: HeaderCell[] = [
     { label: "Type", sx: { width: 140 } },
-    { label: "ID", sx: { width: 220 } },
+    { label: "ID", sx: { width: 240 } },
     { label: "Action" },
-    { label: "From", sx: { width: 220 } },
+    { label: "From", sx: { width: 240 } },
     { label: "", sx: { width: 60 } },
-    { label: "To", sx: { width: 220 } },
+    { label: "To", sx: { width: 240 } },
     {
       field: "blockHeight",
       label: "Block Height",
