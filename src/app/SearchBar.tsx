@@ -1,18 +1,31 @@
 "use client"
 
-import { Backdrop, Box, CircularProgress, InputAdornment, TextField } from "@mui/material"
+import {
+  Autocomplete,
+  Backdrop,
+  Box,
+  CircularProgress,
+  InputAdornment,
+  MenuItem,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material"
 import { ArrowUpRight, MagnifyingGlass } from "@phosphor-icons/react"
-import Link from "next/link"
 import React, { type ChangeEvent, useState } from "react"
+
+import { useNavigate } from "react-router-dom"
 
 import { TypeBadge } from "@/components/TypeBadge"
 import { getMessageById } from "@/services/messages-api"
 import { getTokenInfo } from "@/services/token-api"
 import { TYPE_PATH_MAP } from "@/utils/data-utils"
+import { isArweaveId } from "@/utils/utils"
 
 type ResultType = "Message" | "Entity" | "Block" | "Checkpoint" | "Assignment" | "Process" | "Token"
 
 type Result = {
+  label: string
   id: string
   type: ResultType
 }
@@ -20,12 +33,18 @@ type Result = {
 async function findByText(text: string): Promise<Result[]> {
   if (!text || !text.trim()) return Promise.resolve([])
 
-  const [msg, tokenInfo] = await Promise.all([getMessageById(text), getTokenInfo(text)])
+  const [msg, tokenInfo] = await Promise.all([
+    getMessageById(text),
+    getTokenInfo(text).catch(() => {
+      console.log("Token not found")
+    }),
+  ])
 
   const results = []
 
-  if (msg) {
+  if (msg && msg.type) {
     results.push({
+      label: text,
       id: msg.id,
       type: msg.type,
     })
@@ -33,13 +52,15 @@ async function findByText(text: string): Promise<Result[]> {
 
   if (tokenInfo) {
     results.push({
+      label: text,
       id: text,
       type: "Token" as ResultType,
     })
   }
 
-  if (!msg) {
+  if (!msg && isArweaveId(text)) {
     results.push({
+      label: text,
       id: text,
       type: "Entity" as ResultType,
     })
@@ -50,6 +71,7 @@ async function findByText(text: string): Promise<Result[]> {
 
 const SearchBar = () => {
   const [isInputFocused, setIsInputFocused] = useState(false)
+
   const [inputValue, setInputValue] = useState("")
 
   const [results, setResults] = useState<Result[]>([])
@@ -65,6 +87,7 @@ const SearchBar = () => {
     if (numericString.test(value)) {
       setResults([
         {
+          label: value,
           id: value,
           type: "Block",
         },
@@ -90,66 +113,77 @@ const SearchBar = () => {
     }, 0)
   }
 
+  const navigate = useNavigate()
+
   return (
     <Box sx={{ width: 640 }}>
-      <div className="dropdown relative w-full">
-        <TextField
-          size="small"
-          sx={{
-            background: "var(--mui-palette-background-default) !important",
-            "& fieldset": {
-              borderColor: "var(--mui-palette-divider) !important",
-            },
-            width: "100%",
-            zIndex: 50,
-          }}
-          placeholder="Search by Message ID / Process ID / User ID / Block Height"
-          value={inputValue}
-          onChange={handleInputChange}
-          onFocus={handleInputFocus}
-          onBlur={handleInputBlur}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                {loading ? (
-                  <CircularProgress size={16} color="inherit" />
-                ) : (
-                  <MagnifyingGlass width={16} height={16} alt="search" />
-                )}
-              </InputAdornment>
-            ),
-          }}
-        />
-        <div tabIndex={0} className="dropdown-content z-50 w-full">
-          <ul className="z-50 relative max-h-[200px] overflow-y-auto">
-            {results.map((item) => (
-              <Box
-                component={"li"}
-                sx={{
-                  background: "var(--mui-palette-background-default)",
-                  color: "text.primary",
-                }}
-                key={`${item.id}_${item.type}`}
-                className="cursor-pointer p-[8px] flex justify-between"
-                onClick={() => {
-                  setInputValue("")
-                  setResults([])
-                }}
-              >
-                <Link href={`/${TYPE_PATH_MAP[item.type]}/${item.id}`} className="w-full">
-                  <div className="flex justify-between w-full items-center">
-                    <div className="flex items-center gap-4">
-                      <TypeBadge type={item.type} />
-                      <p>{item.id}</p>
-                    </div>
-                    <ArrowUpRight size={18} />
-                  </div>
-                </Link>
-              </Box>
-            ))}
-          </ul>
-        </div>
-      </div>
+      <Autocomplete
+        id="search-bar"
+        size="small"
+        disableClearable
+        clearOnEscape
+        freeSolo
+        options={results}
+        value={inputValue}
+        onChange={(event, newValue, reason) => {
+          if (reason === "selectOption" && typeof newValue !== "string") {
+            setInputValue("")
+            setResults([])
+            navigate(`/${TYPE_PATH_MAP[newValue.type]}/${newValue.id}`)
+            document.getElementById("search-bar")?.blur()
+          }
+
+          if (reason === "clear") {
+            document.getElementById("search-bar")?.blur()
+          }
+        }}
+        onFocus={handleInputFocus}
+        onBlur={handleInputBlur}
+        renderOption={(props, option) => (
+          <Stack
+            {...props}
+            direction="row"
+            alignItems="center"
+            component={MenuItem}
+            key={`${option.id}_${option.type}`}
+            justifyContent="space-between"
+          >
+            <Stack direction="row" gap={1} alignItems="center">
+              <TypeBadge type={option.type} />
+              <Typography variant="inherit">{option.id}</Typography>
+            </Stack>
+            <ArrowUpRight size={18} />
+          </Stack>
+        )}
+        filterOptions={(x) => x}
+        renderInput={(params) => (
+          <TextField
+            placeholder="Search by Message ID / Process ID / User ID / Block Height"
+            sx={{
+              background: "var(--mui-palette-background-default) !important",
+              "& fieldset": {
+                borderColor: "var(--mui-palette-divider) !important",
+              },
+              width: "100%",
+              zIndex: 50,
+            }}
+            {...params}
+            onChange={handleInputChange}
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: (
+                <InputAdornment position="end">
+                  {loading ? (
+                    <CircularProgress size={16} color="inherit" />
+                  ) : (
+                    <MagnifyingGlass width={16} height={16} alt="search" />
+                  )}
+                </InputAdornment>
+              ),
+            }}
+          />
+        )}
+      />
       <Backdrop
         open={isInputFocused}
         sx={{

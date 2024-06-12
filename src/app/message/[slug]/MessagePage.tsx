@@ -12,12 +12,17 @@ import {
 } from "@mui/material"
 
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
-import { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 
+import { useParams } from "react-router-dom"
+
+import { ComputeResult } from "./ComputeResult"
+import { ResultingMessages } from "./ResultingMessages"
 import { EntityBlock } from "@/components/EntityBlock"
 import { ChartDataItem, Graph } from "@/components/Graph"
 import { IdBlock } from "@/components/IdBlock"
 
+import { LoadingSkeletons } from "@/components/LoadingSkeletons"
 import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { SectionInfo } from "@/components/SectionInfo"
 import { SectionInfoWithChip } from "@/components/SectionInfoWithChip"
@@ -32,30 +37,32 @@ import { formatFullDate, formatRelative } from "@/utils/date-utils"
 
 import { formatNumber } from "@/utils/number-utils"
 
-import { ComputeResult } from "./ComputeResult"
-import { ResultingMessages } from "./ResultingMessages"
+export function MessagePage() {
+  const { messageId } = useParams()
 
-type MessagePageProps = {
-  message: AoMessage
-  data: string
-}
+  const [message, setMessage] = useState<AoMessage | undefined | null>(null)
 
-export function MessagePage(props: MessagePageProps) {
-  const { message, data } = props
+  useEffect(() => {
+    if (!messageId) return
 
-  const {
-    id: messageId,
-    from,
-    type,
-    blockHeight,
-    created,
-    to,
-    tags,
-    systemTags,
-    userTags,
-  } = message
+    getMessageById(messageId).then(setMessage)
+  }, [messageId])
 
-  const pushedFor = tags["Pushed-For"]
+  const [data, setData] = useState<string>()
+
+  useEffect(() => {
+    if (!message) return
+
+    if (message.type === "Checkpoint") {
+      setData("Message too long")
+    } else {
+      fetch(`https://arweave.net/${message.id}`)
+        .then((res) => res.text())
+        .then(setData)
+    }
+  }, [message])
+
+  const pushedFor = message?.tags["Pushed-For"]
 
   const [activeTab, setActiveTab] = useState(0)
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -72,10 +79,11 @@ export function MessagePage(props: MessagePageProps) {
 
   const [resultingCount, setResultingCount] = useState<number>()
   const [resultingMessages, setResultingMessages] = useState<AoMessage[] | null>(null)
+
   const graphData = useMemo<ChartDataItem[] | null>(() => {
     const originatingMessage = pushedFor ? pushedForMsg : message
 
-    if (resultingMessages === null || !originatingMessage) return null
+    if (!message || resultingMessages === null || !originatingMessage) return null
 
     const results: ChartDataItem[] = resultingMessages.map((x) => {
       const source_type = x.tags["From-Process"] === x.from ? "Process" : "User"
@@ -110,8 +118,16 @@ export function MessagePage(props: MessagePageProps) {
     ]
   }, [resultingMessages, message, pushedForMsg, pushedFor])
 
+  if (message === null) return <LoadingSkeletons />
+
+  if (!messageId || !message) {
+    return <div>Not Found</div>
+  }
+
+  const { from, type, blockHeight, created, to, systemTags, userTags } = message
+
   return (
-    <>
+    <React.Fragment key={messageId}>
       <Stack component="main" gap={6} paddingY={4}>
         <Subheading type="MESSAGE" value={<IdBlock label={messageId} />} />
         <Grid2 container spacing={{ xs: 2, lg: 12 }}>
@@ -228,6 +244,6 @@ export function MessagePage(props: MessagePageProps) {
           </Box>
         </div>
       </Stack>
-    </>
+    </React.Fragment>
   )
 }

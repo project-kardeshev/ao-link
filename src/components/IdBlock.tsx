@@ -1,8 +1,9 @@
 "use client"
 
-import { Box, Tooltip } from "@mui/material"
-import Link from "next/link"
+import { Box, Link as MuiLink, Tooltip } from "@mui/material"
 import React from "react"
+
+import { Link } from "react-router-dom"
 
 import { CopyToClipboard } from "./CopyToClipboard"
 
@@ -26,8 +27,9 @@ export function IdBlock(props: IdBlockProps) {
           "&:hover": { fill: "var(--mui-palette-text-secondary)" },
         }}
       >
-        <Link
-          href={href}
+        <MuiLink
+          component={Link}
+          to={href}
           onClick={(event) => {
             event.stopPropagation()
           }}
@@ -42,7 +44,7 @@ export function IdBlock(props: IdBlockProps) {
               {label}
             </Box>
           </Tooltip>
-        </Link>
+        </MuiLink>
         <CopyToClipboard value={copyValue} />
       </Box>
     )
