@@ -17,6 +17,7 @@ import React, { useEffect, useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
 
 import { ComputeResult } from "./ComputeResult"
+import { LinkedMessages } from "./LinkedMessages"
 import { ResultingMessages } from "./ResultingMessages"
 import { EntityBlock } from "@/components/EntityBlock"
 import { ChartDataItem, Graph } from "@/components/Graph"
@@ -69,15 +70,16 @@ export function MessagePage() {
     setActiveTab(newValue)
   }
 
+  const [linkedMessages, setLinkedMessages] = useState<number>()
   const [resultingCount, setResultingCount] = useState<number>()
-  const [resultingMessages, setResultingMessages] = useState<AoMessage[] | null>(null)
+  const [graphMessages, setGraphMessages] = useState<AoMessage[] | null>(null)
   const [entities, setEntities] = useState<Record<string, AoMessage | undefined> | null>(null)
 
   useEffect(() => {
-    if (!resultingMessages) return
+    if (!graphMessages) return
     const entityIdsSet = new Set<string>()
 
-    resultingMessages?.forEach((x) => {
+    graphMessages?.forEach((x) => {
       entityIdsSet.add(x.from)
       entityIdsSet.add(x.to)
     })
@@ -91,12 +93,12 @@ export function MessagePage() {
 
       setEntities((prev) => ({ ...prev, ...newEntities }))
     })
-  }, [resultingMessages])
+  }, [graphMessages])
 
   const graphData = useMemo<ChartDataItem[] | null>(() => {
-    if (!message || resultingMessages === null || !entities) return null
+    if (!message || graphMessages === null || !entities) return null
 
-    const results: ChartDataItem[] = resultingMessages.map((x) => {
+    const results: ChartDataItem[] = graphMessages.map((x) => {
       const source_type = entities[x.from]?.type || "User"
       const target_type = entities[x.to]?.type || "User"
 
@@ -120,8 +122,7 @@ export function MessagePage() {
         highlight: message.id === message.id,
         id: message.id,
         source: firstSourceType,
-        // source: `User ${truncateId(originatingMessage.from)}`,
-        source_id: message.from,
+        source_id: `${firstSourceType} ${truncateId(message.from)}`,
         target: `${firstTargetType} ${truncateId(message.to)}`,
         target_id: message.to,
         type: "User Message",
@@ -129,7 +130,7 @@ export function MessagePage() {
       },
       ...results,
     ]
-  }, [resultingMessages, message, pushedFor, entities])
+  }, [graphMessages, message, pushedFor, entities])
 
   if (message === null) return <LoadingSkeletons />
 
@@ -245,16 +246,25 @@ export function MessagePage() {
         </Grid2>
         <div>
           <Tabs value={activeTab} onChange={handleChange} textColor="primary">
-            <TabWithCount value={0} label="Linked messages" chipValue={resultingCount} />
+            <TabWithCount value={0} label="Resulting messages" chipValue={resultingCount} />
+            <TabWithCount value={1} label="Linked messages" chipValue={linkedMessages} />
           </Tabs>
           <Box sx={{ marginX: -2 }}>
-            <ResultingMessages
-              pushedFor={pushedFor}
-              messageId={messageId}
-              open={activeTab === 0}
-              onCountReady={setResultingCount}
-              onDataReady={setResultingMessages}
-            />
+            {activeTab === 0 && (
+              <ResultingMessages
+                message={message}
+                onCountReady={setResultingCount}
+                onDataReady={setGraphMessages}
+              />
+            )}
+            {activeTab === 1 && (
+              <LinkedMessages
+                pushedFor={pushedFor}
+                messageId={messageId}
+                onCountReady={setLinkedMessages}
+                onDataReady={setGraphMessages}
+              />
+            )}
           </Box>
         </div>
       </Stack>

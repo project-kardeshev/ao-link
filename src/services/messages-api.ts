@@ -410,6 +410,63 @@ export async function getModules(
  */
 const resultingMessagesQuery = (includeCount = false) => gql`
   query (
+    $fromProcessId: String!
+    $messageId: String!
+    $limit: Int!
+    $sortOrder: SortOrder!
+    $cursor: String
+  ) {
+    transactions(
+      sort: $sortOrder
+      first: $limit
+      after: $cursor
+
+      tags: [{ name: "Pushed-For", values: [$messageId] },{ name: "From-Process", values: [$fromProcessId] }]
+    ) {
+      ${includeCount ? "count" : ""}
+      ...MessageFields
+    }
+  }
+
+  ${messageFields}
+`
+export async function getResultingMessages(
+  limit = 100,
+  cursor = "",
+  ascending: boolean,
+  //
+  pushedFor: string,
+  sender?: string,
+): Promise<[number | undefined, AoMessage[]]> {
+  try {
+    const result = await goldsky
+      .query<TransactionsResponse>(resultingMessagesQuery(!cursor), {
+        limit,
+        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        cursor,
+        //
+        messageId: pushedFor,
+        fromProcessId: sender,
+      })
+      .toPromise()
+    const { data } = result
+
+    if (!data) return [0, []]
+
+    const { count, edges } = data.transactions
+    const events = edges.map(parseAoMessage)
+
+    return [count, events]
+  } catch (error) {
+    return [0, []]
+  }
+}
+
+/**
+ * WARN This query fails if both count and cursor are set
+ */
+const linkedMessagesQuery = (includeCount = false) => gql`
+  query (
     $messageId: String!
     $limit: Int!
     $sortOrder: SortOrder!
@@ -430,21 +487,21 @@ const resultingMessagesQuery = (includeCount = false) => gql`
   ${messageFields}
 `
 
-export async function getResultingMessages(
+export async function getLinkedMessages(
   limit = 100,
   cursor = "",
   ascending: boolean,
   //
-  messageId: string,
+  pushedFor: string,
 ): Promise<[number | undefined, AoMessage[]]> {
   try {
     const result = await goldsky
-      .query<TransactionsResponse>(resultingMessagesQuery(!cursor), {
+      .query<TransactionsResponse>(linkedMessagesQuery(!cursor), {
         limit,
         sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
         cursor,
         //
-        messageId,
+        messageId: pushedFor,
       })
       .toPromise()
     const { data } = result

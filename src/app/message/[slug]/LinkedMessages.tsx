@@ -1,17 +1,18 @@
 import React, { memo } from "react"
 
 import { EntityMessagesTable } from "@/app/entity/[slug]/EntityMessagesTable"
-import { getResultingMessages } from "@/services/messages-api"
+import { getMessageById, getLinkedMessages } from "@/services/messages-api"
 import { AoMessage } from "@/types"
 
 type Props = {
-  message: AoMessage
+  pushedFor?: string
+  messageId: string
   onCountReady?: (count: number) => void
   onDataReady?: (data: AoMessage[]) => void
 }
 
-function BaseResultingMessages(props: Props) {
-  const { message, onCountReady, onDataReady } = props
+function BaseLinkedMessages(props: Props) {
+  const { pushedFor, messageId, onCountReady, onDataReady } = props
 
   const pageSize = 25
 
@@ -19,13 +20,18 @@ function BaseResultingMessages(props: Props) {
     <EntityMessagesTable
       pageSize={pageSize}
       fetchFunction={async (offset, ascending, sortField, lastRecord) => {
-        let [count, records] = await getResultingMessages(
+        let [count, records] = await getLinkedMessages(
           pageSize,
           lastRecord?.cursor,
           ascending,
-          message?.tags["Pushed-For"] || message.id,
-          message.to,
+          pushedFor || messageId,
         )
+
+        if (pushedFor) {
+          records = records.filter((msg) => msg.id !== messageId)
+          const pushedForMsg = await getMessageById(pushedFor)
+          records.push(pushedForMsg as AoMessage)
+        }
 
         if (count && onCountReady) {
           onCountReady(count)
@@ -42,4 +48,4 @@ function BaseResultingMessages(props: Props) {
 }
 
 // TODO FIXME
-export const ResultingMessages = memo(BaseResultingMessages)
+export const LinkedMessages = memo(BaseLinkedMessages)
