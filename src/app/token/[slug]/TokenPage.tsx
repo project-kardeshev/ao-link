@@ -48,9 +48,7 @@ export default function TokenPage() {
     return (
       <Stack component="main" gap={4} paddingY={4} key={tokenId}>
         <Subheading type="TOKEN" value={<IdBlock label={String(tokenId)} />} />
-        <Typography variant="body1" lineHeight={1.15}>
-          {errorMessage}
-        </Typography>
+        <Typography>{errorMessage}</Typography>
       </Stack>
     )
   }
