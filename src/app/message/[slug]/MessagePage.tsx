@@ -69,14 +69,6 @@ export function MessagePage() {
     setActiveTab(newValue)
   }
 
-  const [pushedForMsg, setPushedForMsg] = useState<AoMessage>()
-
-  useEffect(() => {
-    if (pushedFor) {
-      getMessageById(pushedFor).then(setPushedForMsg)
-    }
-  }, [pushedFor])
-
   const [resultingCount, setResultingCount] = useState<number>()
   const [resultingMessages, setResultingMessages] = useState<AoMessage[] | null>(null)
   const [entities, setEntities] = useState<Record<string, AoMessage | undefined> | null>(null)
@@ -102,9 +94,7 @@ export function MessagePage() {
   }, [resultingMessages])
 
   const graphData = useMemo<ChartDataItem[] | null>(() => {
-    const originatingMessage = pushedFor ? pushedForMsg : message
-
-    if (!message || resultingMessages === null || !originatingMessage || !entities) return null
+    if (!message || resultingMessages === null || !entities) return null
 
     const results: ChartDataItem[] = resultingMessages.map((x) => {
       const source_type = entities[x.from]?.type || "User"
@@ -122,23 +112,24 @@ export function MessagePage() {
       }
     })
 
-    const firstTargetType = entities[originatingMessage.to]?.type || "User"
+    const firstSourceType = entities[message.from]?.type || "User"
+    const firstTargetType = entities[message.to]?.type || "User"
 
     return [
       {
-        highlight: message.id === originatingMessage.id,
-        id: originatingMessage.id,
-        source: "User",
+        highlight: message.id === message.id,
+        id: message.id,
+        source: firstSourceType,
         // source: `User ${truncateId(originatingMessage.from)}`,
-        source_id: originatingMessage.from,
-        target: `${firstTargetType} ${truncateId(originatingMessage.to)}`,
-        target_id: originatingMessage.to,
+        source_id: message.from,
+        target: `${firstTargetType} ${truncateId(message.to)}`,
+        target_id: message.to,
         type: "User Message",
-        action: originatingMessage.tags["Action"] || "No Action Tag",
+        action: message.tags["Action"] || "No Action Tag",
       },
       ...results,
     ]
-  }, [resultingMessages, message, pushedForMsg, pushedFor, entities])
+  }, [resultingMessages, message, pushedFor, entities])
 
   if (message === null) return <LoadingSkeletons />
 

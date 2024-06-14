@@ -1,7 +1,7 @@
 import React, { memo } from "react"
 
 import { EntityMessagesTable } from "@/app/entity/[slug]/EntityMessagesTable"
-import { getResultingMessages } from "@/services/messages-api"
+import { getMessageById, getResultingMessages } from "@/services/messages-api"
 import { AoMessage } from "@/types"
 
 type Props = {
@@ -30,10 +30,11 @@ function BaseResultingMessages(props: Props) {
           pushedFor || messageId,
         )
 
-        // if (pushedFor) {
-        //   records = records.filter((msg) => msg.id !== messageId)
-        //   if (count) count = count - 1
-        // }
+        if (pushedFor) {
+          records = records.filter((msg) => msg.id !== messageId)
+          const pushedForMsg = await getMessageById(pushedFor)
+          records.push(pushedForMsg as AoMessage)
+        }
 
         if (count && onCountReady) {
           onCountReady(count)
