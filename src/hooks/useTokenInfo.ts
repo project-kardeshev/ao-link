@@ -11,11 +11,11 @@ export function useTokenInfo(tokenId = "") {
   })
 
   const cachedValue = cacheMap ? cacheMap[tokenId] : undefined
-  const isFetched = cachedValue !== undefined
-  const isValid = cachedValue !== "loading" && cachedValue !== "error"
+  const isFetched = cachedValue !== undefined && cachedValue !== "loading"
+  const isValid = cachedValue !== "error"
 
-  const tokenInfo: TokenInfo | undefined = useMemo(
-    () => (isFetched && isValid ? JSON.parse(cachedValue) : undefined),
+  const tokenInfo: TokenInfo | undefined | null = useMemo(
+    () => (isFetched ? (isValid ? JSON.parse(cachedValue) : null) : undefined),
     [cachedValue, isFetched, isValid],
   )
 
