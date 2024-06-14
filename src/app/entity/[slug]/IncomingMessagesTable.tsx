@@ -1,8 +1,7 @@
 import React from "react"
 
-import { getIncomingMessages } from "@/services/messages-api"
-
 import { EntityMessagesTable } from "./EntityMessagesTable"
+import { getIncomingMessages } from "@/services/messages-api"
 
 type EntityMessagesProps = {
   entityId: string
@@ -29,7 +28,7 @@ export function IncomingMessagesTable(props: EntityMessagesProps) {
           entityId,
         )
 
-        if (count && onCountReady) {
+        if (count !== undefined && onCountReady) {
           onCountReady(count)
         }
 

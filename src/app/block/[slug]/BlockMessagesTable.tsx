@@ -29,7 +29,7 @@ export function BlockMessagesTable(props: EntityMessagesProps) {
           blockHeight,
         )
 
-        if (count && onCountReady) {
+        if (count !== undefined && onCountReady) {
           onCountReady(count)
         }
 

@@ -33,7 +33,7 @@ function BaseLinkedMessages(props: Props) {
           records.push(pushedForMsg as AoMessage)
         }
 
-        if (count && onCountReady) {
+        if (count !== undefined && onCountReady) {
           onCountReady(count)
         }
 

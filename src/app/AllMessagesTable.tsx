@@ -27,7 +27,7 @@ export function AllMessagesTable(props: EntityMessagesProps) {
           extraFilters,
         )
 
-        if (count && onCountReady) {
+        if (count !== undefined && onCountReady) {
           onCountReady(count)
         }
 

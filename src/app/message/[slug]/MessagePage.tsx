@@ -76,8 +76,11 @@ export function MessagePage() {
   const [entities, setEntities] = useState<Record<string, AoMessage | undefined> | null>(null)
 
   useEffect(() => {
-    if (!graphMessages) return
+    if (!graphMessages || !message) return
     const entityIdsSet = new Set<string>()
+
+    entityIdsSet.add(message.from)
+    entityIdsSet.add(message.to)
 
     graphMessages?.forEach((x) => {
       entityIdsSet.add(x.from)

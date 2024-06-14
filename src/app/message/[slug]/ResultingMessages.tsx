@@ -27,7 +27,7 @@ function BaseResultingMessages(props: Props) {
           message.to,
         )
 
-        if (count && onCountReady) {
+        if (count !== undefined && onCountReady) {
           onCountReady(count)
         }
 
