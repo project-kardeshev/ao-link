@@ -12,7 +12,7 @@ import {
 } from "@mui/material"
 
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 
 import { useParams } from "react-router-dom"
 
@@ -72,6 +72,7 @@ export function MessagePage() {
 
   const [linkedMessages, setLinkedMessages] = useState<number>()
   const [resultingCount, setResultingCount] = useState<number>()
+
   const [graphMessages, setGraphMessages] = useState<AoMessage[] | null>(null)
   const [entities, setEntities] = useState<Record<string, AoMessage | undefined> | null>(null)
 
@@ -134,6 +135,11 @@ export function MessagePage() {
       ...results,
     ]
   }, [graphMessages, message, pushedFor, entities])
+
+  const handleDataReady = useCallback((data: AoMessage[]) => {
+    setEntities(null)
+    setGraphMessages(data)
+  }, [])
 
   if (message === null) return <LoadingSkeletons />
 
@@ -257,7 +263,7 @@ export function MessagePage() {
               <ResultingMessages
                 message={message}
                 onCountReady={setResultingCount}
-                onDataReady={setGraphMessages}
+                onDataReady={handleDataReady}
               />
             )}
             {activeTab === 1 && (
@@ -265,7 +271,7 @@ export function MessagePage() {
                 pushedFor={pushedFor}
                 messageId={messageId}
                 onCountReady={setLinkedMessages}
-                onDataReady={setGraphMessages}
+                onDataReady={handleDataReady}
               />
             )}
           </Box>
