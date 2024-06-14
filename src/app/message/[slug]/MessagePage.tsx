@@ -79,15 +79,36 @@ export function MessagePage() {
 
   const [resultingCount, setResultingCount] = useState<number>()
   const [resultingMessages, setResultingMessages] = useState<AoMessage[] | null>(null)
+  const [entities, setEntities] = useState<Record<string, AoMessage | undefined> | null>(null)
+
+  useEffect(() => {
+    if (!resultingMessages) return
+    const entityIdsSet = new Set<string>()
+
+    resultingMessages?.forEach((x) => {
+      entityIdsSet.add(x.from)
+      entityIdsSet.add(x.to)
+    })
+
+    const entityIds = Array.from(entityIdsSet)
+
+    Promise.all(entityIds.map(getMessageById)).then((entitiesArray) => {
+      const newEntities = Object.fromEntries(
+        entitiesArray.filter((x): x is AoMessage => x !== undefined).map((x) => [x.id, x]),
+      )
+
+      setEntities((prev) => ({ ...prev, ...newEntities }))
+    })
+  }, [resultingMessages])
 
   const graphData = useMemo<ChartDataItem[] | null>(() => {
     const originatingMessage = pushedFor ? pushedForMsg : message
 
-    if (!message || resultingMessages === null || !originatingMessage) return null
+    if (!message || resultingMessages === null || !originatingMessage || !entities) return null
 
     const results: ChartDataItem[] = resultingMessages.map((x) => {
-      const source_type = x.tags["From-Process"] === x.from ? "Process" : "User"
-      const target_type = x.tags["From-Process"] === x.to ? "Process" : "User"
+      const source_type = entities[x.from]?.type || "User"
+      const target_type = entities[x.to]?.type || "User"
 
       return {
         highlight: message.id === x.id,
@@ -101,13 +122,14 @@ export function MessagePage() {
       }
     })
 
-    const firstTargetType = resultingMessages.length === 0 ? "User" : "Process"
+    const firstTargetType = entities[originatingMessage.to]?.type || "User"
 
     return [
       {
         highlight: message.id === originatingMessage.id,
         id: originatingMessage.id,
         source: "User",
+        // source: `User ${truncateId(originatingMessage.from)}`,
         source_id: originatingMessage.from,
         target: `${firstTargetType} ${truncateId(originatingMessage.to)}`,
         target_id: originatingMessage.to,
@@ -116,7 +138,7 @@ export function MessagePage() {
       },
       ...results,
     ]
-  }, [resultingMessages, message, pushedForMsg, pushedFor])
+  }, [resultingMessages, message, pushedForMsg, pushedFor, entities])
 
   if (message === null) return <LoadingSkeletons />
 
@@ -236,7 +258,8 @@ export function MessagePage() {
           </Tabs>
           <Box sx={{ marginX: -2 }}>
             <ResultingMessages
-              messageId={pushedFor || messageId}
+              pushedFor={pushedFor}
+              messageId={messageId}
               open={activeTab === 0}
               onCountReady={setResultingCount}
               onDataReady={setResultingMessages}

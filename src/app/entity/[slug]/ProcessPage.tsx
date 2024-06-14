@@ -2,8 +2,15 @@
 import { Box, CircularProgress, Paper, Stack, Tabs, Tooltip, Typography } from "@mui/material"
 
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
+import { IncomingMessagesTable } from "./IncomingMessagesTable"
+import { OutgoingMessagesTable } from "./OutgoingMessagesTable"
+import { ProcessInteraction } from "./ProcessInteraction"
+import { FetchInfoHandler } from "./ProcessPage/FetchInfoHandler"
+import { SpawnedProcesses } from "./SpawnedProcesses"
+import { TokenBalances } from "./TokenBalances"
+import { TokenTransfers } from "./TokenTransfers"
 import { BalanceSection } from "@/components/BalanceSection"
 import { EntityBlock } from "@/components/EntityBlock"
 import { ChartDataItem, Graph } from "@/components/Graph"
@@ -15,17 +22,10 @@ import { Subheading } from "@/components/Subheading"
 import { TabWithCount } from "@/components/TabWithCount"
 import { TagsSection } from "@/components/TagsSection"
 
+import { getMessageById } from "@/services/messages-api"
 import { AoMessage } from "@/types"
 import { truncateId } from "@/utils/data-utils"
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
-
-import { IncomingMessagesTable } from "./IncomingMessagesTable"
-import { OutgoingMessagesTable } from "./OutgoingMessagesTable"
-import { ProcessInteraction } from "./ProcessInteraction"
-import { FetchInfoHandler } from "./ProcessPage/FetchInfoHandler"
-import { SpawnedProcesses } from "./SpawnedProcesses"
-import { TokenBalances } from "./TokenBalances"
-import { TokenTransfers } from "./TokenTransfers"
 
 type ProcessPageProps = {
   message: AoMessage
@@ -57,12 +57,34 @@ export function ProcessPage(props: ProcessPageProps) {
   const [balancesCount, setBalancesCount] = useState<number>()
 
   const [outgoingMessages, setOutgoingMessages] = useState<AoMessage[] | null>(null)
+
+  const [entities, setEntities] = useState<Record<string, AoMessage | undefined> | null>(null)
+  useEffect(() => {
+    if (!outgoingMessages) return
+    const entityIdsSet = new Set<string>()
+
+    outgoingMessages?.forEach((x) => {
+      entityIdsSet.add(x.from)
+      entityIdsSet.add(x.to)
+    })
+
+    const entityIds = Array.from(entityIdsSet)
+
+    Promise.all(entityIds.map(getMessageById)).then((entitiesArray) => {
+      const newEntities = Object.fromEntries(
+        entitiesArray.filter((x): x is AoMessage => x !== undefined).map((x) => [x.id, x]),
+      )
+
+      setEntities((prev) => ({ ...prev, ...newEntities }))
+    })
+  }, [outgoingMessages])
+
   const graphData = useMemo<ChartDataItem[] | null>(() => {
-    if (outgoingMessages === null) return null
+    if (outgoingMessages === null || !entities) return null
 
     const results: ChartDataItem[] = outgoingMessages.map((x) => {
-      const source_type = x.tags["From-Process"] === x.from ? "Process" : "User"
-      const target_type = x.tags["From-Process"] === x.to ? "Process" : "User"
+      const source_type = entities[x.from]?.type || "User"
+      const target_type = entities[x.to]?.type || "User"
 
       return {
         id: x.id,
@@ -84,7 +106,7 @@ export function ProcessPage(props: ProcessPageProps) {
       targetIdMap[x.target_id] = true
       return true
     })
-  }, [outgoingMessages])
+  }, [outgoingMessages, entities])
 
   return (
     <Stack component="main" gap={6} paddingY={4}>

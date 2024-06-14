@@ -5,6 +5,7 @@ import { getResultingMessages } from "@/services/messages-api"
 import { AoMessage } from "@/types"
 
 type Props = {
+  pushedFor?: string
   messageId: string
   open: boolean
   onCountReady?: (count: number) => void
@@ -12,7 +13,7 @@ type Props = {
 }
 
 function BaseResultingMessages(props: Props) {
-  const { messageId, open, onCountReady, onDataReady } = props
+  const { pushedFor, messageId, open, onCountReady, onDataReady } = props
 
   if (!open) return null
 
@@ -22,12 +23,17 @@ function BaseResultingMessages(props: Props) {
     <EntityMessagesTable
       pageSize={pageSize}
       fetchFunction={async (offset, ascending, sortField, lastRecord) => {
-        const [count, records] = await getResultingMessages(
+        let [count, records] = await getResultingMessages(
           pageSize,
           lastRecord?.cursor,
           ascending,
-          messageId,
+          pushedFor || messageId,
         )
+
+        // if (pushedFor) {
+        //   records = records.filter((msg) => msg.id !== messageId)
+        //   if (count) count = count - 1
+        // }
 
         if (count && onCountReady) {
           onCountReady(count)
