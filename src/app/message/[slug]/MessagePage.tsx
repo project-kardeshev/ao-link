@@ -121,8 +121,8 @@ export function MessagePage() {
       {
         highlight: message.id === message.id,
         id: message.id,
-        source: firstSourceType,
-        source_id: `${firstSourceType} ${truncateId(message.from)}`,
+        source: `${firstSourceType} ${truncateId(message.from)}`,
+        source_id: message.from,
         target: `${firstTargetType} ${truncateId(message.to)}`,
         target_id: message.to,
         type: "User Message",
