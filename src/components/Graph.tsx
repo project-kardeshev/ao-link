@@ -8,7 +8,9 @@ function linkArc(d: CustomLink) {
   const dx = d.target.x - d.source.x
   const dy = d.target.y - d.source.y
   const dr = Math.sqrt(dx * dx + dy * dy) * (1 + Math.abs(d.curvature)) // Increase the distance based on curvature
-  const sweepFlag = d.curvature > 0 ? 1 : 0
+  // const sweepFlag = d.curvature > 0 ? 1 : 0 // FIXME: This is not working as expected
+  const sweepFlag = 0
+
   return `
     M${d.source.x},${d.source.y}
     A${dr},${dr} 0 0,${sweepFlag} ${d.target.x},${d.target.y}`
