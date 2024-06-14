@@ -1,11 +1,10 @@
 import { Box, Link, Skeleton, Tooltip } from "@mui/material"
 import React, { useCallback, useEffect } from "react"
 
+import { TokenAmountBlock } from "./TokenAmountBlock"
 import { TokenInfo, getBalance } from "@/services/token-api"
 
 import { timeout } from "@/utils/utils"
-
-import { TokenAmountBlock } from "./TokenAmountBlock"
 
 type RetryableBalanceProps = {
   entityId: string
@@ -22,7 +21,7 @@ export function RetryableBalance(props: RetryableBalanceProps) {
   const fetchBalance = useCallback(async () => {
     setLoading(true)
     setError("")
-    Promise.race([getBalance(tokenInfo.processId, entityId), timeout(5_000)])
+    Promise.race([getBalance(tokenInfo.processId, entityId), timeout(60_000)])
       .then((balance) => {
         setBalance(balance as number)
       })

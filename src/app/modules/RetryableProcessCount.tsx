@@ -19,7 +19,7 @@ export function RetryableProcessCount(props: RetryableProcessCountProps) {
   const fetchValue = useCallback(async () => {
     setLoading(true)
     setError("")
-    Promise.race([getProcesses(1, undefined, true, moduleId), timeout(5_000)])
+    Promise.race([getProcesses(1, undefined, true, moduleId), timeout(60_000)])
       .then((value: any) => {
         setCount(value[0])
       })

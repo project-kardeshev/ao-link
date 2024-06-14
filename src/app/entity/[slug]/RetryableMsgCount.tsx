@@ -19,7 +19,7 @@ export function RetryableMsgCount(props: RetryableMsgCountProps) {
   const fetchValue = useCallback(async () => {
     setLoading(true)
     setError("")
-    Promise.race([getIncomingMessages(1, undefined, true, processId), timeout(5_000)])
+    Promise.race([getIncomingMessages(1, undefined, true, processId), timeout(60_000)])
       .then((value: any) => {
         setCount(value[0])
       })
