@@ -5,6 +5,7 @@ import { Box, Skeleton, Stack } from "@mui/material"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { useEffect, useState } from "react"
 
+import { AllMessagesTable } from "./AllMessagesTable"
 import { AreaChart } from "@/components/Charts/AreaChart"
 
 import { Subheading } from "@/components/Subheading"
@@ -17,10 +18,6 @@ import {
 } from "@/services/aometrics"
 
 import { HighchartAreaDataServer } from "@/types"
-
-import { AllMessagesTable } from "./AllMessagesTable"
-
-export const dynamic = "force-dynamic"
 
 export default function HomePage() {
   const [stats, setStats] = useState<
@@ -48,7 +45,7 @@ export default function HomePage() {
   return (
     <Stack component="main" gap={2}>
       {messages.length === 0 ? (
-        <Grid2 container spacing={{ xs: 1, lg: 2 }}>
+        <Grid2 container spacing={{ xs: 1, lg: 2 }} marginX={-2.5}>
           <Grid2 xs={6} lg={3}>
             <Skeleton height={150} variant="rectangular" />
           </Grid2>
@@ -63,7 +60,7 @@ export default function HomePage() {
           </Grid2>
         </Grid2>
       ) : (
-        <Grid2 container spacing={{ xs: 1, lg: 2 }}>
+        <Grid2 container spacing={{ xs: 1, lg: 2 }} marginX={-2.5}>
           <Grid2 xs={6} lg={3}>
             <AreaChart data={messages} titleText="TOTAL MESSAGES" overrideValue={totalMessages} />
           </Grid2>
