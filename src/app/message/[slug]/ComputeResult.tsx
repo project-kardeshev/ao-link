@@ -1,11 +1,11 @@
 "use client"
 
-import { Button, CircularProgress, Stack, TextField, Typography } from "@mui/material"
+import { Button, CircularProgress, Stack, Typography } from "@mui/material"
 import { result } from "@permaweb/aoconnect/browser"
 import { Asterisk } from "@phosphor-icons/react"
 import React, { useCallback, useEffect, useState } from "react"
 
-import { MonoFontFF } from "@/components/RootLayout/fonts"
+import { FormattedDataBlock } from "@/components/FormattedDataBlock"
 import { getMessageById } from "@/services/messages-api"
 import { AoMessage } from "@/types"
 
@@ -72,20 +72,8 @@ export function ComputeResult(props: ComputeResultProps) {
           Compute
         </Button>
       </Stack>
-      <TextField
-        sx={(theme) => ({
-          bgcolor: "var(--mui-palette-background-paper)",
-          "& textarea": {
-            ...theme.typography.body2,
-            fontFamily: MonoFontFF,
-            resize: "both",
-            minWidth: "100%",
-            minHeight: 200,
-          },
-        })}
-        rows={1}
-        multiline
-        variant="outlined"
+      <FormattedDataBlock
+        data={content}
         placeholder={
           msg === undefined
             ? "There is no result to compute because the message was sent to a User."
@@ -93,10 +81,6 @@ export function ComputeResult(props: ComputeResultProps) {
               ? "Loading..."
               : "Click 'Compute' to get the result."
         }
-        value={content
-          ?.replace(/\\n/g, "\n")
-          .replace(/\\"/g, '"')
-          .replace(/\\u001b\[\d{1,2}(;\d{1,2})*m/g, "")}
       />
     </Stack>
   )

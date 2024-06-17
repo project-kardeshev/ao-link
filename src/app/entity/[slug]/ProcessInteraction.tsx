@@ -28,9 +28,9 @@ export function ProcessInteraction(props: ProcessInteractionProps) {
   const [query, setQuery] = useState<string | undefined>(
     JSON.stringify(
       {
-        // anchor: "1234",
-        // Id: "1234",
-        // Owner: "placeholder",
+        // anchor: "123456789",
+        // Id: "123456789",
+        // Owner: "123456789",
         process: processId,
         data: "",
         tags: [{ name: "Action", value: "Info" }],

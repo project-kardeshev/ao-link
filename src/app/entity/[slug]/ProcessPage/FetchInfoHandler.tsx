@@ -1,10 +1,10 @@
 "use client"
 
-import { Button, CircularProgress, Stack, TextField, Typography } from "@mui/material"
+import { Button, CircularProgress, Stack, Typography } from "@mui/material"
 import { Asterisk } from "@phosphor-icons/react"
 import React, { useCallback, useState } from "react"
 
-import { MonoFontFF } from "@/components/RootLayout/fonts"
+import { FormattedDataBlock } from "@/components/FormattedDataBlock"
 
 type FetchInfoHandlerProps = {
   processId: string
@@ -24,10 +24,10 @@ export function FetchInfoHandler(props: FetchInfoHandlerProps) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          Anchor: "0",
-          Data: "1234",
-          Id: "1234",
-          Owner: "1234",
+          // Anchor: "0",
+          // Data: "123456789",
+          // Id: "123456789",
+          Owner: "123456789",
           Target: processId,
           Tags: [{ name: "Action", value: "Info" }],
         }),
@@ -78,24 +78,11 @@ export function FetchInfoHandler(props: FetchInfoHandlerProps) {
           Fetch
         </Button>
       </Stack>
-      <TextField
-        sx={(theme) => ({
-          bgcolor: "var(--mui-palette-background-paper)",
-          "& textarea": {
-            ...theme.typography.body2,
-            fontFamily: MonoFontFF,
-            resize: "both",
-            minWidth: "100%",
-            minHeight: 200,
-          },
-        })}
-        rows={1}
-        multiline
-        variant="outlined"
+      <FormattedDataBlock
+        data={content}
         placeholder={
           loading ? "Loading..." : "Click 'Fetch' to get information about this process."
         }
-        value={content}
       />
     </Stack>
   )
