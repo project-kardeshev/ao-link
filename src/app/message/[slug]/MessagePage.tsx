@@ -1,15 +1,6 @@
 "use client"
 
-import {
-  Box,
-  CircularProgress,
-  Paper,
-  Stack,
-  Tabs,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material"
+import { Box, CircularProgress, Paper, Stack, Tabs, Tooltip, Typography } from "@mui/material"
 
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
@@ -18,6 +9,7 @@ import { useParams } from "react-router-dom"
 
 import { ComputeResult } from "./ComputeResult"
 import { LinkedMessages } from "./LinkedMessages"
+import { MessageData } from "./MessageData"
 import { ResultingMessages } from "./ResultingMessages"
 import { EntityBlock } from "@/components/EntityBlock"
 import { ChartDataItem, Graph } from "@/components/Graph"
@@ -48,20 +40,6 @@ export function MessagePage() {
 
     getMessageById(messageId).then(setMessage)
   }, [messageId])
-
-  const [data, setData] = useState<string>()
-
-  useEffect(() => {
-    if (!message) return
-
-    if (message.type === "Checkpoint") {
-      setData("Message too long")
-    } else {
-      fetch(`https://arweave.net/${message.id}`)
-        .then((res) => res.text())
-        .then(setData)
-    }
-  }, [message])
 
   const pushedFor = message?.tags["Pushed-For"]
 
@@ -219,27 +197,7 @@ export function MessagePage() {
               <TagsSection label="Tags" tags={userTags} />
               <TagsSection label="System Tags" tags={systemTags} />
               <ComputeResult messageId={messageId} processId={to} />
-              <Stack gap={1} justifyContent="stretch">
-                <Typography variant="subtitle2" color="text.secondary">
-                  Data
-                </Typography>
-                <TextField
-                  sx={(theme) => ({
-                    bgcolor: "var(--mui-palette-background-paper)",
-                    "& textarea": {
-                      ...theme.typography.body2,
-                      fontFamily: MonoFontFF,
-                      resize: "both",
-                      minWidth: "100%",
-                      minHeight: 200,
-                    },
-                  })}
-                  rows={1}
-                  multiline
-                  variant="outlined"
-                  value={data}
-                />
-              </Stack>
+              <MessageData message={message} />
               <Stack gap={1} justifyContent="stretch">
                 <Typography variant="subtitle2" color="text.secondary">
                   Result Type
