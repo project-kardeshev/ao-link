@@ -30,6 +30,9 @@ type EntityMessagesTableProps = Pick<AsyncTableProps, "fetchFunction" | "pageSiz
   allowTypeFilter?: boolean
 }
 
+/**
+ * TODO rename to AoTransactionsTable
+ */
 export function EntityMessagesTable(props: EntityMessagesTableProps) {
   const { entityId, hideBlockColumn, allowTypeFilter, ...rest } = props
   const navigate = useNavigate()
@@ -74,6 +77,7 @@ export function EntityMessagesTable(props: EntityMessagesTableProps) {
             </MenuItem>
             {MSG_TYPES.map((msgType) => (
               <MenuItem
+                key={msgType}
                 onClick={() => {
                   handleFilterTypeClose()
                   setExtraFilters({ Type: msgType })

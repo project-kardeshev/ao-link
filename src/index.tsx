@@ -24,6 +24,7 @@ import ProcessesPage from "./app/processes/page"
 
 import TokenPage from "./app/token/[slug]/TokenPage"
 import RootLayoutUI from "./components/RootLayout/RootLayoutUI"
+import { FourZeroFourPage } from "./pages/404"
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <HashRouter>
@@ -38,6 +39,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route path="/processes" element={<ProcessesPage />} />
         <Route path="/entity/:entityId" element={<EntityPage />} />
         <Route path="/token/:tokenId" element={<TokenPage />} />
+        <Route path="*" element={<FourZeroFourPage />} />
       </Routes>
     </RootLayoutUI>
   </HashRouter>,
