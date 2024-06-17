@@ -43,6 +43,7 @@ export function FormattedDataBlock(props: { data?: string; placeholder?: string 
           minWidth: "100%",
           minHeight: 250,
           height: 250,
+          overflow: "auto",
           resize: "vertical",
           margin: 0,
           padding: "12px !important",
