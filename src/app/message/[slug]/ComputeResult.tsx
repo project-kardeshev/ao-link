@@ -3,9 +3,11 @@
 import { Button, CircularProgress, Stack, TextField, Typography } from "@mui/material"
 import { result } from "@permaweb/aoconnect/browser"
 import { Asterisk } from "@phosphor-icons/react"
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 
 import { MonoFontFF } from "@/components/RootLayout/fonts"
+import { getMessageById } from "@/services/messages-api"
+import { AoMessage } from "@/types"
 
 type ComputeResultProps = {
   messageId: string
@@ -16,6 +18,14 @@ export function ComputeResult(props: ComputeResultProps) {
   const { messageId, processId } = props
   const [content, setContent] = useState("")
   const [loading, setLoading] = useState(false)
+
+  const [msg, setMsg] = React.useState<AoMessage | undefined | null>(null)
+
+  useEffect(() => {
+    if (!processId) return
+
+    getMessageById(processId).then(setMsg)
+  }, [processId])
 
   const handleCompute = useCallback(async () => {
     setLoading(true)
@@ -50,7 +60,7 @@ export function ComputeResult(props: ComputeResultProps) {
           }}
           variant="contained"
           onClick={handleCompute}
-          disabled={loading}
+          disabled={!msg || loading}
           endIcon={
             loading ? (
               <CircularProgress size={12} color="inherit" />
@@ -76,7 +86,13 @@ export function ComputeResult(props: ComputeResultProps) {
         rows={1}
         multiline
         variant="outlined"
-        placeholder={loading ? "Loading..." : "Click 'Compute' to get the result."}
+        placeholder={
+          msg === undefined
+            ? "There is no result to compute because the message was sent to a User."
+            : loading
+              ? "Loading..."
+              : "Click 'Compute' to get the result."
+        }
         value={content
           ?.replace(/\\n/g, "\n")
           .replace(/\\"/g, '"')
