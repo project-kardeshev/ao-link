@@ -26,7 +26,7 @@ export function MessageData(props: { message: AoMessage }) {
       <Typography variant="subtitle2" color="text.secondary">
         Data
       </Typography>
-      <FormattedDataBlock data={data} />
+      <FormattedDataBlock data={data} isEvalMessage={message.action === "Eval"} />
     </Stack>
   )
 }

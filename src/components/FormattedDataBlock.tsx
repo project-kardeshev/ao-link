@@ -4,19 +4,28 @@ import React, { useMemo } from "react"
 
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter"
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json"
+import lua from "react-syntax-highlighter/dist/esm/languages/hljs/lua"
 import { github, vs2015 } from "react-syntax-highlighter/dist/esm/styles/hljs"
 
 import { MonoFontFF } from "@/components/RootLayout/fonts"
 
 SyntaxHighlighter.registerLanguage("json", json)
+SyntaxHighlighter.registerLanguage("lua", lua)
 
-export function FormattedDataBlock(props: { data?: string; placeholder?: string }) {
-  const { data: rawData, placeholder } = props
+type FormattedDataBlockProps = {
+  data?: string
+  placeholder?: string
+  isEvalMessage?: boolean
+}
+
+export function FormattedDataBlock(props: FormattedDataBlockProps) {
+  const { data: rawData, placeholder, isEvalMessage } = props
 
   const theme = useTheme()
 
   const [data, type] = useMemo(() => {
     if (!rawData) return [placeholder || "...", "string"]
+    if (isEvalMessage) return [rawData, "lua"]
 
     try {
       const json = JSON.parse(rawData)
@@ -58,6 +67,10 @@ export function FormattedDataBlock(props: { data?: string; placeholder?: string 
         </Box>
       ) : type === "json" ? (
         <SyntaxHighlighter language="json" style={theme.palette.mode === "light" ? github : vs2015}>
+          {data}
+        </SyntaxHighlighter>
+      ) : type === "lua" ? (
+        <SyntaxHighlighter language="lua" style={theme.palette.mode === "light" ? github : vs2015}>
           {data}
         </SyntaxHighlighter>
       ) : (
