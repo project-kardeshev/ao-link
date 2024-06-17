@@ -79,6 +79,7 @@ export function FetchInfoHandler(props: FetchInfoHandlerProps) {
         </Button>
       </Stack>
       <FormattedDataBlock
+        minHeight={520}
         data={content}
         placeholder={
           loading ? "Loading..." : "Click 'Fetch' to get information about this process."

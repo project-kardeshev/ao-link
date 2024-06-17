@@ -16,10 +16,11 @@ type FormattedDataBlockProps = {
   data?: string
   placeholder?: string
   isEvalMessage?: boolean
+  minHeight?: number
 }
 
 export function FormattedDataBlock(props: FormattedDataBlockProps) {
-  const { data: rawData, placeholder, isEvalMessage } = props
+  const { data: rawData, placeholder, isEvalMessage, minHeight = 250 } = props
 
   const theme = useTheme()
 
@@ -50,8 +51,8 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
         },
         "& > *": {
           minWidth: "100%",
-          minHeight: 250,
-          height: 250,
+          minHeight: minHeight,
+          height: minHeight,
           overflow: "auto",
           resize: "vertical",
           margin: 0,

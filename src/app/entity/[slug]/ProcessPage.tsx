@@ -15,7 +15,6 @@ import { BalanceSection } from "@/components/BalanceSection"
 import { EntityBlock } from "@/components/EntityBlock"
 import { ChartDataItem, Graph } from "@/components/Graph"
 import { IdBlock } from "@/components/IdBlock"
-import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { SectionInfo } from "@/components/SectionInfo"
 import { SectionInfoWithChip } from "@/components/SectionInfoWithChip"
 import { Subheading } from "@/components/Subheading"
@@ -154,6 +153,8 @@ export function ProcessPage(props: ProcessPageProps) {
                 )
               }
             />
+            <SectionInfo title="Result Type" value="JSON" />
+            <BalanceSection entityId={entityId} />
           </Stack>
         </Grid2>
         <Grid2 xs={12} lg={6}>
@@ -161,17 +162,6 @@ export function ProcessPage(props: ProcessPageProps) {
             <TagsSection label="Tags" tags={userTags} />
             <TagsSection label="System Tags" tags={systemTags} />
             <FetchInfoHandler processId={entityId} />
-            <Stack gap={1} justifyContent="stretch">
-              <Typography variant="subtitle2" color="text.secondary">
-                Result Type
-              </Typography>
-              <Paper sx={{ width: "100%", padding: 2 }}>
-                <Typography variant="body2" fontFamily={MonoFontFF}>
-                  JSON
-                </Typography>
-              </Paper>
-            </Stack>
-            <BalanceSection entityId={entityId} />
           </Stack>
         </Grid2>
       </Grid2>
