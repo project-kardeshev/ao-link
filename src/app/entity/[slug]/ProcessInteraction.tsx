@@ -72,7 +72,7 @@ export function ProcessInteraction(props: ProcessInteractionProps) {
   }, [processId, query, readOnly])
 
   return (
-    <Box sx={{ marginBottom: 10 }}>
+    <Box sx={{ marginBottom: 10, marginTop: 3, marginX: 2 }}>
       <Stack gap={1}>
         <Stack gap={1} direction="row" height={600} sx={{ position: "relative" }}>
           <Paper
@@ -84,14 +84,17 @@ export function ProcessInteraction(props: ProcessInteractionProps) {
             onChange={(value) => setQuery(value)}
           />
           <Typography
-            variant="body2"
+            variant="caption"
             sx={{
               position: "absolute",
-              top: 0,
-              right: !response ? 0 : "50%",
+              top: -24,
+              left: 0,
               border: "1px solid var(--mui-palette-divider)",
               background: "var(--mui-palette-background-paper)",
-              padding: 1,
+              borderBottom: 0,
+              paddingTop: 0.5,
+              paddingLeft: 2,
+              paddingRight: 2,
               zIndex: 9999999,
             }}
           >
@@ -108,14 +111,17 @@ export function ProcessInteraction(props: ProcessInteractionProps) {
                 value={response}
               />
               <Typography
-                variant="body2"
+                variant="caption"
                 sx={{
                   position: "absolute",
-                  top: 0,
-                  right: 0,
+                  top: -24,
+                  left: "calc(50% + 8px)",
                   border: "1px solid var(--mui-palette-divider)",
                   background: "var(--mui-palette-background-paper)",
-                  padding: 1,
+                  borderBottom: 0,
+                  paddingTop: 0.5,
+                  paddingLeft: 2,
+                  paddingRight: 2,
                   zIndex: 9999999,
                 }}
               >
