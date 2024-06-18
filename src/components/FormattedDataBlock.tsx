@@ -1,4 +1,4 @@
-import { Box, Paper, Typography, useTheme } from "@mui/material"
+import { Box, BoxProps, Typography, useTheme } from "@mui/material"
 import AnsiToHtml from "ansi-to-html"
 import React, { useMemo } from "react"
 
@@ -12,15 +12,15 @@ import { MonoFontFF } from "@/components/RootLayout/fonts"
 SyntaxHighlighter.registerLanguage("json", json)
 SyntaxHighlighter.registerLanguage("lua", lua)
 
-type FormattedDataBlockProps = {
+type FormattedDataBlockProps = BoxProps & {
   data?: string
   placeholder?: string
   isEvalMessage?: boolean
-  minHeight?: number
+  minHeight?: number | string
 }
 
 export function FormattedDataBlock(props: FormattedDataBlockProps) {
-  const { data: rawData, placeholder, isEvalMessage, minHeight = 250 } = props
+  const { data: rawData, placeholder, isEvalMessage, minHeight = 250, ...rest } = props
 
   const theme = useTheme()
 
@@ -42,9 +42,8 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
   }, [rawData, placeholder])
 
   return (
-    <Paper
+    <Box
       sx={(theme) => ({
-        bgcolor: "var(--mui-palette-background-paper)",
         "& *": {
           ...theme.typography.body2,
           fontFamily: MonoFontFF,
@@ -56,9 +55,10 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
           overflow: "auto",
           resize: "vertical",
           margin: 0,
-          padding: "12px !important",
+          padding: "8px 16px !important",
         },
       })}
+      {...rest}
     >
       {type === "string" ? (
         <Box>
@@ -67,11 +67,21 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
           </Typography>
         </Box>
       ) : type === "json" ? (
-        <SyntaxHighlighter language="json" style={theme.palette.mode === "light" ? github : vs2015}>
+        <SyntaxHighlighter
+          language="json"
+          style={theme.palette.mode === "light" ? github : vs2015}
+          wrapLines
+          wrapLongLines
+        >
           {data}
         </SyntaxHighlighter>
       ) : type === "lua" ? (
-        <SyntaxHighlighter language="lua" style={theme.palette.mode === "light" ? github : vs2015}>
+        <SyntaxHighlighter
+          language="lua"
+          style={theme.palette.mode === "light" ? github : vs2015}
+          wrapLines
+          wrapLongLines
+        >
           {data}
         </SyntaxHighlighter>
       ) : (
@@ -81,6 +91,6 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
           }}
         />
       )}
-    </Paper>
+    </Box>
   )
 }

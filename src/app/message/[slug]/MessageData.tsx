@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material"
+import { Paper, Stack, Typography } from "@mui/material"
 import React, { useEffect, useState } from "react"
 
 import { FormattedDataBlock } from "@/components/FormattedDataBlock"
@@ -26,7 +26,7 @@ export function MessageData(props: { message: AoMessage }) {
       <Typography variant="subtitle2" color="text.secondary">
         Data
       </Typography>
-      <FormattedDataBlock data={data} isEvalMessage={message.action === "Eval"} />
+      <FormattedDataBlock data={data} isEvalMessage={message.action === "Eval"} component={Paper} />
     </Stack>
   )
 }

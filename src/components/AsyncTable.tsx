@@ -29,7 +29,7 @@ export type AsyncTableProps = Omit<TableProps, "component"> &
   Pick<StackProps, "component"> & {
     headerCells: HeaderCell[]
     pageSize: number
-    renderRow: (row: any) => React.ReactNode
+    renderRow: (row: any, index: number) => React.ReactNode
     initialSortField: string
     initialSortDir: "asc" | "desc"
     fetchFunction: (

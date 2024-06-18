@@ -1,6 +1,6 @@
 "use client"
 
-import { Button, CircularProgress, Stack, Typography } from "@mui/material"
+import { Button, CircularProgress, Paper, Stack, Typography } from "@mui/material"
 import { result } from "@permaweb/aoconnect/browser"
 import { Asterisk } from "@phosphor-icons/react"
 import React, { useCallback, useEffect, useState } from "react"
@@ -77,6 +77,7 @@ export function ComputeResult(props: ComputeResultProps) {
               ? "Loading..."
               : "Click 'Compute' to get the result."
         }
+        component={Paper}
       />
     </Stack>
   )

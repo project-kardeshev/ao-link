@@ -647,3 +647,59 @@ export async function getAllMessages(
     return [0, []]
   }
 }
+
+/**
+ * WARN This query fails if both count and cursor are set
+ */
+const evalMessagesQuery = (includeCount = false) => gql`
+  query (
+    $entityId: String!
+    $limit: Int!
+    $sortOrder: SortOrder!
+    $cursor: String
+  ) {
+    transactions(
+      sort: $sortOrder
+      first: $limit
+      after: $cursor
+
+      tags: [{ name: "Action", values: ["Eval"] }]
+      recipients: [$entityId]
+    ) {
+      ${includeCount ? "count" : ""}
+      ...MessageFields
+    }
+  }
+
+  ${messageFields}
+`
+
+export async function getEvalMessages(
+  limit = 100,
+  cursor = "",
+  ascending: boolean,
+  //
+  entityId: string,
+): Promise<[number | undefined, AoMessage[]]> {
+  try {
+    const result = await goldsky
+      .query<TransactionsResponse>(evalMessagesQuery(!cursor), {
+        limit,
+        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        cursor,
+        //
+        entityId,
+      })
+      .toPromise()
+    const { data } = result
+
+    if (!data) return [0, []]
+
+    const { count, edges } = data.transactions
+    const events = edges.map(parseAoMessage)
+
+    return [count, events]
+  } catch (error) {
+    return [0, []]
+  }
+}

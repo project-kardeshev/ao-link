@@ -8,6 +8,7 @@ import { IncomingMessagesTable } from "./IncomingMessagesTable"
 import { OutgoingMessagesTable } from "./OutgoingMessagesTable"
 import { ProcessInteraction } from "./ProcessInteraction"
 import { FetchInfoHandler } from "./ProcessPage/FetchInfoHandler"
+import { SourceCode } from "./SourceCode"
 import { SpawnedProcesses } from "./SpawnedProcesses"
 import { TokenBalances } from "./TokenBalances"
 import { TokenTransfers } from "./TokenTransfers"
@@ -54,6 +55,7 @@ export function ProcessPage(props: ProcessPageProps) {
   const [processesCount, setProcessesCount] = useState<number>()
   const [transfersCount, setTransfersCount] = useState<number>()
   const [balancesCount, setBalancesCount] = useState<number>()
+  const [evalCount, setEvalCount] = useState<number>()
 
   const [outgoingMessages, setOutgoingMessages] = useState<AoMessage[] | null>(null)
 
@@ -165,7 +167,7 @@ export function ProcessPage(props: ProcessPageProps) {
           </Stack>
         </Grid2>
       </Grid2>
-      <div>
+      <Stack>
         <Tabs value={activeTab} onChange={handleChange} textColor="primary">
           <TabWithCount value={0} label="Outgoing messages" chipValue={outgoingCount} />
           <TabWithCount value={1} label="Incoming messages" chipValue={incomingCount} />
@@ -174,6 +176,7 @@ export function ProcessPage(props: ProcessPageProps) {
           <TabWithCount value={4} label="Token balances" chipValue={balancesCount} />
           <TabWithCount value={5} label="Read" sx={{ marginLeft: "auto" }} />
           <TabWithCount value={6} label="Write" />
+          <TabWithCount value={7} label="Source Code" chipValue={evalCount} />
         </Tabs>
         <Box sx={{ marginX: -2 }}>
           <OutgoingMessagesTable
@@ -206,8 +209,9 @@ export function ProcessPage(props: ProcessPageProps) {
           />
           {activeTab === 5 && <ProcessInteraction processId={entityId} readOnly />}
           {activeTab === 6 && <ProcessInteraction processId={entityId} />}
+          <SourceCode entityId={entityId} open={activeTab === 7} onCountReady={setEvalCount} />
         </Box>
-      </div>
+      </Stack>
     </Stack>
   )
 }

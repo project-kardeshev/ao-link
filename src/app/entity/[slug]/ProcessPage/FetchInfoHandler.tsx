@@ -1,6 +1,6 @@
 "use client"
 
-import { Button, CircularProgress, Stack, Typography } from "@mui/material"
+import { Button, CircularProgress, Paper, Stack, Typography } from "@mui/material"
 import { Asterisk } from "@phosphor-icons/react"
 import React, { useCallback, useState } from "react"
 
@@ -80,6 +80,7 @@ export function FetchInfoHandler(props: FetchInfoHandlerProps) {
         placeholder={
           loading ? "Loading..." : "Click 'Fetch' to get information about this process."
         }
+        component={Paper}
       />
     </Stack>
   )
