@@ -59,11 +59,7 @@ export function FetchInfoHandler(props: FetchInfoHandlerProps) {
         </Typography>
         <Button
           size="small"
-          sx={{
-            bgcolor: "var(--mui-palette-secondary-main) !important",
-            color: "black",
-            height: "fit-content",
-          }}
+          color="secondary"
           variant="contained"
           onClick={handleFetch}
           disabled={loading}

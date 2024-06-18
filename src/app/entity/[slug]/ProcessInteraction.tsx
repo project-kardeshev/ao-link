@@ -152,11 +152,7 @@ export function ProcessInteraction(props: ProcessInteractionProps) {
               {(readOnly || activeAddress) && (
                 <Button
                   size="small"
-                  sx={{
-                    bgcolor: "var(--mui-palette-secondary-main) !important",
-                    color: "black",
-                    height: "fit-content",
-                  }}
+                  color="secondary"
                   variant="contained"
                   onClick={handleFetch}
                   disabled={loading}
@@ -175,11 +171,7 @@ export function ProcessInteraction(props: ProcessInteractionProps) {
                 <Button
                   size="small"
                   variant="contained"
-                  sx={{
-                    bgcolor: "var(--mui-palette-secondary-main) !important",
-                    color: "black",
-                    height: "fit-content",
-                  }}
+                  color="secondary"
                   onClick={() => {
                     document.getElementById("connect-wallet-button")?.click()
                   }}

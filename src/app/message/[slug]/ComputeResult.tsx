@@ -53,11 +53,7 @@ export function ComputeResult(props: ComputeResultProps) {
         </Typography>
         <Button
           size="small"
-          sx={{
-            bgcolor: "var(--mui-palette-secondary-main) !important",
-            color: "black",
-            height: "fit-content",
-          }}
+          color="secondary"
           variant="contained"
           onClick={handleCompute}
           disabled={!msg || loading}
