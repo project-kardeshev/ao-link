@@ -20,8 +20,16 @@ type EvalMessagesTableRowProps = {
 export function EvalMessagesTableRow(props: EvalMessagesTableRowProps) {
   const { item: message, expandedByDefault } = props
 
-  const [expanded, setExpanded] = useState(!!expandedByDefault)
+  const [expanded, setExpanded] = useState(false)
   const [data, setData] = useState<string>("Loading...")
+
+  useEffect(() => {
+    if (expandedByDefault) {
+      setTimeout(() => {
+        setExpanded(true)
+      }, 300)
+    }
+  }, [expandedByDefault])
 
   useEffect(() => {
     if (!message || !expanded) return
