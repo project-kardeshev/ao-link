@@ -44,6 +44,7 @@ export type AoMessage = {
   systemTags: Record<string, string>
   userTags: Record<string, string>
   cursor?: string
+  dataSize?: number
 }
 
 export type TokenTransferMessage = {

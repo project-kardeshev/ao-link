@@ -33,6 +33,9 @@ const messageFields = gql`
           name
           value
         }
+        data {
+          size
+        }
         owner {
           address
         }

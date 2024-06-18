@@ -10,7 +10,7 @@ import { TypeBadge } from "@/components/TypeBadge"
 import { AoMessage } from "@/types"
 import { truncateId } from "@/utils/data-utils"
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
-import { formatNumber } from "@/utils/number-utils"
+import { formatNumber, formatSize } from "@/utils/number-utils"
 
 type EvalMessagesTableRowProps = {
   item: AoMessage
@@ -59,6 +59,9 @@ export function EvalMessagesTableRow(props: EvalMessagesTableRowProps) {
           <EntityBlock entityId={message.from} fullId />
         </TableCell>
         <TableCell align="right">
+          {message.dataSize === undefined ? "Unknown" : formatSize(message.dataSize)}
+        </TableCell>
+        <TableCell align="right">
           {message.blockHeight === null ? (
             "Processing"
           ) : (
@@ -83,7 +86,7 @@ export function EvalMessagesTableRow(props: EvalMessagesTableRowProps) {
         </TableCell>
       </TableRow>
       <TableRow hover={false}>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
           <Box
             sx={{
               marginX: -2,

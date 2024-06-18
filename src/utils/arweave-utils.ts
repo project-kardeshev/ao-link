@@ -128,6 +128,7 @@ export function parseAoMessage(edge: TransactionEdge): AoMessage {
     systemTags,
     userTags,
     cursor,
+    dataSize: node.data?.size,
   }
 }
 

@@ -18,6 +18,11 @@ export function EvalMessagesTable(props: EvalMessagesTableProps) {
     { label: "Action" },
     { label: "From" },
     {
+      label: "Data size",
+      sx: { width: 160 },
+      align: "right",
+    },
+    {
       field: "blockHeight",
       label: "Block Height",
       sx: { width: 160 },
