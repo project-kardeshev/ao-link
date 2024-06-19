@@ -1,7 +1,16 @@
-import { Box, BoxProps, Typography, useTheme } from "@mui/material"
+import {
+  Box,
+  BoxProps,
+  Typography,
+  useTheme,
+  IconButton,
+  Dialog,
+  Tooltip,
+  Stack,
+} from "@mui/material"
+import { ArrowsIn, ArrowsOut } from "@phosphor-icons/react"
 import AnsiToHtml from "ansi-to-html"
-import React, { useMemo } from "react"
-
+import React, { useMemo, useState } from "react"
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter"
 import json from "react-syntax-highlighter/dist/esm/languages/hljs/json"
 import lua from "react-syntax-highlighter/dist/esm/languages/hljs/lua"
@@ -42,20 +51,26 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
     }
   }, [rawData, placeholder])
 
-  return (
+  const [fullscreen, setFullscreen] = useState(false)
+  const toggleFullscreen = () => {
+    setFullscreen((prev) => !prev)
+  }
+
+  const content = (
     <Box
       sx={(theme) => ({
         position: "relative",
+        border: fullscreen ? "none" : undefined,
         "& *": {
           ...theme.typography.body2,
           fontFamily: MonoFontFF,
         },
         "& > *:not(.action-bar)": {
           minWidth: "100%",
-          minHeight: minHeight,
-          height: minHeight,
+          minHeight: fullscreen ? undefined : minHeight,
+          height: fullscreen ? undefined : minHeight,
           overflow: "auto",
-          resize: minHeight === "unset" ? undefined : "vertical",
+          resize: fullscreen || minHeight === "unset" ? undefined : "vertical",
           margin: 0,
           padding: "8px 16px !important",
         },
@@ -63,17 +78,29 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
       {...rest}
     >
       {!!rawData && (
-        <Box
+        <Stack
           className="action-bar"
           sx={{
+            // position: "sticky", // TODO FIXME
             position: "absolute",
             top: 0,
             right: 14,
             padding: 1,
           }}
+          direction="row"
+          gap={1}
         >
           <CopyToClipboard value={rawData} />
-        </Box>
+          <Tooltip title="Toggle fullscreen">
+            <IconButton onClick={toggleFullscreen} sx={{ padding: 0 }} disableFocusRipple>
+              {!fullscreen ? (
+                <ArrowsOut size={14} weight="bold" />
+              ) : (
+                <ArrowsIn size={14} weight="bold" />
+              )}
+            </IconButton>
+          </Tooltip>
+        </Stack>
       )}
       {type === "string" ? (
         <Box>
@@ -87,6 +114,7 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
           style={theme.palette.mode === "light" ? github : vs2015}
           wrapLines
           wrapLongLines
+          showLineNumbers={fullscreen}
         >
           {data}
         </SyntaxHighlighter>
@@ -96,6 +124,7 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
           style={theme.palette.mode === "light" ? github : vs2015}
           wrapLines
           wrapLongLines
+          showLineNumbers={fullscreen}
         >
           {data}
         </SyntaxHighlighter>
@@ -107,5 +136,13 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
         />
       )}
     </Box>
+  )
+
+  if (!fullscreen) return content
+
+  return (
+    <Dialog open fullScreen onClose={toggleFullscreen}>
+      {content}
+    </Dialog>
   )
 }

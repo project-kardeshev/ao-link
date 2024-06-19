@@ -51,10 +51,9 @@ export function EvalMessagesTableRow(props: EvalMessagesTableRowProps) {
 
     result({ message: message.id, process: message.to })
       .then((res) => {
-        setSuccess(typeof res.Output.data === "object")
+        setSuccess(typeof res?.Output?.data === "object")
       })
-      .catch((err) => {
-        console.error(err)
+      .catch(() => {
         setSuccess(null)
       })
   }, [message])
