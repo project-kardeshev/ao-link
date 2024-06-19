@@ -67,8 +67,8 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
         },
         "& > *:not(.action-bar)": {
           minWidth: "100%",
-          minHeight: fullscreen ? undefined : minHeight,
-          height: fullscreen ? undefined : minHeight,
+          minHeight: fullscreen ? "100vh" : minHeight,
+          height: fullscreen ? "100vh" : minHeight,
           overflow: "auto",
           resize: fullscreen || minHeight === "unset" ? undefined : "vertical",
           margin: 0,
@@ -81,7 +81,6 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
         <Stack
           className="action-bar"
           sx={{
-            // position: "sticky", // TODO FIXME
             position: "absolute",
             top: 0,
             right: 14,
@@ -92,7 +91,11 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
         >
           <CopyToClipboard value={rawData} />
           <Tooltip title="Toggle fullscreen">
-            <IconButton onClick={toggleFullscreen} sx={{ padding: 0 }} disableFocusRipple>
+            <IconButton
+              onClick={toggleFullscreen}
+              sx={{ padding: 0, marginTop: "-2px" }}
+              disableFocusRipple
+            >
               {!fullscreen ? (
                 <ArrowsOut size={14} weight="bold" />
               ) : (
@@ -141,7 +144,7 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
   if (!fullscreen) return content
 
   return (
-    <Dialog open fullScreen onClose={toggleFullscreen}>
+    <Dialog open fullScreen onClose={toggleFullscreen} PaperProps={{ sx: { border: 0 } }}>
       {content}
     </Dialog>
   )
