@@ -16,6 +16,7 @@ export function EvalMessagesTable(props: EvalMessagesTableProps) {
     },
     { label: "ID", sx: { width: 240 } },
     { label: "Action" },
+    { label: "Success", sx: { width: 20 } },
     { label: "From" },
     {
       label: "Data size",

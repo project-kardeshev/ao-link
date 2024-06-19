@@ -1,6 +1,7 @@
 import { Box, Collapse, IconButton, Paper, TableCell, TableRow, Tooltip } from "@mui/material"
 
-import { CaretDown, CaretRight } from "@phosphor-icons/react"
+import { result } from "@permaweb/aoconnect/browser"
+import { CaretDown, CaretRight, CheckCircle, MinusCircle, Question } from "@phosphor-icons/react"
 import { useEffect, useState } from "react"
 
 import { EntityBlock } from "@/components/EntityBlock"
@@ -43,6 +44,21 @@ export function EvalMessagesTableRow(props: EvalMessagesTableRowProps) {
     }
   }, [message, expanded])
 
+  const [success, setSuccess] = useState<boolean | null | undefined>(undefined)
+
+  useEffect(() => {
+    if (!message) return
+
+    result({ message: message.id, process: message.to })
+      .then((res) => {
+        setSuccess(typeof res.Output.data === "object")
+      })
+      .catch((err) => {
+        console.error(err)
+        setSuccess(null)
+      })
+  }, [message])
+
   return (
     <>
       <TableRow
@@ -63,6 +79,29 @@ export function EvalMessagesTableRow(props: EvalMessagesTableRowProps) {
           />
         </TableCell>
         <TableCell>{message.action}</TableCell>
+        <TableCell>
+          {success === undefined ? null : success === null ? (
+            <Tooltip title="Compute Result could not be fetched from the process.">
+              <Question
+                style={{ color: "var(--mui-palette-text-secondary)" }}
+                width={16}
+                height={16}
+              />
+            </Tooltip>
+          ) : success ? (
+            <CheckCircle
+              style={{ color: "var(--mui-palette-success-main)" }}
+              width={16}
+              height={16}
+            />
+          ) : (
+            <MinusCircle
+              style={{ color: "var(--mui-palette-error-main)" }}
+              width={16}
+              height={16}
+            />
+          )}
+        </TableCell>
         <TableCell>
           <EntityBlock entityId={message.from} fullId />
         </TableCell>
@@ -94,7 +133,7 @@ export function EvalMessagesTableRow(props: EvalMessagesTableRowProps) {
         </TableCell>
       </TableRow>
       <TableRow hover={false}>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
           <Box
             sx={{
               marginX: -2,
