@@ -7,6 +7,7 @@ import json from "react-syntax-highlighter/dist/esm/languages/hljs/json"
 import lua from "react-syntax-highlighter/dist/esm/languages/hljs/lua"
 import { github, vs2015 } from "react-syntax-highlighter/dist/esm/styles/hljs"
 
+import { CopyToClipboard } from "./CopyToClipboard"
 import { MonoFontFF } from "@/components/RootLayout/fonts"
 
 SyntaxHighlighter.registerLanguage("json", json)
@@ -44,22 +45,36 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
   return (
     <Box
       sx={(theme) => ({
+        position: "relative",
         "& *": {
           ...theme.typography.body2,
           fontFamily: MonoFontFF,
         },
-        "& > *": {
+        "& > *:not(.action-bar)": {
           minWidth: "100%",
           minHeight: minHeight,
           height: minHeight,
           overflow: "auto",
-          resize: "vertical",
+          resize: minHeight === "unset" ? undefined : "vertical",
           margin: 0,
           padding: "8px 16px !important",
         },
       })}
       {...rest}
     >
+      {!!rawData && (
+        <Box
+          className="action-bar"
+          sx={{
+            position: "absolute",
+            top: 0,
+            right: 14,
+            padding: 1,
+          }}
+        >
+          <CopyToClipboard value={rawData} />
+        </Box>
+      )}
       {type === "string" ? (
         <Box>
           <Typography color="text.secondary" variant="inherit">
