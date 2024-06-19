@@ -1,11 +1,9 @@
-"use client"
-
 import { Box, CircularProgress, Paper, Stack, Tabs, Tooltip, Typography } from "@mui/material"
 
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 
-import { useParams } from "react-router-dom"
+import { useParams, useSearchParams } from "react-router-dom"
 
 import { ComputeResult } from "./ComputeResult"
 import { LinkedMessages } from "./LinkedMessages"
@@ -29,6 +27,8 @@ import { formatFullDate, formatRelative } from "@/utils/date-utils"
 
 import { formatNumber } from "@/utils/number-utils"
 
+const defaultTab = "resulting"
+
 export function MessagePage() {
   const { messageId } = useParams()
 
@@ -42,9 +42,16 @@ export function MessagePage() {
 
   const pushedFor = message?.tags["Pushed-For"]
 
-  const [activeTab, setActiveTab] = useState(0)
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || defaultTab)
+
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setActiveTab(newValue)
+    if (newValue === defaultTab) {
+      setSearchParams({})
+    } else {
+      setSearchParams({ tab: newValue })
+    }
   }
 
   const [linkedMessages, setLinkedMessages] = useState<number>()
@@ -203,18 +210,18 @@ export function MessagePage() {
         </Grid2>
         <div>
           <Tabs value={activeTab} onChange={handleChange} textColor="primary">
-            <TabWithCount value={0} label="Resulting messages" chipValue={resultingCount} />
-            <TabWithCount value={1} label="Linked messages" chipValue={linkedMessages} />
+            <TabWithCount value="resulting" label="Resulting messages" chipValue={resultingCount} />
+            <TabWithCount value="linked" label="Linked messages" chipValue={linkedMessages} />
           </Tabs>
           <Box sx={{ marginX: -2 }}>
-            {activeTab === 0 && (
+            {activeTab === "resulting" && (
               <ResultingMessages
                 message={message}
                 onCountReady={setResultingCount}
                 onDataReady={handleDataReady}
               />
             )}
-            {activeTab === 1 && (
+            {activeTab === "linked" && (
               <LinkedMessages
                 pushedFor={pushedFor}
                 messageId={messageId}

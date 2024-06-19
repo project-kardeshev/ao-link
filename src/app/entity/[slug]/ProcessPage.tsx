@@ -1,8 +1,7 @@
-"use client"
 import { Box, CircularProgress, Paper, Stack, Tabs, Tooltip, Typography } from "@mui/material"
-
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { useEffect, useMemo, useState } from "react"
+import { useSearchParams } from "react-router-dom"
 
 import { IncomingMessagesTable } from "./IncomingMessagesTable"
 import { OutgoingMessagesTable } from "./OutgoingMessagesTable"
@@ -31,6 +30,8 @@ type ProcessPageProps = {
   message: AoMessage
 }
 
+const defaultTab = "outgoing"
+
 export function ProcessPage(props: ProcessPageProps) {
   const { message } = props
 
@@ -45,9 +46,15 @@ export function ProcessPage(props: ProcessPageProps) {
     systemTags,
   } = message
 
-  const [activeTab, setActiveTab] = useState(0)
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || defaultTab)
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setActiveTab(newValue)
+    if (newValue === defaultTab) {
+      setSearchParams({})
+    } else {
+      setSearchParams({ tab: newValue })
+    }
   }
 
   const [outgoingCount, setOutgoingCount] = useState<number>()
@@ -169,47 +176,51 @@ export function ProcessPage(props: ProcessPageProps) {
       </Grid2>
       <Stack>
         <Tabs value={activeTab} onChange={handleChange} textColor="primary">
-          <TabWithCount value={0} label="Outgoing messages" chipValue={outgoingCount} />
-          <TabWithCount value={1} label="Incoming messages" chipValue={incomingCount} />
-          <TabWithCount value={2} label="Spawned processes" chipValue={processesCount} />
-          <TabWithCount value={3} label="Token transfers" chipValue={transfersCount} />
-          <TabWithCount value={4} label="Token balances" chipValue={balancesCount} />
-          <TabWithCount value={5} label="Read" sx={{ marginLeft: "auto" }} />
-          <TabWithCount value={6} label="Write" />
-          <TabWithCount value={7} label="Source Code" chipValue={evalCount} />
+          <TabWithCount value="outgoing" label="Outgoing messages" chipValue={outgoingCount} />
+          <TabWithCount value="incoming" label="Incoming messages" chipValue={incomingCount} />
+          <TabWithCount value="spawned" label="Spawned processes" chipValue={processesCount} />
+          <TabWithCount value="transfers" label="Token transfers" chipValue={transfersCount} />
+          <TabWithCount value="balances" label="Token balances" chipValue={balancesCount} />
+          <TabWithCount value="read" label="Read" sx={{ marginLeft: "auto" }} />
+          <TabWithCount value="write" label="Write" />
+          <TabWithCount value="source-code" label="Source Code" chipValue={evalCount} />
         </Tabs>
         <Box sx={{ marginX: -2 }}>
           <OutgoingMessagesTable
             entityId={entityId}
-            open={activeTab === 0}
+            open={activeTab === "outgoing"}
             onCountReady={setOutgoingCount}
             onDataReady={setOutgoingMessages}
             isProcess
           />
           <IncomingMessagesTable
             entityId={entityId}
-            open={activeTab === 1}
+            open={activeTab === "incoming"}
             onCountReady={setIncomingCount}
           />
           <SpawnedProcesses
             entityId={entityId}
-            open={activeTab === 2}
+            open={activeTab === "spawned"}
             onCountReady={setProcessesCount}
             isProcess
           />
           <TokenTransfers
             entityId={entityId}
-            open={activeTab === 3}
+            open={activeTab === "transfers"}
             onCountReady={setTransfersCount}
           />
           <TokenBalances
             entityId={entityId}
-            open={activeTab === 4}
+            open={activeTab === "balances"}
             onCountReady={setBalancesCount}
           />
-          {activeTab === 5 && <ProcessInteraction processId={entityId} readOnly />}
-          {activeTab === 6 && <ProcessInteraction processId={entityId} />}
-          <SourceCode entityId={entityId} open={activeTab === 7} onCountReady={setEvalCount} />
+          {activeTab === "read" && <ProcessInteraction processId={entityId} readOnly />}
+          {activeTab === "write" && <ProcessInteraction processId={entityId} />}
+          <SourceCode
+            entityId={entityId}
+            open={activeTab === "source-code"}
+            onCountReady={setEvalCount}
+          />
         </Box>
       </Stack>
     </Stack>

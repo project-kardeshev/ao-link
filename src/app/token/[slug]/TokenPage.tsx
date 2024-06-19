@@ -1,10 +1,7 @@
-"use client"
-
 import { Avatar, Box, Paper, Skeleton, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import React, { useEffect, useMemo, useState } from "react"
-
-import { useParams } from "react-router-dom"
+import { useParams, useSearchParams } from "react-router-dom"
 
 import { TokenHolderChart } from "./TokenHolderChart"
 import { TokenHolderTable } from "./TokenHolderTable"
@@ -16,6 +13,8 @@ import { TokenAmountBlock } from "@/components/TokenAmountBlock"
 import { useTokenInfo } from "@/hooks/useTokenInfo"
 import { TokenHolder, getTokenHolders } from "@/services/token-api"
 import { isArweaveId } from "@/utils/utils"
+
+const defaultTab = "table"
 
 export default function TokenPage() {
   const { tokenId } = useParams()
@@ -30,9 +29,15 @@ export default function TokenPage() {
     getTokenHolders(tokenInfo).then(setTokenHolders)
   }, [tokenInfo])
 
-  const [activeTab, setActiveTab] = useState(0)
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || defaultTab)
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setActiveTab(newValue)
+    if (newValue === defaultTab) {
+      setSearchParams({})
+    } else {
+      setSearchParams({ tab: newValue })
+    }
   }
 
   const errorMessage = useMemo(() => {
@@ -102,22 +107,21 @@ export default function TokenPage() {
         </Grid2>
       </Grid2>
       <div>
-        <Tabs
-          value={activeTab}
-          onChange={handleChange}
-          textColor="primary"
-          // indicatorColor="secondary"
-        >
-          <Tab value={0} label="Token Holders Table" />
-          <Tab value={1} label="Token Holders Chart" />
+        <Tabs value={activeTab} onChange={handleChange} textColor="primary">
+          <Tab value="table" label="Token Holders Table" />
+          <Tab value="chart" label="Token Holders Chart" />
         </Tabs>
         <Box sx={{ marginX: -2 }}>
           {tokenHolders === undefined || !tokenInfo ? (
             <LoadingSkeletons />
           ) : (
             <Paper>
-              {activeTab === 0 && <TokenHolderTable data={tokenHolders} tokenInfo={tokenInfo} />}
-              {activeTab === 1 && <TokenHolderChart data={tokenHolders} tokenInfo={tokenInfo} />}
+              {activeTab === "table" && (
+                <TokenHolderTable data={tokenHolders} tokenInfo={tokenInfo} />
+              )}
+              {activeTab === "chart" && (
+                <TokenHolderChart data={tokenHolders} tokenInfo={tokenInfo} />
+              )}
             </Paper>
           )}
         </Box>

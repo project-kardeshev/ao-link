@@ -1,29 +1,35 @@
-"use client"
 import { Box, Stack, Tabs } from "@mui/material"
 import React, { useState } from "react"
-
-import { BalanceSection } from "@/components/BalanceSection"
-import { IdBlock } from "@/components/IdBlock"
-import { Subheading } from "@/components/Subheading"
-
-import { TabWithCount } from "@/components/TabWithCount"
+import { useSearchParams } from "react-router-dom"
 
 import { IncomingMessagesTable } from "./IncomingMessagesTable"
 import { OutgoingMessagesTable } from "./OutgoingMessagesTable"
 import { SpawnedProcesses } from "./SpawnedProcesses"
 import { TokenBalances } from "./TokenBalances"
 import { TokenTransfers } from "./TokenTransfers"
+import { BalanceSection } from "@/components/BalanceSection"
+import { IdBlock } from "@/components/IdBlock"
+import { Subheading } from "@/components/Subheading"
+import { TabWithCount } from "@/components/TabWithCount"
 
 type UserPageProps = {
   entityId: string
 }
 
+const defaultTab = "outgoing"
+
 export function UserPage(props: UserPageProps) {
   const { entityId } = props
 
-  const [activeTab, setActiveTab] = useState(0)
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || defaultTab)
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setActiveTab(newValue)
+    if (newValue === defaultTab) {
+      setSearchParams({})
+    } else {
+      setSearchParams({ tab: newValue })
+    }
   }
 
   const [outgoingCount, setOutgoingCount] = useState<number>()
@@ -38,36 +44,36 @@ export function UserPage(props: UserPageProps) {
       <BalanceSection entityId={entityId} />
       <div>
         <Tabs value={activeTab} onChange={handleChange} textColor="primary">
-          <TabWithCount value={0} label="Outgoing messages" chipValue={outgoingCount} />
-          <TabWithCount value={1} label="Incoming messages" chipValue={incomingCount} />
-          <TabWithCount value={2} label="Spawned processes" chipValue={processesCount} />
-          <TabWithCount value={3} label="Token transfers" chipValue={transfersCount} />
-          <TabWithCount value={4} label="Token balances" chipValue={balancesCount} />
+          <TabWithCount value="outgoing" label="Outgoing messages" chipValue={outgoingCount} />
+          <TabWithCount value="incoming" label="Incoming messages" chipValue={incomingCount} />
+          <TabWithCount value="spawned" label="Spawned processes" chipValue={processesCount} />
+          <TabWithCount value="transfers" label="Token transfers" chipValue={transfersCount} />
+          <TabWithCount value="balances" label="Token balances" chipValue={balancesCount} />
         </Tabs>
         <Box sx={{ marginX: -2 }}>
           <OutgoingMessagesTable
             entityId={entityId}
-            open={activeTab === 0}
+            open={activeTab === "outgoing"}
             onCountReady={setOutgoingCount}
           />
           <IncomingMessagesTable
             entityId={entityId}
-            open={activeTab === 1}
+            open={activeTab === "incoming"}
             onCountReady={setIncomingCount}
           />
           <SpawnedProcesses
             entityId={entityId}
-            open={activeTab === 2}
+            open={activeTab === "spawned"}
             onCountReady={setProcessesCount}
           />
           <TokenTransfers
             entityId={entityId}
-            open={activeTab === 3}
+            open={activeTab === "transfers"}
             onCountReady={setTransfersCount}
           />
           <TokenBalances
             entityId={entityId}
-            open={activeTab === 4}
+            open={activeTab === "balances"}
             onCountReady={setBalancesCount}
           />
         </Box>
