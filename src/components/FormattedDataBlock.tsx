@@ -85,6 +85,7 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
             top: 0,
             right: 14,
             padding: 1,
+            fill: "var(--mui-palette-primary-main)",
           }}
           direction="row"
           gap={1}
@@ -97,9 +98,9 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
               disableFocusRipple
             >
               {!fullscreen ? (
-                <ArrowsOut size={14} weight="bold" />
+                <ArrowsOut fill="inherit" size={14} />
               ) : (
-                <ArrowsIn size={14} weight="bold" />
+                <ArrowsIn fill="inherit" size={14} />
               )}
             </IconButton>
           </Tooltip>
