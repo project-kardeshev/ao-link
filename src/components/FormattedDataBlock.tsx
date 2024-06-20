@@ -67,6 +67,7 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
         },
         "& > *:not(.action-bar)": {
           minWidth: "100%",
+          width: "1px", // to force the horizontal scrollbar
           minHeight: fullscreen ? "100vh" : minHeight,
           height: fullscreen ? "100vh" : minHeight,
           overflow: "auto",
