@@ -34,8 +34,6 @@ export function ComputeResult(props: ComputeResultProps) {
         message: messageId,
         process: processId,
       })
-      console.log("📜 LOG > handleCompute > json:", json)
-
       setContent(JSON.stringify(json, null, 2))
     } catch (error) {
       setContent(String(error))

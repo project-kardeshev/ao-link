@@ -27,10 +27,11 @@ type FormattedDataBlockProps = BoxProps & {
   placeholder?: string
   isEvalMessage?: boolean
   minHeight?: number | string
+  maxHeight?: number | string
 }
 
 export function FormattedDataBlock(props: FormattedDataBlockProps) {
-  const { data: rawData, placeholder, isEvalMessage, minHeight = 250, ...rest } = props
+  const { data: rawData, placeholder, isEvalMessage, minHeight = 250, maxHeight, ...rest } = props
 
   const theme = useTheme()
 
@@ -70,6 +71,7 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
           width: "1px", // to force the horizontal scrollbar
           minHeight: fullscreen ? "100vh" : minHeight,
           height: fullscreen ? "100vh" : minHeight,
+          maxHeight,
           overflow: "auto",
           resize: fullscreen || minHeight === "unset" ? undefined : "vertical",
           margin: 0,
@@ -146,7 +148,13 @@ export function FormattedDataBlock(props: FormattedDataBlockProps) {
   if (!fullscreen) return content
 
   return (
-    <Dialog open fullScreen onClose={toggleFullscreen} PaperProps={{ sx: { border: 0 } }}>
+    <Dialog
+      open
+      fullScreen
+      onClose={toggleFullscreen}
+      PaperProps={{ sx: { border: 0 } }}
+      transitionDuration={0}
+    >
       {content}
     </Dialog>
   )

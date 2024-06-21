@@ -9,6 +9,7 @@ import { useActiveAddress } from "arweave-wallet-kit"
 import React, { useCallback, useState } from "react"
 
 import { CodeEditor } from "@/components/CodeEditor"
+import { FormattedDataBlock } from "@/components/FormattedDataBlock"
 import { IdBlock } from "@/components/IdBlock"
 import { MonoFontFF } from "@/components/RootLayout/fonts"
 import { truncateId } from "@/utils/data-utils"
@@ -60,11 +61,7 @@ export function ProcessInteraction(props: ProcessInteractionProps) {
         setMsgId(msgId)
       }
 
-      if ("Messages" in json && json.Messages.length > 0 && typeof json.Messages[0] === "object") {
-        setResponse(JSON.stringify(json.Messages[0], null, 2))
-      } else {
-        setResponse(JSON.stringify(json, null, 2))
-      }
+      setResponse(JSON.stringify(json, null, 2))
     } catch (error) {
       setResponse(JSON.stringify({ error: `Error fetching info: ${String(error)}` }, null, 2))
     }
@@ -74,62 +71,69 @@ export function ProcessInteraction(props: ProcessInteractionProps) {
   return (
     <Box sx={{ marginBottom: 10, marginTop: 3, marginX: 2 }}>
       <Stack gap={1}>
-        <Stack gap={1} direction="row" height={600} sx={{ position: "relative" }}>
-          <Paper
-            component={CodeEditor}
-            height="100%"
-            width={!!response ? "50%" : "100%"}
-            defaultLanguage="json"
-            defaultValue={query}
-            onChange={(value) => setQuery(value)}
-          />
-          <Typography
-            variant="caption"
-            sx={{
-              position: "absolute",
-              top: -24,
-              left: 0,
-              border: "1px solid var(--mui-palette-divider)",
-              background: "var(--mui-palette-background-paper)",
-              borderBottom: 0,
-              paddingTop: 0.5,
-              paddingLeft: 2,
-              paddingRight: 2,
-              zIndex: 9999999,
-            }}
-          >
-            Query
-          </Typography>
-          {!!response && (
-            <>
+        <Grid2 container spacing={{ xs: 4, lg: 2 }}>
+          <Grid2 xs={12} lg={6}>
+            <Box sx={{ position: "relative" }}>
               <Paper
                 component={CodeEditor}
-                height="100%"
-                width={!!response ? "50%" : "100%"}
-                //
+                height={600}
                 defaultLanguage="json"
-                value={response}
+                defaultValue={query}
+                onChange={(value) => setQuery(value)}
               />
               <Typography
                 variant="caption"
                 sx={{
                   position: "absolute",
                   top: -24,
-                  left: "calc(50% + 8px)",
+                  left: 0,
                   border: "1px solid var(--mui-palette-divider)",
                   background: "var(--mui-palette-background-paper)",
                   borderBottom: 0,
                   paddingTop: 0.5,
                   paddingLeft: 2,
                   paddingRight: 2,
-                  zIndex: 9999999,
+                  zIndex: "var(--mui-zIndex-appBar)",
+                }}
+              >
+                Query
+              </Typography>
+            </Box>
+          </Grid2>
+          <Grid2 xs={12} lg={6}>
+            <Box sx={{ position: "relative" }}>
+              <Paper
+                component={FormattedDataBlock}
+                minHeight="unset"
+                height={600}
+                maxHeight={600}
+                data={response}
+                placeholder={
+                  loading
+                    ? "Loading..."
+                    : `Click '${readOnly ? "Dry run" : "Send message"}' to get the result.`
+                }
+              />
+              <Typography
+                variant="caption"
+                sx={{
+                  position: "absolute",
+                  top: -24,
+                  left: 0,
+                  border: "1px solid var(--mui-palette-divider)",
+                  background: "var(--mui-palette-background-paper)",
+                  borderBottom: 0,
+                  paddingTop: 0.5,
+                  paddingLeft: 2,
+                  paddingRight: 2,
+                  zIndex: "var(--mui-zIndex-appBar)",
                 }}
               >
                 Result
               </Typography>
-            </>
-          )}
-        </Stack>
+            </Box>
+          </Grid2>
+        </Grid2>
         <Grid2 container spacing={{ xs: 1, lg: 2 }}>
           <Grid2 xs={12} lg={6}></Grid2>
           <Grid2 xs={12} lg={6}>
