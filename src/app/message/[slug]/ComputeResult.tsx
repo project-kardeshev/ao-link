@@ -8,6 +8,7 @@ import React, { useCallback, useEffect, useState } from "react"
 import { FormattedDataBlock } from "@/components/FormattedDataBlock"
 import { getMessageById } from "@/services/messages-api"
 import { AoMessage } from "@/types"
+import { prettifyResult } from "@/utils/ao-utils"
 
 type ComputeResultProps = {
   messageId: string
@@ -34,7 +35,7 @@ export function ComputeResult(props: ComputeResultProps) {
         message: messageId,
         process: processId,
       })
-      setContent(JSON.stringify(json, null, 2))
+      setContent(JSON.stringify(prettifyResult(json), null, 2))
     } catch (error) {
       setContent(String(error))
     }

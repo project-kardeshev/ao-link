@@ -12,6 +12,7 @@ import { CodeEditor } from "@/components/CodeEditor"
 import { FormattedDataBlock } from "@/components/FormattedDataBlock"
 import { IdBlock } from "@/components/IdBlock"
 import { MonoFontFF } from "@/components/RootLayout/fonts"
+import { prettifyResult } from "@/utils/ao-utils"
 import { truncateId } from "@/utils/data-utils"
 
 type ProcessInteractionProps = {
@@ -61,7 +62,7 @@ export function ProcessInteraction(props: ProcessInteractionProps) {
         setMsgId(msgId)
       }
 
-      setResponse(JSON.stringify(json, null, 2))
+      setResponse(JSON.stringify(prettifyResult(json), null, 2))
     } catch (error) {
       setResponse(JSON.stringify({ error: `Error fetching info: ${String(error)}` }, null, 2))
     }
