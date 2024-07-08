@@ -1,7 +1,7 @@
 import { gql } from "urql"
 
 import { goldsky } from "./graphql-client"
-import { AoMessage, TokenTransferMessage } from "@/types"
+import { AoMessage, NetworkStat, TokenTransferMessage } from "@/types"
 
 import { TransactionsResponse, parseAoMessage, parseTokenEvent } from "@/utils/arweave-utils"
 
@@ -704,5 +704,39 @@ export async function getEvalMessages(
     return [count, events]
   } catch (error) {
     return [0, []]
+  }
+}
+
+const networkStatsQuery = gql`
+  query {
+    transactions(
+      sort: HEIGHT_DESC
+      first: 1
+      owners: ["yqRGaljOLb2IvKkYVa87Wdcc8m_4w6FI58Gej05gorA"]
+      recipients: ["vdpaKV_BQNISuDgtZpLDfDlMJinKHqM3d2NWd3bzeSk"]
+      tags: [{ name: "Action", values: ["Update-Stats"] }]
+    ) {
+      ...MessageFields
+    }
+  }
+
+  ${messageFields}
+`
+
+export async function getNetworkStats(): Promise<NetworkStat[]> {
+  try {
+    const result = await goldsky.query<TransactionsResponse>(networkStatsQuery, {}).toPromise()
+    if (!result.data) return []
+
+    const { edges } = result.data.transactions
+    const updateId = edges[0]?.node.id
+
+    const data = await fetch(`https://arweave.net/${updateId}`)
+    const json = await data.json()
+
+    return json as NetworkStat[]
+  } catch (error) {
+    console.error(error)
+    return []
   }
 }

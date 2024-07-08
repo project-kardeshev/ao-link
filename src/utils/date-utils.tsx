@@ -27,7 +27,7 @@ export function formatAbsString(dateString: string) {
   const date = new Date()
 
   // YYYY-MM-DD
-  const parts = dateString.split("-")
+  const parts = dateString.split(" ")[0].split("-")
 
   date.setFullYear(Number(parts[0]))
   date.setMonth(Number(parts[1]) - 1)
