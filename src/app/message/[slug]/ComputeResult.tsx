@@ -37,6 +37,7 @@ export function ComputeResult(props: ComputeResultProps) {
       })
       setContent(JSON.stringify(prettifyResult(json), null, 2))
     } catch (error) {
+      console.error(error)
       setContent(String(error))
     }
     setTimeout(() => {
