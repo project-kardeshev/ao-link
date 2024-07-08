@@ -3,48 +3,68 @@
 import { Box, Skeleton, Stack } from "@mui/material"
 
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 import { AllMessagesTable } from "./AllMessagesTable"
 import { AreaChart } from "@/components/Charts/AreaChart"
 
 import { Subheading } from "@/components/Subheading"
-import {
-  getMessageStats,
-  getModuleStats,
-  getProcessStats,
-  getTotalMessages,
-  getUserStats,
-} from "@/services/aometrics"
 
-import { HighchartAreaDataServer } from "@/types"
+import { getNetworkStats } from "@/services/messages-api"
+import { HighchartAreaData, NetworkStat } from "@/types"
+import { formatAbsString } from "@/utils/date-utils"
 
 export default function HomePage() {
-  const [stats, setStats] = useState<
-    [
-      HighchartAreaDataServer[],
-      number,
-      HighchartAreaDataServer[],
-      HighchartAreaDataServer[],
-      HighchartAreaDataServer[],
-    ]
-  >([[], 0, [], [], [], []] as any)
+  const [stats, setStats] = useState<NetworkStat[]>()
 
   useEffect(() => {
-    Promise.all([
-      getMessageStats(),
-      getTotalMessages(),
-      getModuleStats(),
-      getUserStats(),
-      getProcessStats(),
-    ]).then(setStats)
+    getNetworkStats().then(setStats)
   }, [])
 
-  const [messages, totalMessages, modules, users, processes] = stats
+  const messages = useMemo<HighchartAreaData[]>(
+    () =>
+      !stats
+        ? []
+        : stats.slice(-30).map((stat) => [formatAbsString(stat.created_date), stat.tx_count]),
+    [stats],
+  )
+
+  const totalMessages = useMemo(
+    () => (stats ? stats[stats.length - 1].tx_count_rolling : 0),
+    [stats],
+  )
+
+  const modules = useMemo<HighchartAreaData[]>(
+    () =>
+      !stats
+        ? []
+        : stats
+            .slice(-30)
+            .map((stat) => [formatAbsString(stat.created_date), stat.modules_rolling]),
+    [stats],
+  )
+
+  const users = useMemo<HighchartAreaData[]>(
+    () =>
+      !stats
+        ? []
+        : stats.slice(-30).map((stat) => [formatAbsString(stat.created_date), stat.active_users]),
+    [stats],
+  )
+
+  const processes = useMemo<HighchartAreaData[]>(
+    () =>
+      !stats
+        ? []
+        : stats
+            .slice(-30)
+            .map((stat) => [formatAbsString(stat.created_date), stat.active_processes]),
+    [stats],
+  )
 
   return (
     <Stack component="main" gap={2}>
-      {messages.length === 0 ? (
+      {!stats ? (
         <Grid2 container spacing={{ xs: 1, lg: 2 }} marginX={-2.5}>
           <Grid2 xs={6} lg={3}>
             <Skeleton height={150} variant="rectangular" />

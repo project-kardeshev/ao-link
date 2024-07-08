@@ -25,7 +25,6 @@ export type ProcessStatistic = {
   pct_change: number
 }
 
-export type HighchartAreaDataServer = [string, number]
 export type HighchartAreaData = [number, number]
 export type HighchartPieData = { y: number; name: string }
 
@@ -56,4 +55,18 @@ export type TokenTransferMessage = {
   recipient: string
   amount: number
   tokenId: string
+}
+
+export type NetworkStat = {
+  active_processes: number
+  active_users: number
+  created_date: string // "YYYY-MM-DD HH:MM:SS" format
+  eval_count: number
+  modules_rolling: number
+  new_module_count: number
+  new_process_count: number
+  processes_rolling: number
+  transfer_count: number
+  tx_count: number
+  tx_count_rolling: number
 }
