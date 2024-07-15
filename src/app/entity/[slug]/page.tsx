@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material"
 import { useEffect, useMemo, useState } from "react"
-import { useParams } from "react-router-dom"
+import { Navigate, useParams } from "react-router-dom"
 
 import { ProcessPage } from "./ProcessPage"
 import { UserPage } from "./UserPage"
@@ -26,7 +26,7 @@ export default function EntityPage() {
   if (!entityId || !validAddress) {
     return (
       <Stack component="main" gap={4} paddingY={4}>
-        <Typography>Invalid Process ID.</Typography>
+        <Typography>Invalid Entity ID.</Typography>
       </Stack>
     )
   }
@@ -43,6 +43,5 @@ export default function EntityPage() {
     return <ProcessPage key={entityId} message={message} />
   }
 
-  // return redirect(`/message/${entityId}`) // FIXME
-  return null
+  return <Navigate to={`/message/${entityId}`} />
 }

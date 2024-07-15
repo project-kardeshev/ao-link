@@ -128,7 +128,7 @@ export function MessagePage() {
   if (message === null) return <LoadingSkeletons />
 
   if (!messageId || !message) {
-    return <div>Not Found</div>
+    return <Typography>Message not found</Typography>
   }
 
   const { from, type, blockHeight, created, to, systemTags, userTags } = message
