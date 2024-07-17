@@ -32,6 +32,7 @@ type Result = {
 
 async function findByText(text: string): Promise<Result[]> {
   if (!text || !text.trim()) return Promise.resolve([])
+  text = text.trim()
 
   const [msg, tokenInfo] = await Promise.all([
     getMessageById(text),
