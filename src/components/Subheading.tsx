@@ -1,6 +1,8 @@
 import { Stack, Typography } from "@mui/material"
 import React, { ReactNode } from "react"
 
+import { MonoFontFF } from "./RootLayout/fonts"
+
 type SubheadingProps = {
   type: string
   value?: ReactNode
@@ -37,7 +39,9 @@ export function Subheading(props: SubheadingProps) {
         <Typography variant="inherit" fontWeight={700}>
           /
         </Typography>
-        {value}
+        <Typography variant="inherit" fontFamily={MonoFontFF}>
+          {value}
+        </Typography>
       </Stack>
     </Typography>
   )
