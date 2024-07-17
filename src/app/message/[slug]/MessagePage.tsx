@@ -3,7 +3,7 @@ import { Box, CircularProgress, Paper, Stack, Tabs, Tooltip, Typography } from "
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 
-import { useParams, useSearchParams } from "react-router-dom"
+import { Navigate, useParams, useSearchParams } from "react-router-dom"
 
 import { ComputeResult } from "./ComputeResult"
 import { LinkedMessages } from "./LinkedMessages"
@@ -132,6 +132,10 @@ export function MessagePage() {
   }
 
   const { from, type, blockHeight, created, to, systemTags, userTags } = message
+
+  if (type === "Process") {
+    return <Navigate to={`/entity/${messageId}`} />
+  }
 
   return (
     <React.Fragment key={messageId}>
