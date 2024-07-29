@@ -186,8 +186,8 @@ export function AsyncTable(props: AsyncTableProps) {
       </Table>
       {!endReached && data.length > 0 && (
         <Stack
-          marginY={1.5}
-          marginX={2}
+          paddingY={1.5}
+          paddingX={2}
           ref={loaderRef}
           sx={{ width: "100%" }}
           direction="row"
