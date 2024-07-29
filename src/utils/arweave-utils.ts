@@ -164,6 +164,7 @@ export function parseTokenEvent(edge: TransactionEdge): TokenTransferMessage {
   return {
     id,
     type: "Message",
+    cursor: edge.cursor,
     created,
     action,
     sender,

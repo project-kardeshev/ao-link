@@ -55,6 +55,7 @@ export type TokenTransferMessage = {
   recipient: string
   amount: number
   tokenId: string
+  cursor?: string
 }
 
 export type NetworkStat = {
