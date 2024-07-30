@@ -58,7 +58,6 @@ const outgoingMessagesQuery = (includeCount = false, isProcess?: boolean) => gql
       sort: $sortOrder
       first: $limit
       after: $cursor
-      block: { min: 1325101 }
 
       ${
         isProcess
@@ -120,7 +119,6 @@ const incomingMessagesQuery = (includeCount = false) => gql`
       sort: $sortOrder
       first: $limit
       after: $cursor
-      block: { min: 1325101 }
 
       recipients: [$entityId]
     ) {
@@ -173,7 +171,6 @@ const tokenTransfersQuery = (includeCount = false) => gql`
       sort: $sortOrder
       first: $limit
       after: $cursor
-      block: { min: 1325101 }
 
       tags: [{ name: "Action", values: ["Credit-Notice", "Debit-Notice"] }]
       recipients: [$entityId]
@@ -230,7 +227,6 @@ const spawnedProcessesQuery = (includeCount = false, isProcess?: boolean) => gql
       sort: $sortOrder
       first: $limit
       after: $cursor
-      block: { min: 1325101 }
 
       ${
         isProcess
@@ -319,7 +315,6 @@ const processesQuery = (includeCount = false) => gql`
       sort: $sortOrder
       first: $limit
       after: $cursor
-      block: { min: 1325101 }
 
       tags: [{ name: "Module", values: [$moduleId]}, { name: "Type", values: ["Process"]}]
     ) {
@@ -374,7 +369,6 @@ const modulesQuery = (includeCount = false) => gql`
       sort: $sortOrder
       first: $limit
       after: $cursor
-      block: { min: 1325101 }
 
       tags: [{ name: "Type", values: ["Module"]}]
     ) {
@@ -429,7 +423,6 @@ const resultingMessagesQuery = (includeCount = false) => gql`
       sort: $sortOrder
       first: $limit
       after: $cursor
-      block: { min: 1325101 }
 
       tags: [{ name: "Pushed-For", values: [$messageId] },{ name: "From-Process", values: [$fromProcessId] }]
     ) {
@@ -486,7 +479,6 @@ const linkedMessagesQuery = (includeCount = false) => gql`
       sort: $sortOrder
       first: $limit
       after: $cursor
-      block: { min: 1325101 }
 
       tags: [{ name: "Pushed-For", values: [$messageId] }]
     ) {
@@ -542,7 +534,6 @@ const messagesForBlockQuery = (includeCount = false) => gql`
       sort: $sortOrder
       first: $limit
       after: $cursor
-      block: { min: 1325101 }
 
       block: { min: $blockHeight, max: $blockHeight }
       tags: [${AO_NETWORK_IDENTIFIER}]
@@ -591,7 +582,6 @@ const allMessagesQuery = gql`
       sort: $sortOrder
       first: $limit
       after: $cursor
-      block: { min: 1325101 }
 
       tags: $tags
     ) {
@@ -675,7 +665,6 @@ const evalMessagesQuery = (includeCount = false) => gql`
       sort: $sortOrder
       first: $limit
       after: $cursor
-      block: { min: 1325101 }
 
       tags: [{ name: "Action", values: ["Eval"] }]
       recipients: [$entityId]
