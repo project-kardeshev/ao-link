@@ -115,6 +115,10 @@ export function parseAoMessage(edge: TransactionEdge): AoMessage {
   const created = createdTimestamp ? new Date(createdTimestamp * 1000) : null
   const to = node.recipient.trim()
 
+  if (type === "Message") {
+    userTags["Name"] = tags["Name"]
+  }
+
   return {
     id: node.id,
     type,
