@@ -73,6 +73,7 @@ export const systemTagNames = [
   "Variant",
   "Pushed-For",
   "Ref_",
+  "Reference",
   "From-Module",
   "From-Process",
   "Module",
