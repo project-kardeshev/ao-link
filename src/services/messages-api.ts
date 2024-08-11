@@ -11,6 +11,8 @@ import { isArweaveId } from "@/utils/utils"
 // const AO_NETWORK_IDENTIFIER = '{ name: "Variant", values: ["ao.TN.1"] }'
 const AO_NETWORK_IDENTIFIER = '{ name: "Data-Protocol", values: ["ao"] }'
 
+const AO_MIN_INGESTED_AT = 'ingested_at: { min: 1696107600 }'
+
 // TODO
 // { name: "owner_address", values: [$entityId] }
 // { name: "target", values: [$entityId] }
@@ -58,7 +60,7 @@ const outgoingMessagesQuery = (includeCount = false, isProcess?: boolean) => gql
       sort: $sortOrder
       first: $limit
       after: $cursor
-
+      ${AO_MIN_INGESTED_AT}
       ${
         isProcess
           ? `tags: [{ name: "From-Process", values: [$entityId] }]`
@@ -114,6 +116,7 @@ const incomingMessagesQuery = (includeCount = false) => gql`
     $limit: Int!
     $sortOrder: SortOrder!
     $cursor: String
+    ${AO_MIN_INGESTED_AT}
   ) {
     transactions(
       sort: $sortOrder
@@ -166,6 +169,7 @@ const tokenTransfersQuery = (includeCount = false) => gql`
     $limit: Int!
     $sortOrder: SortOrder!
     $cursor: String
+    ${AO_MIN_INGESTED_AT}
   ) {
     transactions(
       sort: $sortOrder
@@ -222,6 +226,7 @@ const spawnedProcessesQuery = (includeCount = false, isProcess?: boolean) => gql
     $limit: Int!
     $sortOrder: SortOrder!
     $cursor: String
+    ${AO_MIN_INGESTED_AT}
   ) {
     transactions(
       sort: $sortOrder
@@ -310,6 +315,7 @@ const processesQuery = (includeCount = false) => gql`
     $limit: Int!
     $sortOrder: SortOrder!
     $cursor: String
+    ${AO_MIN_INGESTED_AT}
   ) {
     transactions(
       sort: $sortOrder
@@ -364,6 +370,7 @@ const modulesQuery = (includeCount = false) => gql`
     $limit: Int!
     $sortOrder: SortOrder!
     $cursor: String
+    ${AO_MIN_INGESTED_AT}
   ) {
     transactions(
       sort: $sortOrder
@@ -418,6 +425,7 @@ const resultingMessagesQuery = (includeCount = false) => gql`
     $limit: Int!
     $sortOrder: SortOrder!
     $cursor: String
+    ${AO_MIN_INGESTED_AT}
   ) {
     transactions(
       sort: $sortOrder
@@ -474,6 +482,7 @@ const linkedMessagesQuery = (includeCount = false) => gql`
     $limit: Int!
     $sortOrder: SortOrder!
     $cursor: String
+    ${AO_MIN_INGESTED_AT}
   ) {
     transactions(
       sort: $sortOrder
@@ -529,6 +538,7 @@ const messagesForBlockQuery = (includeCount = false) => gql`
     $limit: Int!
     $sortOrder: SortOrder!
     $cursor: String
+    ${AO_MIN_INGESTED_AT}
   ) {
     transactions(
       sort: $sortOrder
@@ -582,6 +592,7 @@ const allMessagesQuery = gql`
       sort: $sortOrder
       first: $limit
       after: $cursor
+      ${AO_MIN_INGESTED_AT}
 
       tags: $tags
     ) {
@@ -660,6 +671,7 @@ const evalMessagesQuery = (includeCount = false) => gql`
     $limit: Int!
     $sortOrder: SortOrder!
     $cursor: String
+    ${AO_MIN_INGESTED_AT}
   ) {
     transactions(
       sort: $sortOrder
