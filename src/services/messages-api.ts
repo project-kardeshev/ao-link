@@ -86,7 +86,7 @@ export async function getOutgoingMessages(
     const result = await goldsky
       .query<TransactionsResponse>(outgoingMessagesQuery(!cursor, isProcess), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         entityId,
@@ -141,7 +141,7 @@ export async function getIncomingMessages(
     const result = await goldsky
       .query<TransactionsResponse>(incomingMessagesQuery(!cursor), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         entityId,
@@ -194,7 +194,7 @@ export async function getTokenTransfers(
     const result = await goldsky
       .query<TransactionsResponse>(tokenTransfersQuery(!cursor), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         entityId,
@@ -255,7 +255,7 @@ export async function getSpawnedProcesses(
     const result = await goldsky
       .query<TransactionsResponse>(spawnedProcessesQuery(!cursor, isProcess), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         entityId,
@@ -337,7 +337,7 @@ export async function getProcesses(
     const result = await goldsky
       .query<TransactionsResponse>(processesQuery(!cursor), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         moduleId,
@@ -390,7 +390,7 @@ export async function getModules(
     const result = await goldsky
       .query<TransactionsResponse>(modulesQuery(!cursor), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
       })
@@ -445,7 +445,7 @@ export async function getResultingMessages(
     const result = await goldsky
       .query<TransactionsResponse>(resultingMessagesQuery(!cursor), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         messageId: pushedFor,
@@ -501,7 +501,7 @@ export async function getLinkedMessages(
     const result = await goldsky
       .query<TransactionsResponse>(linkedMessagesQuery(!cursor), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         messageId: pushedFor,
@@ -557,7 +557,7 @@ export async function getMessagesForBlock(
     const result = await goldsky
       .query<TransactionsResponse>(messagesForBlockQuery(!cursor), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         blockHeight,
@@ -632,7 +632,7 @@ export async function getAllMessages(
     const result = await goldsky
       .query<TransactionsResponse>(allMessagesQuery, {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         tags,
@@ -688,7 +688,7 @@ export async function getEvalMessages(
     const result = await goldsky
       .query<TransactionsResponse>(evalMessagesQuery(!cursor), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         entityId,
