@@ -21,7 +21,7 @@ export type ArweaveBlock = {
 export type TransactionNode = {
   id: string
   anchor?: string
-  ingested_at?: number
+  ingested_at: number
   signature?: string
   recipient: string
   owner: Owner
@@ -112,8 +112,8 @@ export function parseAoMessage(edge: TransactionEdge): AoMessage {
   const from = tags["Forwarded-For"] || tags["From-Process"] || node.owner.address
   const schedulerId = tags["Scheduler"]
   const action = tags["Action"]
-  const createdTimestamp = node.block ? node.block.timestamp : node.ingested_at
-  const created = createdTimestamp ? new Date(createdTimestamp * 1000) : null
+  const blockTimestamp = node.block ? new Date(node.block.timestamp * 1000) : null
+  const ingestedAt = new Date(node.ingested_at * 1000)
   const to = node.recipient.trim()
 
   if (type === "Message" && tags["Name"]) {
@@ -127,7 +127,8 @@ export function parseAoMessage(edge: TransactionEdge): AoMessage {
     to,
     blockHeight,
     schedulerId,
-    created,
+    blockTimestamp,
+    ingestedAt,
     action,
     tags,
     systemTags,
@@ -138,9 +139,9 @@ export function parseAoMessage(edge: TransactionEdge): AoMessage {
 }
 
 export function parseTokenEvent(edge: TransactionEdge): TokenTransferMessage {
-  const normalizedEvent = parseAoMessage(edge)
+  const aoMessage = parseAoMessage(edge)
 
-  const { id, created, action, from, to, tags } = normalizedEvent as any // TODO
+  const { id, ingestedAt, action, from, to, tags } = aoMessage
 
   let sender
   let recipient
@@ -170,7 +171,7 @@ export function parseTokenEvent(edge: TransactionEdge): TokenTransferMessage {
     id,
     type: "Message",
     cursor: edge.cursor,
-    created,
+    ingestedAt,
     action,
     sender,
     recipient,

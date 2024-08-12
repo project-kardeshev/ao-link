@@ -13,12 +13,16 @@ import { Subheading } from "@/components/Subheading"
 import { getNetworkStats } from "@/services/messages-api"
 import { HighchartAreaData, NetworkStat } from "@/types"
 import { formatAbsString } from "@/utils/date-utils"
+import { wait } from "@/utils/utils"
 
 export default function HomePage() {
   const [stats, setStats] = useState<NetworkStat[]>()
 
   useEffect(() => {
-    getNetworkStats().then(setStats)
+    // Allow the request for messages to go before network stats, as they are more important
+    wait(1000)
+      .then(() => getNetworkStats())
+      .then(setStats)
   }, [])
 
   const messages = useMemo<HighchartAreaData[]>(

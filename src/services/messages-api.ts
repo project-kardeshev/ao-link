@@ -11,6 +11,8 @@ import { isArweaveId } from "@/utils/utils"
 // const AO_NETWORK_IDENTIFIER = '{ name: "Variant", values: ["ao.TN.1"] }'
 const AO_NETWORK_IDENTIFIER = '{ name: "Data-Protocol", values: ["ao"] }'
 
+const AO_MIN_INGESTED_AT = "ingested_at: { min: 1696107600 }"
+
 // TODO
 // { name: "owner_address", values: [$entityId] }
 // { name: "target", values: [$entityId] }
@@ -23,6 +25,7 @@ const messageFields = gql`
       cursor
       node {
         id
+        ingested_at
         recipient
         block {
           timestamp
@@ -58,7 +61,7 @@ const outgoingMessagesQuery = (includeCount = false, isProcess?: boolean) => gql
       sort: $sortOrder
       first: $limit
       after: $cursor
-
+      ${AO_MIN_INGESTED_AT}
       ${
         isProcess
           ? `tags: [{ name: "From-Process", values: [$entityId] }]`
@@ -86,7 +89,7 @@ export async function getOutgoingMessages(
     const result = await goldsky
       .query<TransactionsResponse>(outgoingMessagesQuery(!cursor, isProcess), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         entityId,
@@ -121,6 +124,7 @@ const incomingMessagesQuery = (includeCount = false) => gql`
       after: $cursor
 
       recipients: [$entityId]
+      ${AO_MIN_INGESTED_AT}
     ) {
       ${includeCount ? "count" : ""}
       ...MessageFields
@@ -141,7 +145,7 @@ export async function getIncomingMessages(
     const result = await goldsky
       .query<TransactionsResponse>(incomingMessagesQuery(!cursor), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         entityId,
@@ -174,6 +178,7 @@ const tokenTransfersQuery = (includeCount = false) => gql`
 
       tags: [{ name: "Action", values: ["Credit-Notice", "Debit-Notice"] }]
       recipients: [$entityId]
+      ${AO_MIN_INGESTED_AT}
     ) {
       ${includeCount ? "count" : ""}
       ...MessageFields
@@ -194,7 +199,7 @@ export async function getTokenTransfers(
     const result = await goldsky
       .query<TransactionsResponse>(tokenTransfersQuery(!cursor), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         entityId,
@@ -228,6 +233,7 @@ const spawnedProcessesQuery = (includeCount = false, isProcess?: boolean) => gql
       first: $limit
       after: $cursor
 
+      ${AO_MIN_INGESTED_AT}
       ${
         isProcess
           ? `tags: [{ name: "From-Process", values: [$entityId]}, { name: "Type", values: ["Process"]}]`
@@ -255,7 +261,7 @@ export async function getSpawnedProcesses(
     const result = await goldsky
       .query<TransactionsResponse>(spawnedProcessesQuery(!cursor, isProcess), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         entityId,
@@ -282,7 +288,7 @@ export async function getMessageById(id: string): Promise<AoMessage | undefined>
     .query<TransactionsResponse>(
       gql`
         query ($id: ID!) {
-          transactions(ids: [$id]) {
+          transactions(ids: [$id], ${AO_MIN_INGESTED_AT}) {
             ...MessageFields
           }
         }
@@ -317,6 +323,7 @@ const processesQuery = (includeCount = false) => gql`
       after: $cursor
 
       tags: [{ name: "Module", values: [$moduleId]}, { name: "Type", values: ["Process"]}]
+      ${AO_MIN_INGESTED_AT}
     ) {
       ${includeCount ? "count" : ""}
       ...MessageFields
@@ -337,7 +344,7 @@ export async function getProcesses(
     const result = await goldsky
       .query<TransactionsResponse>(processesQuery(!cursor), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         moduleId,
@@ -371,6 +378,7 @@ const modulesQuery = (includeCount = false) => gql`
       after: $cursor
 
       tags: [{ name: "Type", values: ["Module"]}]
+      ${AO_MIN_INGESTED_AT}
     ) {
       ${includeCount ? "count" : ""}
       ...MessageFields
@@ -390,7 +398,7 @@ export async function getModules(
     const result = await goldsky
       .query<TransactionsResponse>(modulesQuery(!cursor), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
       })
@@ -425,6 +433,7 @@ const resultingMessagesQuery = (includeCount = false) => gql`
       after: $cursor
 
       tags: [{ name: "Pushed-For", values: [$messageId] },{ name: "From-Process", values: [$fromProcessId] }]
+      ${AO_MIN_INGESTED_AT}
     ) {
       ${includeCount ? "count" : ""}
       ...MessageFields
@@ -445,7 +454,7 @@ export async function getResultingMessages(
     const result = await goldsky
       .query<TransactionsResponse>(resultingMessagesQuery(!cursor), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         messageId: pushedFor,
@@ -481,6 +490,7 @@ const linkedMessagesQuery = (includeCount = false) => gql`
       after: $cursor
 
       tags: [{ name: "Pushed-For", values: [$messageId] }]
+      ${AO_MIN_INGESTED_AT}
     ) {
       ${includeCount ? "count" : ""}
       ...MessageFields
@@ -501,7 +511,7 @@ export async function getLinkedMessages(
     const result = await goldsky
       .query<TransactionsResponse>(linkedMessagesQuery(!cursor), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         messageId: pushedFor,
@@ -537,6 +547,7 @@ const messagesForBlockQuery = (includeCount = false) => gql`
 
       block: { min: $blockHeight, max: $blockHeight }
       tags: [${AO_NETWORK_IDENTIFIER}]
+      ${AO_MIN_INGESTED_AT}
     ) {
       ${includeCount ? "count" : ""}
       ...MessageFields
@@ -557,7 +568,7 @@ export async function getMessagesForBlock(
     const result = await goldsky
       .query<TransactionsResponse>(messagesForBlockQuery(!cursor), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         blockHeight,
@@ -582,29 +593,15 @@ const allMessagesQuery = gql`
       sort: $sortOrder
       first: $limit
       after: $cursor
+      ${AO_MIN_INGESTED_AT}
 
       tags: $tags
     ) {
-      edges {
-        cursor
-        node {
-          id
-          recipient
-          block {
-            timestamp
-            height
-          }
-          tags {
-            name
-            value
-          }
-          owner {
-            address
-          }
-        }
-      }
+    ...MessageFields
     }
   }
+
+  ${messageFields}
 `
 
 export async function getAllMessages(
@@ -632,7 +629,7 @@ export async function getAllMessages(
     const result = await goldsky
       .query<TransactionsResponse>(allMessagesQuery, {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         tags,
@@ -668,6 +665,7 @@ const evalMessagesQuery = (includeCount = false) => gql`
 
       tags: [{ name: "Action", values: ["Eval"] }]
       recipients: [$entityId]
+      ${AO_MIN_INGESTED_AT}
     ) {
       ${includeCount ? "count" : ""}
       ...MessageFields
@@ -688,7 +686,7 @@ export async function getEvalMessages(
     const result = await goldsky
       .query<TransactionsResponse>(evalMessagesQuery(!cursor), {
         limit,
-        sortOrder: ascending ? "HEIGHT_ASC" : "HEIGHT_DESC",
+        sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,
         //
         entityId,

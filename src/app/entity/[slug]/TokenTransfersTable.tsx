@@ -1,10 +1,10 @@
-import { Paper } from "@mui/material"
+import { Paper, Stack, Tooltip } from "@mui/material"
+import { Info } from "@phosphor-icons/react"
 import React from "react"
 
+import { TokenTransfersTableRow } from "./TokenTransfersTableRow"
 import { AsyncTable, AsyncTableProps } from "@/components/AsyncTable"
 import { TokenTransferMessage } from "@/types"
-
-import { TokenTransfersTableRow } from "./TokenTransfersTableRow"
 
 type TokenTransfersTableProps = Pick<AsyncTableProps, "fetchFunction" | "pageSize"> & {
   entityId: string
@@ -18,7 +18,7 @@ export function TokenTransfersTable(props: TokenTransfersTableProps) {
       {...rest}
       component={Paper}
       initialSortDir="desc"
-      initialSortField="created"
+      initialSortField="ingestedAt"
       headerCells={[
         { label: "Type", sx: { width: 140 } },
         // {
@@ -54,8 +54,15 @@ export function TokenTransfersTable(props: TokenTransfersTableProps) {
           sx: { width: 240 },
         },
         {
-          field: "created",
-          label: "Created",
+          field: "ingestedAt" satisfies keyof TokenTransferMessage,
+          label: (
+            <Stack direction="row" gap={0.5} alignItems="center">
+              Seen at
+              <Tooltip title="Time when the message was seen by the Arweave network (ingested_at).">
+                <Info width={16} height={16} />
+              </Tooltip>
+            </Stack>
+          ),
           sx: { width: 160 },
           align: "right",
           sortable: true,

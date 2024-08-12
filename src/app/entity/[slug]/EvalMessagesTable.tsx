@@ -1,3 +1,5 @@
+import { Stack, Tooltip } from "@mui/material"
+import { Info } from "@phosphor-icons/react"
 import React from "react"
 
 import { EvalMessagesTableRow } from "./EvalMessagesTableRow"
@@ -24,16 +26,23 @@ export function EvalMessagesTable(props: EvalMessagesTableProps) {
       align: "right",
     },
     {
-      field: "blockHeight",
-      label: "Block Height",
+      label: "Arweave Block",
+      sx: { width: 160 },
+      align: "right",
+    },
+    {
+      field: "ingestedAt" satisfies keyof AoMessage,
+      label: (
+        <Stack direction="row" gap={0.5} alignItems="center">
+          Seen at
+          <Tooltip title="Time when the message was seen by the Arweave network (ingested_at).">
+            <Info width={16} height={16} />
+          </Tooltip>
+        </Stack>
+      ),
       sx: { width: 160 },
       align: "right",
       sortable: true,
-    },
-    {
-      label: "Created",
-      sx: { width: 160 },
-      align: "right",
     },
     { label: "", sx: { width: 20 } },
   ]
@@ -43,7 +52,7 @@ export function EvalMessagesTable(props: EvalMessagesTableProps) {
       {...rest}
       // component={Paper}
       initialSortDir="desc"
-      initialSortField="blockHeight"
+      initialSortField="ingestedAt"
       headerCells={headerCells}
       renderRow={(item: AoMessage, index) => (
         <EvalMessagesTableRow key={item.id} item={item} expandedByDefault={index === 0} />
