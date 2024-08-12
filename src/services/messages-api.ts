@@ -316,7 +316,6 @@ const processesQuery = (includeCount = false) => gql`
     $limit: Int!
     $sortOrder: SortOrder!
     $cursor: String
-    ${AO_MIN_INGESTED_AT}
   ) {
     transactions(
       sort: $sortOrder
@@ -324,6 +323,7 @@ const processesQuery = (includeCount = false) => gql`
       after: $cursor
 
       tags: [{ name: "Module", values: [$moduleId]}, { name: "Type", values: ["Process"]}]
+      ${AO_MIN_INGESTED_AT}
     ) {
       ${includeCount ? "count" : ""}
       ...MessageFields
@@ -371,7 +371,6 @@ const modulesQuery = (includeCount = false) => gql`
     $limit: Int!
     $sortOrder: SortOrder!
     $cursor: String
-    ${AO_MIN_INGESTED_AT}
   ) {
     transactions(
       sort: $sortOrder
@@ -379,6 +378,7 @@ const modulesQuery = (includeCount = false) => gql`
       after: $cursor
 
       tags: [{ name: "Type", values: ["Module"]}]
+      ${AO_MIN_INGESTED_AT}
     ) {
       ${includeCount ? "count" : ""}
       ...MessageFields
@@ -426,7 +426,6 @@ const resultingMessagesQuery = (includeCount = false) => gql`
     $limit: Int!
     $sortOrder: SortOrder!
     $cursor: String
-    ${AO_MIN_INGESTED_AT}
   ) {
     transactions(
       sort: $sortOrder
@@ -434,6 +433,7 @@ const resultingMessagesQuery = (includeCount = false) => gql`
       after: $cursor
 
       tags: [{ name: "Pushed-For", values: [$messageId] },{ name: "From-Process", values: [$fromProcessId] }]
+      ${AO_MIN_INGESTED_AT}
     ) {
       ${includeCount ? "count" : ""}
       ...MessageFields
@@ -483,7 +483,6 @@ const linkedMessagesQuery = (includeCount = false) => gql`
     $limit: Int!
     $sortOrder: SortOrder!
     $cursor: String
-    ${AO_MIN_INGESTED_AT}
   ) {
     transactions(
       sort: $sortOrder
@@ -491,6 +490,7 @@ const linkedMessagesQuery = (includeCount = false) => gql`
       after: $cursor
 
       tags: [{ name: "Pushed-For", values: [$messageId] }]
+      ${AO_MIN_INGESTED_AT}
     ) {
       ${includeCount ? "count" : ""}
       ...MessageFields
@@ -539,7 +539,6 @@ const messagesForBlockQuery = (includeCount = false) => gql`
     $limit: Int!
     $sortOrder: SortOrder!
     $cursor: String
-    ${AO_MIN_INGESTED_AT}
   ) {
     transactions(
       sort: $sortOrder
@@ -548,6 +547,7 @@ const messagesForBlockQuery = (includeCount = false) => gql`
 
       block: { min: $blockHeight, max: $blockHeight }
       tags: [${AO_NETWORK_IDENTIFIER}]
+      ${AO_MIN_INGESTED_AT}
     ) {
       ${includeCount ? "count" : ""}
       ...MessageFields
@@ -657,7 +657,6 @@ const evalMessagesQuery = (includeCount = false) => gql`
     $limit: Int!
     $sortOrder: SortOrder!
     $cursor: String
-    ${AO_MIN_INGESTED_AT}
   ) {
     transactions(
       sort: $sortOrder
@@ -666,6 +665,7 @@ const evalMessagesQuery = (includeCount = false) => gql`
 
       tags: [{ name: "Action", values: ["Eval"] }]
       recipients: [$entityId]
+      ${AO_MIN_INGESTED_AT}
     ) {
       ${includeCount ? "count" : ""}
       ...MessageFields
