@@ -1,69 +1,33 @@
-import { AoMessage, TokenTransferMessage } from "@/types"
+import { gql } from "urql"
 
-export type Tag = {
-  name: string
-  value: string
-}
+import { AoMessage, ArweaveBlock, BlockEdge, TokenTransferMessage, TransactionEdge } from "../types"
 
-export type Owner = {
-  address: string
-  key?: string
-}
-
-export type ArweaveBlock = {
-  id: string
-  timestamp: Date | null
-  height: number
-  previous?: string
-  cursor?: string
-}
-
-export type TransactionNode = {
-  id: string
-  anchor?: string
-  ingested_at: number
-  signature?: string
-  recipient: string
-  owner: Owner
-  fee?: {
-    winston: string
-    ar: string
+export const messageFields = gql`
+  fragment MessageFields on TransactionConnection {
+    edges {
+      cursor
+      node {
+        id
+        ingested_at
+        recipient
+        block {
+          timestamp
+          height
+        }
+        tags {
+          name
+          value
+        }
+        data {
+          size
+        }
+        owner {
+          address
+        }
+      }
+    }
   }
-  quantity?: {
-    winston: string
-    ar: string
-  }
-  data?: {
-    size?: number
-    type?: string
-  }
-  tags: Tag[]
-  block: BlockEdge["node"]
-  parent?: {
-    id: string
-  }
-  bundledIn?: {
-    id: string
-  }
-}
-
-export type TransactionEdge = {
-  cursor: string
-  node: TransactionNode
-}
-
-export type TransactionsResponse = {
-  transactions: {
-    count: number | undefined
-    edges: TransactionEdge[]
-  }
-}
-
-export type BlocksResponse = {
-  blocks: {
-    edges: BlockEdge[]
-  }
-}
+`
 
 export const systemTagNames = [
   "Type",
@@ -177,16 +141,6 @@ export function parseTokenEvent(edge: TransactionEdge): TokenTransferMessage {
     recipient,
     amount,
     tokenId,
-  }
-}
-
-type BlockEdge = {
-  cursor: string
-  node: {
-    id: string
-    height: number
-    previous?: string
-    timestamp: number
   }
 }
 

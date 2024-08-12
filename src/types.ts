@@ -1,32 +1,77 @@
-// { created_date: '2024-02-21', num_messages: 69076 }
-export type MessageStatistic = {
-  created_date: string
-  num_messages: number
+export type Tag = {
+  name: string
+  value: string
 }
 
-// { created_date: '2024-01-24', modules_running: 83, delta: 15 }
-export type ModuleStatistic = {
-  created_date: string
-  modules_running: number
-  delta: number
+export type Owner = {
+  address: string
+  key?: string
 }
 
-// { created_date: '2024-01-24',  users: 21,  pct_change: -0.2222222222222222 }
-export type UserStatistic = {
-  created_date: string
-  users: number
-  pct_change: number
+export type ArweaveBlock = {
+  id: string
+  timestamp: Date | null
+  height: number
+  previous?: string
+  cursor?: string
 }
 
-// { created_date: '2024-01-27', processes: 129, pct_change: 1.015625 },
-export type ProcessStatistic = {
-  created_date: string
-  processes: number
-  pct_change: number
+export type TransactionNode = {
+  id: string
+  anchor?: string
+  ingested_at: number
+  signature?: string
+  recipient: string
+  owner: Owner
+  fee?: {
+    winston: string
+    ar: string
+  }
+  quantity?: {
+    winston: string
+    ar: string
+  }
+  data?: {
+    size?: number
+    type?: string
+  }
+  tags: Tag[]
+  block: BlockEdge["node"]
+  parent?: {
+    id: string
+  }
+  bundledIn?: {
+    id: string
+  }
 }
 
-export type HighchartAreaData = [number, number]
-export type HighchartPieData = { y: number; name: string }
+export type TransactionEdge = {
+  cursor: string
+  node: TransactionNode
+}
+
+export type TransactionsResponse = {
+  transactions: {
+    count: number | undefined
+    edges: TransactionEdge[]
+  }
+}
+
+export type BlocksResponse = {
+  blocks: {
+    edges: BlockEdge[]
+  }
+}
+
+export type BlockEdge = {
+  cursor: string
+  node: {
+    id: string
+    height: number
+    previous?: string
+    timestamp: number
+  }
+}
 
 export type ArweaveAddress = string
 export const MSG_TYPES = ["Message", "Process", "Checkpoint", "Assignment"] as const
@@ -65,6 +110,36 @@ export type TokenTransferMessage = Pick<AoMessage, "id" | "ingestedAt" | "cursor
   amount: number
   tokenId: string
 }
+
+// { created_date: '2024-02-21', num_messages: 69076 }
+export type MessageStatistic = {
+  created_date: string
+  num_messages: number
+}
+
+// { created_date: '2024-01-24', modules_running: 83, delta: 15 }
+export type ModuleStatistic = {
+  created_date: string
+  modules_running: number
+  delta: number
+}
+
+// { created_date: '2024-01-24',  users: 21,  pct_change: -0.2222222222222222 }
+export type UserStatistic = {
+  created_date: string
+  users: number
+  pct_change: number
+}
+
+// { created_date: '2024-01-27', processes: 129, pct_change: 1.015625 },
+export type ProcessStatistic = {
+  created_date: string
+  processes: number
+  pct_change: number
+}
+
+export type HighchartAreaData = [number, number]
+export type HighchartPieData = { y: number; name: string }
 
 export type NetworkStat = {
   active_processes: number

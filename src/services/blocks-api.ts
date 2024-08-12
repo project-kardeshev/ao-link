@@ -1,8 +1,8 @@
 import { gql } from "urql"
 
-import { ArweaveBlock, BlocksResponse, parseArweaveBlock } from "@/utils/arweave-utils"
-
 import { goldsky } from "./graphql-client"
+import { ArweaveBlock, BlocksResponse } from "@/types"
+import { parseArweaveBlock } from "@/utils/arweave-utils"
 
 const blocksQuery = gql`
   query ($limit: Int!, $sortOrder: SortOrder!, $cursor: String) {

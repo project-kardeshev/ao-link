@@ -1,9 +1,9 @@
 import { gql } from "urql"
 
 import { goldsky } from "./graphql-client"
-import { AoMessage, NetworkStat, TokenTransferMessage } from "@/types"
+import { AoMessage, NetworkStat, TokenTransferMessage, TransactionsResponse } from "@/types"
 
-import { TransactionsResponse, parseAoMessage, parseTokenEvent } from "@/utils/arweave-utils"
+import { messageFields, parseAoMessage, parseTokenEvent } from "@/utils/arweave-utils"
 
 import { isArweaveId } from "@/utils/utils"
 
@@ -12,40 +12,6 @@ import { isArweaveId } from "@/utils/utils"
 const AO_NETWORK_IDENTIFIER = '{ name: "Data-Protocol", values: ["ao"] }'
 
 const AO_MIN_INGESTED_AT = "ingested_at: { min: 1696107600 }"
-
-// TODO
-// { name: "owner_address", values: [$entityId] }
-// { name: "target", values: [$entityId] }
-// { name: "Forwarded-For", values: [$entityId] }
-// { name: "Pushed-For", values: [$entityId] }
-
-const messageFields = gql`
-  fragment MessageFields on TransactionConnection {
-    edges {
-      cursor
-      node {
-        id
-        ingested_at
-        recipient
-        block {
-          timestamp
-          height
-        }
-        ingested_at
-        tags {
-          name
-          value
-        }
-        data {
-          size
-        }
-        owner {
-          address
-        }
-      }
-    }
-  }
-`
 
 /**
  * WARN This query fails if both count and cursor are set
