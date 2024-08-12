@@ -11,7 +11,7 @@ import { isArweaveId } from "@/utils/utils"
 // const AO_NETWORK_IDENTIFIER = '{ name: "Variant", values: ["ao.TN.1"] }'
 const AO_NETWORK_IDENTIFIER = '{ name: "Data-Protocol", values: ["ao"] }'
 
-const AO_MIN_INGESTED_AT = 'ingested_at: { min: 1696107600 }'
+const AO_MIN_INGESTED_AT = "ingested_at: { min: 1696107600 }"
 
 // TODO
 // { name: "owner_address", values: [$entityId] }
@@ -25,6 +25,7 @@ const messageFields = gql`
       cursor
       node {
         id
+        ingested_at
         recipient
         block {
           timestamp
@@ -116,7 +117,6 @@ const incomingMessagesQuery = (includeCount = false) => gql`
     $limit: Int!
     $sortOrder: SortOrder!
     $cursor: String
-    ${AO_MIN_INGESTED_AT}
   ) {
     transactions(
       sort: $sortOrder
@@ -124,6 +124,7 @@ const incomingMessagesQuery = (includeCount = false) => gql`
       after: $cursor
 
       recipients: [$entityId]
+      ${AO_MIN_INGESTED_AT}
     ) {
       ${includeCount ? "count" : ""}
       ...MessageFields
@@ -169,7 +170,6 @@ const tokenTransfersQuery = (includeCount = false) => gql`
     $limit: Int!
     $sortOrder: SortOrder!
     $cursor: String
-    ${AO_MIN_INGESTED_AT}
   ) {
     transactions(
       sort: $sortOrder
@@ -178,6 +178,7 @@ const tokenTransfersQuery = (includeCount = false) => gql`
 
       tags: [{ name: "Action", values: ["Credit-Notice", "Debit-Notice"] }]
       recipients: [$entityId]
+      ${AO_MIN_INGESTED_AT}
     ) {
       ${includeCount ? "count" : ""}
       ...MessageFields
@@ -226,13 +227,13 @@ const spawnedProcessesQuery = (includeCount = false, isProcess?: boolean) => gql
     $limit: Int!
     $sortOrder: SortOrder!
     $cursor: String
-    ${AO_MIN_INGESTED_AT}
   ) {
     transactions(
       sort: $sortOrder
       first: $limit
       after: $cursor
 
+      ${AO_MIN_INGESTED_AT}
       ${
         isProcess
           ? `tags: [{ name: "From-Process", values: [$entityId]}, { name: "Type", values: ["Process"]}]`
@@ -287,7 +288,7 @@ export async function getMessageById(id: string): Promise<AoMessage | undefined>
     .query<TransactionsResponse>(
       gql`
         query ($id: ID!) {
-          transactions(ids: [$id]) {
+          transactions(ids: [$id], ${AO_MIN_INGESTED_AT}) {
             ...MessageFields
           }
         }
@@ -596,26 +597,11 @@ const allMessagesQuery = gql`
 
       tags: $tags
     ) {
-      edges {
-        cursor
-        node {
-          id
-          recipient
-          block {
-            timestamp
-            height
-          }
-          tags {
-            name
-            value
-          }
-          owner {
-            address
-          }
-        }
-      }
+    ...MessageFields
     }
   }
+
+  ${messageFields}
 `
 
 export async function getAllMessages(

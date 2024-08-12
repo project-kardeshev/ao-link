@@ -22,12 +22,12 @@ import { TabWithCount } from "@/components/TabWithCount"
 import { TagsSection } from "@/components/TagsSection"
 
 import { getMessageById } from "@/services/messages-api"
-import { AoMessage } from "@/types"
+import { AoMessage, AoProcess } from "@/types"
 import { truncateId } from "@/utils/data-utils"
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
 
 type ProcessPageProps = {
-  message: AoMessage
+  message: AoProcess
 }
 
 const defaultTab = "outgoing"
@@ -40,7 +40,7 @@ export function ProcessPage(props: ProcessPageProps) {
     from: owner,
     type,
     //
-    created,
+    ingestedAt,
     tags,
     userTags,
     systemTags,
@@ -151,13 +151,13 @@ export function ProcessPage(props: ProcessPageProps) {
             />
             {tags.Name && <SectionInfo title="Name" value={<IdBlock label={tags.Name} />} />}
             <SectionInfo
-              title="Created"
+              title="Seen at"
               value={
-                created === null ? (
+                ingestedAt === null ? (
                   "Processing"
                 ) : (
-                  <Tooltip title={formatFullDate(created)}>
-                    <span>{formatRelative(created)}</span>
+                  <Tooltip title={formatFullDate(ingestedAt)}>
+                    <span>{formatRelative(ingestedAt)}</span>
                   </Tooltip>
                 )
               }

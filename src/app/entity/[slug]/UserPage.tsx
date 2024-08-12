@@ -11,9 +11,10 @@ import { BalanceSection } from "@/components/BalanceSection"
 import { IdBlock } from "@/components/IdBlock"
 import { Subheading } from "@/components/Subheading"
 import { TabWithCount } from "@/components/TabWithCount"
+import { UserAddress } from "@/types"
 
 type UserPageProps = {
-  entityId: string
+  entityId: UserAddress
 }
 
 const defaultTab = "outgoing"

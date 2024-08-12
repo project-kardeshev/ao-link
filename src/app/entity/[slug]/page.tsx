@@ -7,7 +7,7 @@ import { UserPage } from "./UserPage"
 import { LoadingSkeletons } from "@/components/LoadingSkeletons"
 import { getMessageById } from "@/services/messages-api"
 
-import { AoMessage } from "@/types"
+import { AoMessage, AoProcess } from "@/types"
 import { isArweaveId } from "@/utils/utils"
 
 export default function EntityPage() {
@@ -40,7 +40,7 @@ export default function EntityPage() {
   }
 
   if (message.type === "Process") {
-    return <ProcessPage key={entityId} message={message} />
+    return <ProcessPage key={entityId} message={message as AoProcess} />
   }
 
   return <Navigate to={`/message/${entityId}`} />

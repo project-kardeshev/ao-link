@@ -75,8 +75,8 @@ export function TokenTransfersTableRow(props: TokenTransfersTableRowProps) {
         <TokenBlock tokenId={tokenId} tokenInfo={tokenInfo} />
       </TableCell>
       <TableCell align="right">
-        <Tooltip title={formatFullDate(item.created)}>
-          <span>{formatRelative(item.created)}</span>
+        <Tooltip title={formatFullDate(item.ingestedAt)}>
+          <span>{formatRelative(item.ingestedAt)}</span>
         </Tooltip>
       </TableCell>
     </TableRow>

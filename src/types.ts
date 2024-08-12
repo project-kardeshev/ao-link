@@ -28,34 +28,42 @@ export type ProcessStatistic = {
 export type HighchartAreaData = [number, number]
 export type HighchartPieData = { y: number; name: string }
 
+export type ArweaveAddress = string
 export const MSG_TYPES = ["Message", "Process", "Checkpoint", "Assignment"] as const
 
-export type AoMessage = {
+export interface ArweaveTransaction {
   id: string
-  type: (typeof MSG_TYPES)[number]
-  to: string
-  from: string
   blockHeight: number | null
-  schedulerId: string
-  created: Date | null
-  action: string
+  blockTimestamp: Date | null
+  ingestedAt: Date
   tags: Record<string, string>
-  systemTags: Record<string, string>
-  userTags: Record<string, string>
   cursor?: string
   dataSize?: number
 }
 
-export type TokenTransferMessage = {
-  id: string
-  type: "Message"
-  created: Date
+export interface AoMessage extends ArweaveTransaction {
   action: string
-  sender: string
-  recipient: string
+  to: ArweaveAddress
+  from: ArweaveAddress
+  type: (typeof MSG_TYPES)[number]
+  schedulerId: string
+  systemTags: Record<string, string>
+  userTags: Record<string, string>
+}
+
+export type UserAddress = ArweaveAddress
+
+export interface AoProcess extends AoMessage {
+  id: ArweaveAddress
+  type: "Process"
+}
+
+export type TokenTransferMessage = Pick<AoMessage, "id" | "ingestedAt" | "cursor" | "action"> & {
+  type: "Message"
+  sender: ArweaveAddress
+  recipient: ArweaveAddress
   amount: number
   tokenId: string
-  cursor?: string
 }
 
 export type NetworkStat = {
