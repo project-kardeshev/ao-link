@@ -3,7 +3,7 @@ import React, { SVGProps } from "react"
 
 import { MonoFontFF } from "./RootLayout/fonts"
 
-export function PoweredBy(props: SVGProps<SVGSVGElement>) {
+export function AutonomousFinanceLogo(props: SVGProps<SVGSVGElement>) {
   return (
     <Stack direction="row" alignItems="center" gap={1}>
       <svg
