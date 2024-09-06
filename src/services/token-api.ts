@@ -1,6 +1,6 @@
 import { dryrun } from "@permaweb/aoconnect/browser"
 
-import { nativeTokenInfo } from "../utils/native-token"
+import { nativeTokenInfo, tokenMirrors } from "../utils/native-token"
 import { isArweaveId } from "../utils/utils"
 
 export type TokenInfo = {
@@ -18,8 +18,10 @@ export type TokenHolder = {
 }
 
 export async function getBalance(tokenId: string, entityId: string, tokenV2 = true) {
+  const mirror = tokenMirrors[tokenId]
+
   const result = await dryrun({
-    process: tokenId,
+    process: mirror || tokenId,
     data: "",
     tags: [
       { name: "Action", value: "Balance" },
@@ -31,10 +33,10 @@ export async function getBalance(tokenId: string, entityId: string, tokenV2 = tr
   try {
     if (result.Messages.length === 0) throw new Error(`No response from (get) Balance (${tokenId})`)
     const message = result.Messages[0]
-    const account = message.Tags?.find((tag: any) => tag.name === "Account")?.value
-    if (account !== entityId) {
-      throw new Error("Account mismatch")
-    }
+    // const account = message.Tags?.find((tag: any) => tag.name === "Account")?.value
+    // if (account !== entityId) {
+    //   throw new Error("Account mismatch")
+    // }
     const balance = message.Data || message.Tags?.find((tag: any) => tag.name === "Balance")?.value
     const balanceNumber = parseFloat(balance)
     return balanceNumber

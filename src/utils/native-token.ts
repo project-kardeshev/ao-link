@@ -7,3 +7,7 @@ export const nativeTokenInfo: TokenInfo = {
   logo: "UkS-mdoiG8hcAClhKK8ch4ZhEzla0mCPDOix9hpdSFE",
   name: "AO",
 }
+
+export const tokenMirrors = {
+  [nativeTokenInfo.processId]: "Pi-WmAQp2-mh-oWH9lWpz5EthlUDj_W0IusAv-RXhRk",
+}
