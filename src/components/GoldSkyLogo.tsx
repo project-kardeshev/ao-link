@@ -15,7 +15,7 @@ export function GoldSkyLogo(props: SVGProps<SVGSVGElement>) {
         {...props}
       >
         <g filter="url(#filter0_iii_772_53)">
-          <g clip-path="url(#clip0_772_53)">
+          <g clipPath="url(#clip0_772_53)">
             <circle cx="12" cy="12" r="12" fill="url(#paint0_radial_772_53)" />
             <g filter="url(#filter1_d_772_53)">
               <path
@@ -26,13 +26,13 @@ export function GoldSkyLogo(props: SVGProps<SVGSVGElement>) {
             <path
               d="M5 12H19V12C19 15.866 15.866 19 12 19V19C8.13401 19 5 15.866 5 12V12Z"
               fill="url(#paint1_radial_772_53)"
-              fill-opacity="0.66"
+              fillOpacity="0.66"
             />
             <g filter="url(#filter2_i_772_53)">
               <path
                 d="M0 12C0 5.37258 5.37258 0 12 0V0C18.6274 0 24 5.37258 24 12V12H0V12Z"
                 fill="white"
-                fill-opacity="0.2"
+                fillOpacity="0.2"
               />
             </g>
           </g>
@@ -45,9 +45,9 @@ export function GoldSkyLogo(props: SVGProps<SVGSVGElement>) {
             width="24"
             height="28"
             filterUnits="userSpaceOnUse"
-            color-interpolation-filters="sRGB"
+            colorInterpolationFilters="sRGB"
           >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feFlood floodOpacity="0" result="BackgroundImageFix" />
             <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
             <feColorMatrix
               in="SourceAlpha"
@@ -104,9 +104,9 @@ export function GoldSkyLogo(props: SVGProps<SVGSVGElement>) {
             width="20"
             height="13"
             filterUnits="userSpaceOnUse"
-            color-interpolation-filters="sRGB"
+            colorInterpolationFilters="sRGB"
           >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feFlood floodOpacity="0" result="BackgroundImageFix" />
             <feColorMatrix
               in="SourceAlpha"
               type="matrix"
@@ -132,9 +132,9 @@ export function GoldSkyLogo(props: SVGProps<SVGSVGElement>) {
             width="24"
             height="16"
             filterUnits="userSpaceOnUse"
-            color-interpolation-filters="sRGB"
+            colorInterpolationFilters="sRGB"
           >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feFlood floodOpacity="0" result="BackgroundImageFix" />
             <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
             <feColorMatrix
               in="SourceAlpha"
@@ -156,8 +156,8 @@ export function GoldSkyLogo(props: SVGProps<SVGSVGElement>) {
             gradientUnits="userSpaceOnUse"
             gradientTransform="translate(12 24) rotate(-90) scale(24 38.6375)"
           >
-            <stop stop-color="#FE5117" />
-            <stop offset="1" stop-color="#FFC61C" />
+            <stop stopColor="#FE5117" />
+            <stop offset="1" stopColor="#FFC61C" />
           </radialGradient>
           <radialGradient
             id="paint1_radial_772_53"
@@ -167,9 +167,9 @@ export function GoldSkyLogo(props: SVGProps<SVGSVGElement>) {
             gradientUnits="userSpaceOnUse"
             gradientTransform="translate(12 12) rotate(90) scale(7 14)"
           >
-            <stop stop-color="white" />
-            <stop offset="1" stop-color="#D9D9D9" stop-opacity="0" />
-            <stop offset="1" stop-color="white" stop-opacity="0" />
+            <stop stopColor="white" />
+            <stop offset="1" stopColor="#D9D9D9" stopOpacity="0" />
+            <stop offset="1" stopColor="white" stopOpacity="0" />
           </radialGradient>
           <clipPath id="clip0_772_53">
             <rect width="24" height="24" rx="12" fill="white" />

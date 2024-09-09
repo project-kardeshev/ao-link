@@ -39,7 +39,7 @@ export function Subheading(props: SubheadingProps) {
         <Typography variant="inherit" fontWeight={700}>
           /
         </Typography>
-        <Typography variant="inherit" fontFamily={MonoFontFF}>
+        <Typography variant="inherit" fontFamily={MonoFontFF} component="div">
           {value}
         </Typography>
       </Stack>
