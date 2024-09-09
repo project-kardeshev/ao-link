@@ -145,7 +145,11 @@ export function EntityMessagesTable(props: EntityMessagesTableProps) {
             <TypeBadge type={item.type} />
           </TableCell>
           <TableCell>
-            <IdBlock label={truncateId(item.id)} value={item.id} href={`/message/${item.id}`} />
+            <IdBlock
+              label={truncateId(item.id)}
+              value={item.id}
+              href={`/${TYPE_PATH_MAP[item.type]}/${item.id}`}
+            />
           </TableCell>
           <TableCell>{item.action}</TableCell>
           <TableCell>
