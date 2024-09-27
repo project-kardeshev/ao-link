@@ -1,6 +1,6 @@
 import { Box, Collapse, IconButton, Paper, TableCell, TableRow, Tooltip } from "@mui/material"
 
-import { result } from "@permaweb/aoconnect/browser"
+import { result } from "@permaweb/aoconnect"
 import { CaretDown, CaretRight, CheckCircle, MinusCircle, Question } from "@phosphor-icons/react"
 import { useEffect, useState } from "react"
 

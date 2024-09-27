@@ -1,8 +1,7 @@
 import React from "react"
 
-import { getSpawnedProcesses } from "@/services/messages-api"
-
 import { ProcessesTable } from "./ProcessesTable"
+import { getSpawnedProcesses } from "@/services/messages-api"
 
 type SpawnedProcessesProps = {
   entityId: string

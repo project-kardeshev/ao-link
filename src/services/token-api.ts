@@ -1,4 +1,4 @@
-import { dryrun } from "@permaweb/aoconnect/browser"
+import { dryrun } from "@permaweb/aoconnect"
 
 import { nativeTokenInfo, tokenMirrors } from "../utils/native-token"
 import { isArweaveId } from "../utils/utils"

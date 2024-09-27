@@ -164,6 +164,7 @@ export function ProcessPage(props: ProcessPageProps) {
             />
             <SectionInfo title="Result Type" value="JSON" />
             <BalanceSection entityId={entityId} />
+            {/* <ArnsSection entityId={entityId} /> */}
           </Stack>
         </Grid2>
         <Grid2 xs={12} lg={6}>

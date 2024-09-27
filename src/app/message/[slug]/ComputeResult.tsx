@@ -1,7 +1,7 @@
 "use client"
 
 import { Button, CircularProgress, Paper, Stack, Typography } from "@mui/material"
-import { result } from "@permaweb/aoconnect/browser"
+import { result } from "@permaweb/aoconnect"
 import { Asterisk } from "@phosphor-icons/react"
 import React, { useCallback, useEffect, useState } from "react"
 
