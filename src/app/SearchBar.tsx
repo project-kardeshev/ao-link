@@ -17,6 +17,7 @@ import React, { type ChangeEvent, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { TypeBadge } from "@/components/TypeBadge"
+import { resolveArns } from "@/services/arns-api"
 import { getMessageById } from "@/services/messages-api"
 import { getTokenInfo } from "@/services/token-api"
 import { TYPE_PATH_MAP } from "@/utils/data-utils"
@@ -34,10 +35,15 @@ async function findByText(text: string): Promise<Result[]> {
   if (!text || !text.trim()) return Promise.resolve([])
   text = text.trim()
 
-  const [msg, tokenInfo] = await Promise.all([
-    getMessageById(text),
-    getTokenInfo(text).catch(() => {
-      console.log("Token not found")
+  const [msg, tokenInfo, arnsValue] = await Promise.all([
+    getMessageById(text).catch((err) => {
+      console.log("Message not found", text, err)
+    }),
+    getTokenInfo(text).catch((err) => {
+      console.log("Token not found", text, err)
+    }),
+    resolveArns(text).catch((err) => {
+      console.log("ARNS not found", text, err)
     }),
   ])
 
@@ -63,6 +69,14 @@ async function findByText(text: string): Promise<Result[]> {
     results.push({
       label: text,
       id: text,
+      type: "Entity" as ResultType,
+    })
+  }
+
+  if (arnsValue) {
+    results.push({
+      label: arnsValue,
+      id: arnsValue,
       type: "Entity" as ResultType,
     })
   }
