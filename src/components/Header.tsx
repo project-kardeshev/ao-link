@@ -17,10 +17,9 @@ import { ConnectButton } from "arweave-wallet-kit"
 
 import { Link } from "react-router-dom"
 
-import SearchBar from "@/app/SearchBar"
-
 import { Logo } from "./Logo"
 import { MainFontFF } from "./RootLayout/fonts"
+import SearchBar from "@/app/SearchBar"
 
 const Header = () => {
   const { mode = "dark", setMode } = useColorScheme()
@@ -152,6 +151,7 @@ const Header = () => {
                   id="connect-wallet-button"
                   showBalance={false}
                   showProfilePicture={false}
+                  useAns={false}
                 />
               </Box>
               <IconButton

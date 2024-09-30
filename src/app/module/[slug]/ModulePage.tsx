@@ -1,7 +1,8 @@
 "use client"
-import { Box, Stack, Tabs, Tooltip } from "@mui/material"
+import { Box, Stack, Tabs, Tooltip, Typography } from "@mui/material"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
-import React, { useEffect, useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import React, { useMemo, useState } from "react"
 
 import { useParams } from "react-router-dom"
 
@@ -14,12 +15,12 @@ import { Subheading } from "@/components/Subheading"
 
 import { TabWithCount } from "@/components/TabWithCount"
 import { getMessageById } from "@/services/messages-api"
-import { AoMessage } from "@/types"
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
 import { formatNumber } from "@/utils/number-utils"
+import { isArweaveId } from "@/utils/utils"
 
 export function ModulePage() {
-  const { moduleId } = useParams()
+  const { moduleId = "" } = useParams()
 
   const [activeTab, setActiveTab] = useState(0)
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -27,18 +28,29 @@ export function ModulePage() {
   }
 
   const [processesCount, setProcessesCount] = useState<number>()
-  const [message, setMessage] = useState<AoMessage | undefined | null>(null)
 
-  useEffect(() => {
-    if (!moduleId) return
+  const isValidId = useMemo(() => isArweaveId(String(moduleId)), [moduleId])
 
-    getMessageById(moduleId).then(setMessage)
-  }, [moduleId])
+  const {
+    data: message,
+    isLoading,
+    error,
+  } = useQuery({
+    enabled: Boolean(moduleId) && isValidId,
+    queryKey: ["message", moduleId],
+    queryFn: () => getMessageById(moduleId),
+  })
 
-  if (message === null) return <LoadingSkeletons />
+  if (isLoading) {
+    return <LoadingSkeletons />
+  }
 
-  if (!moduleId || !message) {
-    return <div>Not Found</div>
+  if (!isValidId || error || !message) {
+    return (
+      <Stack component="main" gap={4} paddingY={4}>
+        <Typography>{error?.message || "Module not found."}</Typography>
+      </Stack>
+    )
   }
 
   return (

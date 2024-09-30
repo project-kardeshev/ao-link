@@ -1,10 +1,11 @@
 import { Fade, Stack, Tooltip } from "@mui/material"
 import { DiamondsFour } from "@phosphor-icons/react"
-import React, { useEffect } from "react"
+import { useQuery } from "@tanstack/react-query"
+import React from "react"
 
 import { IdBlock } from "./IdBlock"
+import { useArnsForEntityId } from "@/hooks/useArnsForEntityId"
 import { getMessageById } from "@/services/messages-api"
-import { AoMessage } from "@/types"
 import { truncateId } from "@/utils/data-utils"
 
 type EntityBlockProps = { entityId: string; fullId?: boolean }
@@ -12,17 +13,16 @@ type EntityBlockProps = { entityId: string; fullId?: boolean }
 export function EntityBlock(props: EntityBlockProps) {
   const { entityId, fullId } = props
 
-  const [msg, setMsg] = React.useState<AoMessage>()
+  const { data: message } = useQuery({
+    queryKey: ["message", entityId],
+    queryFn: () => getMessageById(entityId),
+  })
 
-  useEffect(() => {
-    if (!entityId) return
-
-    getMessageById(entityId).then(setMsg)
-  }, [entityId])
+  const arnsDomain = useArnsForEntityId(entityId)
 
   return (
     <Stack direction="row" gap={0.5} alignItems="center">
-      {msg?.type === "Process" && (
+      {message?.type === "Process" && (
         <Fade in>
           <Tooltip title="Process">
             <DiamondsFour height={16} width={16} />
@@ -30,7 +30,7 @@ export function EntityBlock(props: EntityBlockProps) {
         </Fade>
       )}
       <IdBlock
-        label={fullId ? entityId : truncateId(entityId)}
+        label={arnsDomain ? arnsDomain : fullId ? entityId : truncateId(entityId)}
         value={entityId}
         href={`/entity/${entityId}`}
       />

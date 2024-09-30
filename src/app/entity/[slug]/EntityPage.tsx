@@ -1,5 +1,6 @@
 import { Stack, Typography } from "@mui/material"
-import { useEffect, useMemo, useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { useMemo } from "react"
 import { Navigate, useParams } from "react-router-dom"
 
 import { ProcessPage } from "./ProcessPage"
@@ -7,31 +8,33 @@ import { UserPage } from "./UserPage"
 import { LoadingSkeletons } from "@/components/LoadingSkeletons"
 import { getMessageById } from "@/services/messages-api"
 
-import { AoMessage, AoProcess } from "@/types"
+import { AoProcess } from "@/types"
 import { isArweaveId } from "@/utils/utils"
 
 export default function EntityPage() {
-  const { entityId } = useParams()
+  const { entityId = "" } = useParams()
 
-  const [message, setMessage] = useState<AoMessage | undefined | null>(null)
+  const isValidId = useMemo(() => isArweaveId(String(entityId)), [entityId])
 
-  const validAddress = useMemo(() => isArweaveId(String(entityId)), [entityId])
+  const {
+    data: message,
+    isLoading,
+    error,
+  } = useQuery({
+    enabled: Boolean(entityId) && isValidId,
+    queryKey: ["message", entityId],
+    queryFn: () => getMessageById(entityId),
+  })
 
-  useEffect(() => {
-    if (!entityId) return
-
-    getMessageById(entityId).then(setMessage)
-  }, [entityId])
-
-  if (!entityId || !validAddress) {
+  if (!isValidId || error) {
     return (
       <Stack component="main" gap={4} paddingY={4}>
-        <Typography>Invalid Entity ID.</Typography>
+        <Typography>{error?.message || "Invalid Entity ID."}</Typography>
       </Stack>
     )
   }
 
-  if (message === null) {
+  if (isLoading) {
     return <LoadingSkeletons />
   }
 

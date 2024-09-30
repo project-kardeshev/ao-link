@@ -4,11 +4,10 @@ import { Box, Stack } from "@mui/material"
 
 import { useState } from "react"
 
+import { AllProcesses } from "./AllProcesses"
 import { Subheading } from "@/components/Subheading"
 
 import { formatNumber } from "@/utils/number-utils"
-
-import { AllProcesses } from "./AllProcesses"
 
 export default function ProcessesPage() {
   const [totalCount, setTotalCount] = useState<number>()

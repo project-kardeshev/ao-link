@@ -1,6 +1,7 @@
 import { Box, CircularProgress, Paper, Stack, Tabs, Tooltip, Typography } from "@mui/material"
 
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
+import { useQuery } from "@tanstack/react-query"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 
 import { Navigate, useParams, useSearchParams } from "react-router-dom"
@@ -26,19 +27,24 @@ import { truncateId } from "@/utils/data-utils"
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
 
 import { formatNumber } from "@/utils/number-utils"
+import { isArweaveId } from "@/utils/utils"
 
 const defaultTab = "resulting"
 
 export function MessagePage() {
-  const { messageId } = useParams()
+  const { messageId = "" } = useParams()
 
-  const [message, setMessage] = useState<AoMessage | undefined | null>(null)
+  const isValidId = useMemo(() => isArweaveId(String(messageId)), [messageId])
 
-  useEffect(() => {
-    if (!messageId) return
-
-    getMessageById(messageId).then(setMessage)
-  }, [messageId])
+  const {
+    data: message,
+    isLoading,
+    error,
+  } = useQuery({
+    enabled: Boolean(messageId) && isValidId,
+    queryKey: ["message", messageId],
+    queryFn: () => getMessageById(messageId),
+  })
 
   const pushedFor = message?.tags["Pushed-For"]
 
@@ -125,10 +131,16 @@ export function MessagePage() {
     setGraphMessages(data)
   }, [])
 
-  if (message === null) return <LoadingSkeletons />
+  if (isLoading) {
+    return <LoadingSkeletons />
+  }
 
-  if (!messageId || !message) {
-    return <Typography>Message not found</Typography>
+  if (!isValidId || error || !message) {
+    return (
+      <Stack component="main" gap={4} paddingY={4}>
+        <Typography>{error?.message || "Message not found."}</Typography>
+      </Stack>
+    )
   }
 
   const { from, type, blockHeight, ingestedAt, to, systemTags, userTags } = message

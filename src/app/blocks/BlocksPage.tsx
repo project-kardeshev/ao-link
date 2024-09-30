@@ -2,9 +2,8 @@
 
 import { Box, Stack } from "@mui/material"
 
-import { Subheading } from "@/components/Subheading"
-
 import { AllBlocks } from "./AllBlocks"
+import { Subheading } from "@/components/Subheading"
 
 export default function BlocksPage() {
   return (

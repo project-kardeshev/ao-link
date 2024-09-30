@@ -4,11 +4,10 @@ import { Box, Stack } from "@mui/material"
 
 import { useState } from "react"
 
+import { AllModules } from "./AllModules"
 import { Subheading } from "@/components/Subheading"
 
 import { formatNumber } from "@/utils/number-utils"
-
-import { AllModules } from "./AllModules"
 
 export default function ModulesPage() {
   const [totalCount, setTotalCount] = useState<number>()

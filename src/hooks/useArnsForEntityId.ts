@@ -48,5 +48,5 @@ export function useArnsForEntityId(entityId = "") {
 
   if (setRecordsLoading || ownedDomainsLoading || recordLoading) return null
 
-  return lastValidRecord?.name
+  return lastValidRecord ? `${lastValidRecord.name}.ar` : undefined
 }

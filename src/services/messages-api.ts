@@ -246,7 +246,7 @@ export async function getSpawnedProcesses(
   }
 }
 
-export async function getMessageById(id: string): Promise<AoMessage | undefined> {
+export async function getMessageById(id: string): Promise<AoMessage | null> {
   if (!isArweaveId(id)) {
     throw new Error("Invalid Arweave ID")
   }
@@ -267,8 +267,8 @@ export async function getMessageById(id: string): Promise<AoMessage | undefined>
 
   if (error) throw new Error(error.message)
 
-  if (!data) return
-  if (!data.transactions.edges.length) return
+  if (!data) return null
+  if (!data.transactions.edges.length) return null
 
   return parseAoMessage(data.transactions.edges[0])
 }
@@ -871,7 +871,6 @@ export async function getNameRecordFromAnt(
 
     const { count, edges } = data.transactions
     const events = edges.map(parseAoMessage)
-    console.log("📜 LOG > events:", events)
 
     return [count, events]
   } catch (error) {
