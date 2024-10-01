@@ -1,9 +1,13 @@
-import { dryrun } from "@permaweb/aoconnect/browser"
+import { connect } from "@permaweb/aoconnect/browser"
 
 import { isArweaveId } from "@/utils/utils"
 
+const arIoCu = connect({
+  CU_URL: "https://cu.ar-io.dev",
+})
+
 export async function getOwnedDomains(entityId: string): Promise<string[]> {
-  const result = await dryrun({
+  const result = await arIoCu.dryrun({
     process: import.meta.env.VITE_ARNS_ANT_REGISTRY,
     tags: [
       { name: "Action", value: "Access-Control-List" },
@@ -38,7 +42,7 @@ type ArnsRecord = {
 }
 
 export async function getRecord(name: string) {
-  const result = await dryrun({
+  const result = await arIoCu.dryrun({
     process: import.meta.env.VITE_ARNS_AR_IO_REGISTRY,
     tags: [
       { name: "Action", value: "Record" },
@@ -61,7 +65,7 @@ export async function getRecord(name: string) {
 }
 
 export async function getRecordValue(antId: string) {
-  const result = await dryrun({
+  const result = await arIoCu.dryrun({
     process: antId,
     tags: [
       { name: "Action", value: "Record" },
