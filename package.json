@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "predeploy": "rm -rf ./dist-* && yarn build",
-    "deploy": "permaweb-deploy --ant-process NwutOidcJmE08SMFfyL0BLDcE4mBYJt1roifbmhGTMk"
+    "deploy": "permaweb-deploy --ant-process My3zjcGNtaOaZntPCLXZjIKAzOqluRRHCIUh9mUzzAo"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
