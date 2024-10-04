@@ -83,7 +83,7 @@ export async function getRecordValue(antId: string) {
       ttlSeconds: number
     }
 
-    return recordValue
+    return { ...recordValue, antId }
   } catch (err) {
     console.error(err)
     return null
