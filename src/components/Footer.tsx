@@ -43,7 +43,7 @@ export function Footer() {
               /
             </Typography>
             <Link
-              href="https://ao.arweave.dev"
+              href="https://ao.arweave.net"
               target="_blank"
               sx={{
                 color: "rgb(180, 180, 180)",
