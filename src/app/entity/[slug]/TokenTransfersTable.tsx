@@ -1,6 +1,6 @@
 import { Paper, Stack, Tooltip } from "@mui/material"
 import { Info } from "@phosphor-icons/react"
-import React from "react"
+import React, { memo } from "react"
 
 import { TokenTransfersTableRow } from "./TokenTransfersTableRow"
 import { AsyncTable, AsyncTableProps } from "@/components/AsyncTable"
@@ -10,7 +10,7 @@ type TokenTransfersTableProps = Pick<AsyncTableProps, "fetchFunction" | "pageSiz
   entityId: string
 }
 
-export function TokenTransfersTable(props: TokenTransfersTableProps) {
+function BaseTokenTransfersTable(props: TokenTransfersTableProps) {
   const { entityId, ...rest } = props
 
   return (
@@ -74,3 +74,5 @@ export function TokenTransfersTable(props: TokenTransfersTableProps) {
     />
   )
 }
+
+export const TokenTransfersTable = memo(BaseTokenTransfersTable)

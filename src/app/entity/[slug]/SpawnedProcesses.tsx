@@ -10,7 +10,7 @@ type SpawnedProcessesProps = {
   isProcess?: boolean
 }
 
-export function SpawnedProcesses(props: SpawnedProcessesProps) {
+function BaseSpawnedProcesses(props: SpawnedProcessesProps) {
   const { entityId, open, onCountReady, isProcess } = props
 
   if (!open) return null
@@ -38,3 +38,5 @@ export function SpawnedProcesses(props: SpawnedProcessesProps) {
     />
   )
 }
+
+export const SpawnedProcesses = React.memo(BaseSpawnedProcesses)

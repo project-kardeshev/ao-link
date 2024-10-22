@@ -9,7 +9,7 @@ type EntityMessagesProps = {
   onCountReady?: (count: number) => void
 }
 
-export function BaseIncomingMessagesTable(props: EntityMessagesProps) {
+function BaseIncomingMessagesTable(props: EntityMessagesProps) {
   const { entityId, open, onCountReady } = props
 
   if (!open) return null

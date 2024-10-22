@@ -1,4 +1,4 @@
-import React from "react"
+import React, { memo } from "react"
 
 import { EntityMessagesTable } from "@/app/entity/[slug]/EntityMessagesTable"
 import { getMessagesForBlock } from "@/services/messages-api"
@@ -9,7 +9,7 @@ type EntityMessagesProps = {
   onCountReady?: (count: number) => void
 }
 
-export function BlockMessagesTable(props: EntityMessagesProps) {
+function BaseBlockMessagesTable(props: EntityMessagesProps) {
   const { blockHeight, open, onCountReady } = props
 
   if (!open) return null
@@ -38,3 +38,5 @@ export function BlockMessagesTable(props: EntityMessagesProps) {
     />
   )
 }
+
+export const BlockMessagesTable = memo(BaseBlockMessagesTable)

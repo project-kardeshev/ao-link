@@ -1,6 +1,6 @@
 import { Paper, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
 import { Info } from "@phosphor-icons/react"
-import React from "react"
+import React, { memo } from "react"
 
 import { useNavigate } from "react-router-dom"
 
@@ -17,7 +17,7 @@ type ProcessesTableProps = Pick<AsyncTableProps, "fetchFunction" | "pageSize"> &
   hideModuleColumn?: boolean
 }
 
-export function ProcessesTable(props: ProcessesTableProps) {
+function BaseProcessesTable(props: ProcessesTableProps) {
   const { hideModuleColumn, ...rest } = props
   const navigate = useNavigate()
 
@@ -112,3 +112,5 @@ export function ProcessesTable(props: ProcessesTableProps) {
     />
   )
 }
+
+export const ProcessesTable = memo(BaseProcessesTable)

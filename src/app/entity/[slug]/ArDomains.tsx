@@ -8,7 +8,7 @@ type ArDomainsProps = {
   open: boolean
 }
 
-export function ArDomains(props: ArDomainsProps) {
+function BaseArDomains(props: ArDomainsProps) {
   const { entityId, open } = props
 
   if (!open) return null
@@ -31,3 +31,5 @@ export function ArDomains(props: ArDomainsProps) {
     />
   )
 }
+
+export const ArDomains = React.memo(BaseArDomains)

@@ -1,8 +1,7 @@
 import React from "react"
 
-import { getTokenTransfers } from "@/services/messages-api"
-
 import { TokenTransfersTable } from "./TokenTransfersTable"
+import { getTokenTransfers } from "@/services/messages-api"
 
 type TokenTransfersProps = {
   entityId: string
@@ -10,7 +9,7 @@ type TokenTransfersProps = {
   onCountReady?: (count: number) => void
 }
 
-export function TokenTransfers(props: TokenTransfersProps) {
+function BaseTokenTransfers(props: TokenTransfersProps) {
   const { entityId, open, onCountReady } = props
 
   const pageSize = 25
@@ -38,3 +37,5 @@ export function TokenTransfers(props: TokenTransfersProps) {
     />
   )
 }
+
+export const TokenTransfers = React.memo(BaseTokenTransfers)

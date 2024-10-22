@@ -43,7 +43,7 @@ export function useArnsForEntityId(entityId = "") {
   })
 
   const lastValidAntId = useMemo(() => {
-    return antRecordValues?.find((x) => entityId === x.transactionId)?.antId
+    return antRecordValues?.find((x) => entityId === x?.transactionId)?.antId
   }, [antRecordValues])
 
   const { data: lastValidRecord, isLoading: recordLoading } = useQuery({

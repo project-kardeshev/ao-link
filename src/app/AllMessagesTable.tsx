@@ -1,4 +1,4 @@
-import React from "react"
+import React, { memo } from "react"
 
 import { EntityMessagesTable } from "@/app/entity/[slug]/EntityMessagesTable"
 import { getAllMessages } from "@/services/messages-api"
@@ -8,7 +8,7 @@ type EntityMessagesProps = {
   onCountReady?: (count: number) => void
 }
 
-export function AllMessagesTable(props: EntityMessagesProps) {
+function BaseAllMessagesTable(props: EntityMessagesProps) {
   const { open, onCountReady } = props
 
   if (!open) return null
@@ -36,3 +36,5 @@ export function AllMessagesTable(props: EntityMessagesProps) {
     />
   )
 }
+
+export const AllMessagesTable = memo(BaseAllMessagesTable)

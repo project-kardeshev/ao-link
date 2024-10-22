@@ -1,8 +1,7 @@
 import React from "react"
 
-import { getProcesses } from "@/services/messages-api"
-
 import { ProcessesTable } from "./ProcessesTable"
+import { getProcesses } from "@/services/messages-api"
 
 type ProcessesByModuleProps = {
   moduleId: string
@@ -10,7 +9,7 @@ type ProcessesByModuleProps = {
   onCountReady?: (count: number) => void
 }
 
-export function ProcessesByModule(props: ProcessesByModuleProps) {
+function BaseProcessesByModule(props: ProcessesByModuleProps) {
   const { moduleId, open, onCountReady } = props
 
   if (!open) return null
@@ -38,3 +37,5 @@ export function ProcessesByModule(props: ProcessesByModuleProps) {
     />
   )
 }
+
+export const ProcessesByModule = React.memo(BaseProcessesByModule)

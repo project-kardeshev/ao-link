@@ -9,7 +9,7 @@ type EntityMessagesProps = {
   onCountReady?: (count: number) => void
 }
 
-export function SourceCode(props: EntityMessagesProps) {
+function BaseSourceCode(props: EntityMessagesProps) {
   const { entityId, open, onCountReady } = props
 
   if (!open) return null
@@ -36,3 +36,5 @@ export function SourceCode(props: EntityMessagesProps) {
     />
   )
 }
+
+export const SourceCode = React.memo(BaseSourceCode)

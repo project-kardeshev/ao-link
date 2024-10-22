@@ -1,6 +1,6 @@
 import { Stack, Tooltip } from "@mui/material"
 import { Info } from "@phosphor-icons/react"
-import React from "react"
+import React, { memo } from "react"
 
 import { EvalMessagesTableRow } from "./EvalMessagesTableRow"
 import { AsyncTable, AsyncTableProps, HeaderCell } from "@/components/AsyncTable"
@@ -8,7 +8,7 @@ import { AoMessage } from "@/types"
 
 type EvalMessagesTableProps = Pick<AsyncTableProps, "fetchFunction" | "pageSize"> & {}
 
-export function EvalMessagesTable(props: EvalMessagesTableProps) {
+function BaseEvalMessagesTable(props: EvalMessagesTableProps) {
   const { ...rest } = props
 
   const headerCells: HeaderCell[] = [
@@ -60,3 +60,5 @@ export function EvalMessagesTable(props: EvalMessagesTableProps) {
     />
   )
 }
+
+export const EvalMessagesTable = memo(BaseEvalMessagesTable)

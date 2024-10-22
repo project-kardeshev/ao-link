@@ -1,6 +1,6 @@
 import { Paper, Stack, TableCell, TableRow, Tooltip } from "@mui/material"
 import { Info } from "@phosphor-icons/react"
-import React from "react"
+import React, { memo } from "react"
 
 import { useNavigate } from "react-router-dom"
 
@@ -15,7 +15,7 @@ import { formatNumber } from "@/utils/number-utils"
 
 type BlocksTableProps = Pick<AsyncTableProps, "fetchFunction" | "pageSize">
 
-export function BlocksTable(props: BlocksTableProps) {
+function BaseBlocksTable(props: BlocksTableProps) {
   const navigate = useNavigate()
 
   return (
@@ -90,3 +90,5 @@ export function BlocksTable(props: BlocksTableProps) {
     />
   )
 }
+
+export const BlocksTable = memo(BaseBlocksTable)
