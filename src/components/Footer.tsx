@@ -128,6 +128,24 @@ export function Footer() {
               variant="body2"
             >
               ARWEAVE STATS
+            </Link>{" "}
+            <Typography component="span" sx={{ opacity: 0.4 }} variant="caption">
+              /
+            </Typography>
+            <Link
+              href="https://docs.autonomous.finance/products/ecosystem-tooling/ao-link"
+              target="_blank"
+              sx={{
+                color: "rgb(180, 180, 180)",
+                "&:hover": {
+                  color: "#FFF",
+                },
+              }}
+              fontWeight={500}
+              underline="none"
+              variant="body2"
+            >
+              DOCS
             </Link>
           </Stack>
           <Stack direction="row" gap={1}>
