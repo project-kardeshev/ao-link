@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
 import { useMemo } from "react"
 
+import { useArnsRecordsMap } from "./useArnsRecords"
 import { getOwnedDomains, getRecordValue } from "@/services/arns-api"
-import { getNameRecordFromAnt, getSetRecordsToEntityId } from "@/services/messages-api"
+import { getSetRecordsToEntityId } from "@/services/messages-api"
 
 export function useArnsForEntityId(entityId = "") {
   const { data: setRecords, isLoading: setRecordsLoading } = useQuery({
@@ -46,23 +47,17 @@ export function useArnsForEntityId(entityId = "") {
     return antRecordValues?.find((x) => entityId === x?.transactionId)?.antId
   }, [antRecordValues])
 
-  const { data: lastValidRecord, isLoading: recordLoading } = useQuery({
-    queryKey: ["record-of", lastValidAntId],
-    enabled: !!lastValidAntId,
-    queryFn: async () => {
-      if (!lastValidAntId) throw new Error("Invalid params")
+  const recordsMap = useArnsRecordsMap()
 
-      const [, results] = await getNameRecordFromAnt(1, undefined, false, lastValidAntId)
-      return {
-        name: results[0].tags["Name"],
-        purchaseType: results[0].tags["Purchase-Type"],
-        years: results[0].tags["Years"],
-      }
-    },
-  })
+  const lastValidName = useMemo(() => {
+    if (!lastValidAntId || !recordsMap) return
 
-  if (setRecordsLoading || ownedDomainsLoading || recordLoading || antRecordValuesLoading)
-    return null
+    return Object.keys(recordsMap).find(
+      (recordName) => recordsMap[recordName].processId === lastValidAntId,
+    )
+  }, [recordsMap, lastValidAntId])
 
-  return lastValidRecord ? `${lastValidRecord.name}.ar` : undefined
+  if (setRecordsLoading || ownedDomainsLoading || !recordsMap || antRecordValuesLoading) return null
+
+  return lastValidName ? `${lastValidName}.ar` : undefined
 }

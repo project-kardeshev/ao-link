@@ -106,6 +106,21 @@ const Header = () => {
               >
                 BLOCKS
               </MuiLink>
+              <MuiLink
+                component={Link}
+                to="/arns"
+                sx={{
+                  color: "#9EA2AA",
+                  "&:hover": {
+                    color: "var(--mui-palette-text-primary)",
+                  },
+                }}
+                fontWeight={500}
+                underline="none"
+                variant="body2"
+              >
+                ARNS
+              </MuiLink>
             </Stack>
             <Stack direction="row" gap={2} alignItems="center">
               <SearchBar />

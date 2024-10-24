@@ -8,13 +8,14 @@ import { useArnsForEntityId } from "@/hooks/useArnsForEntityId"
 import { getMessageById } from "@/services/messages-api"
 import { truncateId } from "@/utils/data-utils"
 
-type EntityBlockProps = { entityId: string; fullId?: boolean }
+type EntityBlockProps = { entityId: string; fullId?: boolean; skipQuery?: boolean }
 
 export function EntityBlock(props: EntityBlockProps) {
-  const { entityId, fullId } = props
+  const { entityId, fullId, skipQuery } = props
 
   const { data: message } = useQuery({
     queryKey: ["message", entityId],
+    enabled: !skipQuery,
     queryFn: () => getMessageById(entityId),
   })
 

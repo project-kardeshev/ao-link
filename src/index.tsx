@@ -14,6 +14,7 @@ import * as ReactDOM from "react-dom/client"
 import { HashRouter, Route, Routes } from "react-router-dom"
 
 import HomePage from "./app/HomePage"
+import ArnsPage from "./app/arns/ArnsPage"
 import BlockPage from "./app/block/[slug]/BlockPage"
 import BlocksPage from "./app/blocks/BlocksPage"
 import EntityPage from "./app/entity/[slug]/EntityPage"
@@ -39,6 +40,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route path="/processes" element={<ProcessesPage />} />
         <Route path="/entity/:entityId" element={<EntityPage />} />
         <Route path="/token/:tokenId" element={<TokenPage />} />
+        <Route path="/arns" element={<ArnsPage />} />
         <Route path="*" element={<FourZeroFourPage />} />
       </Routes>
     </RootLayoutUI>

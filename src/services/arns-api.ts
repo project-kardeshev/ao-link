@@ -32,13 +32,14 @@ export async function getOwnedDomains(entityId: string): Promise<string[]> {
   }
 }
 
-type ArnsRecord = {
+export type ArnsRecord = {
   processId: string
   startTimestamp: number
   type: string
   endTimestamp: number
   purchasePrice: number
   undernameLimit: number
+  name: string
 }
 
 export async function getRecord(name: string) {
@@ -55,9 +56,9 @@ export async function getRecord(name: string) {
       throw new Error(`No response from (get) Record (${name})`)
     }
 
-    const record = JSON.parse(result.Messages[0].Data) as ArnsRecord
+    const record = JSON.parse(result.Messages[0].Data) as Omit<ArnsRecord, "name">
 
-    return record
+    return { ...record, name }
   } catch (err) {
     console.error(err)
     return null
@@ -99,4 +100,27 @@ export async function resolveArns(text: string) {
 
   const recordValue = await getRecordValue(record.processId)
   return recordValue?.transactionId || null
+}
+
+export async function getAllRecords() {
+  const result = await arIoCu.dryrun({
+    process: import.meta.env.VITE_ARNS_AR_IO_REGISTRY,
+    tags: [{ name: "Action", value: "Records" }],
+  })
+
+  try {
+    if (result.Messages.length === 0) {
+      throw new Error(`No response from (get) Records`)
+    }
+
+    const recordsMap = JSON.parse(result.Messages[0].Data) as Record<
+      string,
+      Omit<ArnsRecord, "name">
+    >
+
+    return recordsMap
+  } catch (err) {
+    console.error(err)
+    return []
+  }
 }
