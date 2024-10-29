@@ -53,8 +53,9 @@ type BalanceMap = {
 }
 
 export async function getTokenHolders(tokenInfo: TokenInfo): Promise<TokenHolder[]> {
+  const mirror = tokenMirrors[tokenInfo.processId]
   const result = await dryrun({
-    process: tokenInfo.processId,
+    process: mirror || tokenInfo.processId,
     data: "",
     tags: [{ name: "Action", value: "Balances" }],
   })
