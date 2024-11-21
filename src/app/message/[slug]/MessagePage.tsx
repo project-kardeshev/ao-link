@@ -132,7 +132,7 @@ export function MessagePage() {
     setGraphMessages(data)
   }, [])
 
-  const [computeResult, setComputeResult] = useState<MessageResult | null>(null)
+  const [computeResult, setComputeResult] = useState<MessageResult | undefined | null>(undefined)
 
   if (isLoading) {
     return <LoadingSkeletons />

@@ -15,7 +15,7 @@ type ComputeResultProps = {
   messageId: string
   processId: string
   autoCompute?: boolean
-  onComputedResult?: (result: MessageResult) => void
+  onComputedResult?: (result: MessageResult | null) => void
 }
 
 export function ComputeResult(props: ComputeResultProps) {
@@ -23,10 +23,15 @@ export function ComputeResult(props: ComputeResultProps) {
   const [content, setContent] = useState("")
   const [loading, setLoading] = useState(false)
 
-  const [msg, setMsg] = React.useState<AoMessage | undefined | null>(null)
+  // undefined = loading
+  // null = not found
+  const [msg, setMsg] = React.useState<AoMessage | undefined | null>(undefined)
 
   useEffect(() => {
-    if (!processId) return
+    if (!processId) {
+      setMsg(null)
+      return
+    }
 
     getMessageById(processId).then(setMsg)
   }, [processId])
@@ -50,8 +55,13 @@ export function ComputeResult(props: ComputeResultProps) {
   }, [messageId, processId])
 
   useEffect(() => {
+    if (msg === undefined) return
+
     if (autoCompute && msg) {
       handleCompute()
+    }
+    if (autoCompute && msg === null) {
+      onComputedResult?.(null)
     }
   }, [msg, autoCompute])
 
@@ -81,7 +91,7 @@ export function ComputeResult(props: ComputeResultProps) {
       <FormattedDataBlock
         data={content}
         placeholder={
-          msg === undefined
+          msg === null
             ? "There is no result to compute because the message was sent to a User."
             : loading
               ? "Loading..."

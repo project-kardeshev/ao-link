@@ -11,7 +11,7 @@ type Props = {
   message: AoMessage
   onCountReady?: (count: number) => void
   onDataReady?: (data: AoMessage[]) => void
-  computeResult: MessageResult | null
+  computeResult: MessageResult | null | undefined
 }
 
 function BaseResultingMessages(props: Props) {
@@ -19,12 +19,14 @@ function BaseResultingMessages(props: Props) {
 
   const pageSize = 100
 
-  if (!computeResult) return <LoadingSkeletons />
-
   const computeResultMsgs = useMemo(
-    () => computeResult.Messages.map(parseAoMessageFromCU),
+    () => (computeResult ? computeResult.Messages.map(parseAoMessageFromCU) : []),
     [computeResult],
   )
+
+  // undefined = loading
+  // null = not found
+  if (computeResult === undefined) return <LoadingSkeletons />
 
   return (
     <EntityMessagesTable
