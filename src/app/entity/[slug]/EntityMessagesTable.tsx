@@ -10,6 +10,7 @@ import {
   Tooltip,
 } from "@mui/material"
 import { FunnelSimple, Info } from "@phosphor-icons/react"
+import { isEqual } from "lodash-es"
 import React, { useState } from "react"
 
 import { useNavigate } from "react-router-dom"
@@ -20,6 +21,7 @@ import { IdBlock } from "@/components/IdBlock"
 import { InOutLabel } from "@/components/InOutLabel"
 import { TypeBadge } from "@/components/TypeBadge"
 import { AoMessage, MSG_TYPES } from "@/types"
+import { CuMessage } from "@/utils/arweave-utils"
 import { TYPE_ICON_MAP, TYPE_PATH_MAP, truncateId } from "@/utils/data-utils"
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
 import { formatNumber } from "@/utils/number-utils"
@@ -28,13 +30,14 @@ type EntityMessagesTableProps = Pick<AsyncTableProps, "fetchFunction" | "pageSiz
   entityId?: string
   hideBlockColumn?: boolean
   allowTypeFilter?: boolean
+  computeResultMsgs?: CuMessage[]
 }
 
 /**
  * TODO rename to AoTransactionsTable
  */
 export function EntityMessagesTable(props: EntityMessagesTableProps) {
-  const { entityId, hideBlockColumn, allowTypeFilter, ...rest } = props
+  const { entityId, hideBlockColumn, allowTypeFilter, computeResultMsgs, ...rest } = props
   const navigate = useNavigate()
 
   const [extraFilters, setExtraFilters] = useState<Record<string, string>>({})
@@ -133,58 +136,74 @@ export function EntityMessagesTable(props: EntityMessagesTableProps) {
       initialSortDir="desc"
       initialSortField="ingestedAt"
       headerCells={headerCells}
-      renderRow={(item: AoMessage) => (
-        <TableRow
-          sx={{ cursor: "pointer" }}
-          key={item.id}
-          onClick={() => {
-            navigate(`/${TYPE_PATH_MAP[item.type]}/${item.id}`)
-          }}
-        >
-          <TableCell>
-            <TypeBadge type={item.type} />
-          </TableCell>
-          <TableCell>
-            <IdBlock
-              label={truncateId(item.id)}
-              value={item.id}
-              href={`/${TYPE_PATH_MAP[item.type]}/${item.id}`}
-            />
-          </TableCell>
-          <TableCell>{item.action}</TableCell>
-          <TableCell>
-            <EntityBlock entityId={item.from} />
-          </TableCell>
-          <TableCell>
-            {entityId !== undefined && <InOutLabel outbound={entityId !== item.to} />}
-          </TableCell>
-          <TableCell>
-            <EntityBlock entityId={item.to} />
-          </TableCell>
-          {!hideBlockColumn && (
+      renderRow={(item: AoMessage) => {
+        if (
+          computeResultMsgs &&
+          !computeResultMsgs.find((cuMessage) => {
+            const commonTags = { ...item.tags }
+            delete commonTags["Pushed-For"]
+            delete commonTags["From-Process"]
+            delete commonTags["From-Module"]
+
+            return isEqual(cuMessage.tags, commonTags)
+          })
+        ) {
+          return null
+        }
+
+        return (
+          <TableRow
+            sx={{ cursor: "pointer" }}
+            key={item.id}
+            onClick={() => {
+              navigate(`/${TYPE_PATH_MAP[item.type]}/${item.id}`)
+            }}
+          >
+            <TableCell>
+              <TypeBadge type={item.type} />
+            </TableCell>
+            <TableCell>
+              <IdBlock
+                label={truncateId(item.id)}
+                value={item.id}
+                href={`/${TYPE_PATH_MAP[item.type]}/${item.id}`}
+              />
+            </TableCell>
+            <TableCell>{item.action}</TableCell>
+            <TableCell>
+              <EntityBlock entityId={item.from} />
+            </TableCell>
+            <TableCell>
+              {entityId !== undefined && <InOutLabel outbound={entityId !== item.to} />}
+            </TableCell>
+            <TableCell>
+              <EntityBlock entityId={item.to} />
+            </TableCell>
+            {!hideBlockColumn && (
+              <TableCell align="right">
+                {item.blockHeight === null ? (
+                  "Processing"
+                ) : (
+                  <IdBlock
+                    label={formatNumber(item.blockHeight)}
+                    value={String(item.blockHeight)}
+                    href={`/block/${item.blockHeight}`}
+                  />
+                )}
+              </TableCell>
+            )}
             <TableCell align="right">
-              {item.blockHeight === null ? (
+              {item.ingestedAt === null ? (
                 "Processing"
               ) : (
-                <IdBlock
-                  label={formatNumber(item.blockHeight)}
-                  value={String(item.blockHeight)}
-                  href={`/block/${item.blockHeight}`}
-                />
+                <Tooltip title={formatFullDate(item.ingestedAt)}>
+                  <span>{formatRelative(item.ingestedAt)}</span>
+                </Tooltip>
               )}
             </TableCell>
-          )}
-          <TableCell align="right">
-            {item.ingestedAt === null ? (
-              "Processing"
-            ) : (
-              <Tooltip title={formatFullDate(item.ingestedAt)}>
-                <span>{formatRelative(item.ingestedAt)}</span>
-              </Tooltip>
-            )}
-          </TableCell>
-        </TableRow>
-      )}
+          </TableRow>
+        )
+      }}
     />
   )
 }

@@ -1,3 +1,4 @@
+import { dryrun } from "@permaweb/aoconnect"
 import { gql } from "urql"
 
 import { AoMessage, ArweaveBlock, BlockEdge, TokenTransferMessage, TransactionEdge } from "../types"
@@ -155,5 +156,58 @@ export function parseArweaveBlock(edge: BlockEdge): ArweaveBlock {
     timestamp,
     height: node.height,
     previous: node.previous,
+  }
+}
+
+export type DryRunResult = Awaited<ReturnType<typeof dryrun>>
+
+/**
+ * Returned message object(s) from dryRun
+ */
+export interface Message {
+  Anchor: string
+  Tags: Tag[]
+  Target: string
+  Data: string
+}
+
+export type Tag = {
+  name: string
+  value: string
+}
+
+export type CuMessage = {
+  systemTags: Record<string, string>
+  userTags: Record<string, string>
+  tags: Record<string, string>
+}
+
+export function parseAoMessageFromCU(message: Message): CuMessage {
+  const systemTags: Record<string, string> = {}
+  const userTags: Record<string, string> = {}
+  const tags: Record<string, string> = {}
+
+  message.Tags.forEach((tag) => {
+    tags[tag.name] = tag.value
+
+    if (systemTagNames.includes(tag.name)) {
+      systemTags[tag.name] = tag.value
+    } else {
+      userTags[tag.name] = tag.value
+    }
+  })
+
+  // delete systemTags["Pushed-For"]
+  // delete systemTags["Data-Protocol"]
+  delete systemTags["Type"]
+  delete systemTags["Module"]
+  delete systemTags["Name"]
+
+  return {
+    // to: message.Target,
+    // action: tags["Action"],
+    systemTags,
+    userTags,
+    tags,
   }
 }

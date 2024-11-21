@@ -1,23 +1,35 @@
-import React, { memo } from "react"
+import { MessageResult } from "@permaweb/aoconnect/dist/lib/result"
+import React, { memo, useMemo } from "react"
 
 import { EntityMessagesTable } from "@/app/entity/[slug]/EntityMessagesTable"
+import { LoadingSkeletons } from "@/components/LoadingSkeletons"
 import { getResultingMessages } from "@/services/messages-api"
 import { AoMessage } from "@/types"
+import { parseAoMessageFromCU } from "@/utils/arweave-utils"
 
 type Props = {
   message: AoMessage
   onCountReady?: (count: number) => void
   onDataReady?: (data: AoMessage[]) => void
+  computeResult: MessageResult | null
 }
 
 function BaseResultingMessages(props: Props) {
-  const { message, onCountReady, onDataReady } = props
+  const { message, onCountReady, onDataReady, computeResult } = props
 
-  const pageSize = 25
+  const pageSize = 100
+
+  if (!computeResult) return <LoadingSkeletons />
+
+  const computeResultMsgs = useMemo(
+    () => computeResult.Messages.map(parseAoMessageFromCU),
+    [computeResult],
+  )
 
   return (
     <EntityMessagesTable
       pageSize={pageSize}
+      computeResultMsgs={computeResultMsgs}
       fetchFunction={async (offset, ascending, sortField, lastRecord) => {
         let [count, records] = await getResultingMessages(
           pageSize,
@@ -27,12 +39,20 @@ function BaseResultingMessages(props: Props) {
           message.to,
         )
 
-        if (count !== undefined && onCountReady) {
-          onCountReady(count)
+        if (count !== undefined) {
+          console.log(
+            `Resulting messages: we need to match ${computeResultMsgs.length} resulting messages from the compute unit against ${count} "resulting" messages from the gateway.`,
+          )
         }
 
+        // TODO this no longer works.
+        // if (count !== undefined && onCountReady) {
+        //   onCountReady(count)
+        // }
+
         if (onDataReady) {
-          onDataReady(records)
+          // onDataReady(records)
+          onDataReady([])
         }
 
         return records

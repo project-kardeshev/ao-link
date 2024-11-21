@@ -84,6 +84,7 @@ export function AsyncTable(props: AsyncTableProps) {
           ).then((newPage) => {
             console.log(`Fetched another page of ${newPage.length} records`)
 
+            setLoading(false)
             if (newPage.length === 0) {
               console.log("No more records to fetch")
               observer.disconnect()
@@ -91,7 +92,6 @@ export function AsyncTable(props: AsyncTableProps) {
               return
             }
 
-            setLoading(false)
             setData((prevData) => {
               const newList = [...prevData, ...newPage]
               listSizeRef.current = newList.length

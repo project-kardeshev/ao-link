@@ -1,6 +1,7 @@
 import { Box, CircularProgress, Paper, Stack, Tabs, Tooltip, Typography } from "@mui/material"
 
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
+import { MessageResult } from "@permaweb/aoconnect/dist/lib/result"
 import { useQuery } from "@tanstack/react-query"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 
@@ -131,6 +132,8 @@ export function MessagePage() {
     setGraphMessages(data)
   }, [])
 
+  const [computeResult, setComputeResult] = useState<MessageResult | null>(null)
+
   if (isLoading) {
     return <LoadingSkeletons />
   }
@@ -219,7 +222,12 @@ export function MessagePage() {
             <Stack gap={4}>
               <TagsSection label="Tags" tags={userTags} />
               <TagsSection label="System Tags" tags={systemTags} />
-              <ComputeResult messageId={messageId} processId={to} />
+              <ComputeResult
+                messageId={messageId}
+                processId={to}
+                autoCompute
+                onComputedResult={setComputeResult}
+              />
               <MessageData message={message} />
             </Stack>
           </Grid2>
@@ -235,6 +243,7 @@ export function MessagePage() {
                 message={message}
                 onCountReady={setResultingCount}
                 onDataReady={handleDataReady}
+                computeResult={computeResult}
               />
             )}
             {activeTab === "linked" && (

@@ -2,6 +2,7 @@
 
 import { Button, CircularProgress, Paper, Stack, Typography } from "@mui/material"
 import { result } from "@permaweb/aoconnect"
+import { MessageResult } from "@permaweb/aoconnect/dist/lib/result"
 import { Asterisk } from "@phosphor-icons/react"
 import React, { useCallback, useEffect, useState } from "react"
 
@@ -13,10 +14,12 @@ import { prettifyResult } from "@/utils/ao-utils"
 type ComputeResultProps = {
   messageId: string
   processId: string
+  autoCompute?: boolean
+  onComputedResult?: (result: MessageResult) => void
 }
 
 export function ComputeResult(props: ComputeResultProps) {
-  const { messageId, processId } = props
+  const { messageId, processId, autoCompute = false, onComputedResult } = props
   const [content, setContent] = useState("")
   const [loading, setLoading] = useState(false)
 
@@ -35,6 +38,7 @@ export function ComputeResult(props: ComputeResultProps) {
         message: messageId,
         process: processId,
       })
+      onComputedResult?.(json)
       setContent(JSON.stringify(prettifyResult(json), null, 2))
     } catch (error) {
       console.error(error)
@@ -44,6 +48,12 @@ export function ComputeResult(props: ComputeResultProps) {
       setLoading(false)
     }, 500)
   }, [messageId, processId])
+
+  useEffect(() => {
+    if (autoCompute && msg) {
+      handleCompute()
+    }
+  }, [msg, autoCompute])
 
   return (
     <Stack gap={1}>
