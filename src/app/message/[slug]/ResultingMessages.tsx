@@ -20,7 +20,10 @@ function BaseResultingMessages(props: Props) {
   const pageSize = 100
 
   const computeResultMsgs = useMemo(
-    () => (computeResult ? computeResult.Messages.map(parseAoMessageFromCU) : []),
+    () =>
+      computeResult && computeResult.Messages
+        ? computeResult.Messages.map(parseAoMessageFromCU)
+        : [],
     [computeResult],
   )
 
