@@ -139,14 +139,7 @@ export function EntityMessagesTable(props: EntityMessagesTableProps) {
       renderRow={(item: AoMessage) => {
         if (
           computeResultMsgs &&
-          !computeResultMsgs.find((cuMessage) => {
-            const commonTags = { ...item.tags }
-            delete commonTags["Pushed-For"]
-            delete commonTags["From-Process"]
-            delete commonTags["From-Module"]
-
-            return isEqual(cuMessage.tags, commonTags)
-          })
+          !computeResultMsgs.find((cuMessage) => isEqual(cuMessage.userTags, item.userTags))
         ) {
           return null
         }
