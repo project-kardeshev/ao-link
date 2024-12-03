@@ -39,6 +39,7 @@ export async function getBalance(tokenId: string, entityId: string, tokenV2 = tr
     // }
     const balance = message.Data || message.Tags?.find((tag: any) => tag.name === "Balance")?.value
     const balanceNumber = parseFloat(balance)
+    if (isNaN(balanceNumber)) return parseFloat(JSON.parse(balance))
     return balanceNumber
   } catch (err) {
     console.error(err)
