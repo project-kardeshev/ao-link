@@ -173,7 +173,7 @@ const SearchBar = () => {
         filterOptions={(x) => x}
         renderInput={(params) => (
           <TextField
-            placeholder="Search by Message ID / Process ID / User ID / Block Height"
+            placeholder="Search by Message ID / Process ID / User ID / Block Height/ ArNS domain"
             sx={{
               background: "var(--mui-palette-background-default) !important",
               "& fieldset": {

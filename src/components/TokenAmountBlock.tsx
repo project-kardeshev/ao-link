@@ -1,11 +1,10 @@
 import { Box, Tooltip, Typography } from "@mui/material"
 import React from "react"
 
-import { TokenInfo } from "@/services/token-api"
-import { formatNumber } from "@/utils/number-utils"
-
 import { CopyToClipboard } from "./CopyToClipboard"
 import { MonoFontFF } from "./RootLayout/fonts"
+import { TokenInfo } from "@/services/token-api"
+import { formatNumber } from "@/utils/number-utils"
 
 type TokenAmountBlockProps = {
   amount: string | number
@@ -24,8 +23,8 @@ export function TokenAmountBlock(props: TokenAmountBlockProps) {
   const smallAmount = amountNumber < 1 && amountNumber > -1
 
   const shortValue = formatNumber(amountNumber, {
-    minimumFractionDigits: smallAmount ? decimals : 0,
-    maximumFractionDigits: smallAmount ? decimals : 0,
+    minimumFractionDigits: smallAmount ? decimals : 3,
+    maximumFractionDigits: smallAmount ? decimals : 3,
   })
   const longValue = formatNumber(amountNumber, {
     minimumFractionDigits: decimals,
