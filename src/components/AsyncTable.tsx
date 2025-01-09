@@ -15,6 +15,7 @@ import {
 } from "@mui/material"
 import React, { ReactNode, useEffect, useRef, useState } from "react"
 
+import { ErrorBoundary } from "./ErrorBoundary"
 import { LoadingSkeletons } from "./LoadingSkeletons"
 
 export type HeaderCell = {
@@ -172,7 +173,11 @@ export function AsyncTable(props: AsyncTableProps) {
               )}
             </TableCell>
           </TableRow>
-          {data.map(renderRow)}
+          {data.map((row, index) => (
+            <ErrorBoundary key={row.id} fallback={<>Something went wrong</>}>
+              {renderRow(row, index)}
+            </ErrorBoundary>
+          ))}
           {data.length === 0 && endReached && (
             <TableRow hover={false}>
               <TableCell colSpan={99} sx={{ padding: 2 }}>

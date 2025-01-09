@@ -30,7 +30,9 @@ function BaseLinkedMessages(props: Props) {
         if (pushedFor) {
           records = records.filter((msg) => msg.id !== messageId)
           const pushedForMsg = await getMessageById(pushedFor)
-          records.push(pushedForMsg as AoMessage)
+          if (pushedForMsg) {
+            records.push(pushedForMsg as AoMessage)
+          }
         }
 
         if (count !== undefined && onCountReady) {
