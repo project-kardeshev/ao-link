@@ -42,6 +42,7 @@ function BaseResultingMessages(props: Props) {
           ascending,
           message?.tags["Pushed-For"] || message.id,
           message.to,
+          computeResultMsgs.map((msg) => msg.tags["Reference"]),
         )
 
         if (count !== undefined) {
