@@ -34,7 +34,6 @@ function BaseResultingMessages(props: Props) {
   return (
     <EntityMessagesTable
       pageSize={pageSize}
-      computeResultMsgs={computeResultMsgs}
       fetchFunction={async (offset, ascending, sortField, lastRecord) => {
         let [count, records] = await getResultingMessages(
           pageSize,
@@ -42,19 +41,13 @@ function BaseResultingMessages(props: Props) {
           ascending,
           message?.tags["Pushed-For"] || message.id,
           message.to,
-          computeResultMsgs.map((msg) => msg.tags["Reference"]),
+          computeResultMsgs.map((msg) => msg.tags["Reference"] || msg.tags["Ref_"]),
+          !!computeResultMsgs[0]?.tags["Ref_"],
         )
 
-        if (count !== undefined) {
-          console.log(
-            `Resulting messages: we need to match ${computeResultMsgs.length} resulting messages from the compute unit against ${count} "resulting" messages from the gateway.`,
-          )
+        if (count !== undefined && onCountReady) {
+          onCountReady(count)
         }
-
-        // TODO this no longer works.
-        // if (count !== undefined && onCountReady) {
-        //   onCountReady(count)
-        // }
 
         if (onDataReady) {
           // onDataReady(records)

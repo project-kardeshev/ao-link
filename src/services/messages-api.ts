@@ -386,7 +386,7 @@ export async function getModules(
  * WARN This query fails if both count and cursor are set
 // $messageId: String!
  */
-const resultingMessagesQuery = (includeCount = false) => gql`
+const resultingMessagesQuery = (includeCount = false, useOldRefSymbol = false) => gql`
   query (
     $fromProcessId: String!
     $msgRefs: [String!]!
@@ -399,7 +399,7 @@ const resultingMessagesQuery = (includeCount = false) => gql`
       first: $limit
       after: $cursor
 
-      tags: [{ name: "Reference", values: $msgRefs },{ name: "From-Process", values: [$fromProcessId] }]
+      tags: [{ name: "${useOldRefSymbol ? "Ref_" : "Reference"}", values: $msgRefs },{ name: "From-Process", values: [$fromProcessId] }]
       ${AO_MIN_INGESTED_AT}
     ) {
       ${includeCount ? "count" : ""}
@@ -417,10 +417,12 @@ export async function getResultingMessages(
   pushedFor: string,
   sender?: string,
   msgRefs?: string[],
+  useOldRefSymbol = false,
 ): Promise<[number | undefined, AoMessage[]]> {
+  console.log("📜 LOG > msgRefs:", msgRefs)
   try {
     const result = await goldsky
-      .query<TransactionsResponse>(resultingMessagesQuery(!cursor), {
+      .query<TransactionsResponse>(resultingMessagesQuery(!cursor, useOldRefSymbol), {
         limit,
         sortOrder: ascending ? "INGESTED_AT_ASC" : "INGESTED_AT_DESC",
         cursor,

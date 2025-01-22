@@ -10,7 +10,6 @@ import {
   Tooltip,
 } from "@mui/material"
 import { FunnelSimple, Info } from "@phosphor-icons/react"
-import { isEqual } from "lodash-es"
 import React, { useState } from "react"
 
 import { useNavigate } from "react-router-dom"
@@ -21,7 +20,6 @@ import { IdBlock } from "@/components/IdBlock"
 import { InOutLabel } from "@/components/InOutLabel"
 import { TypeBadge } from "@/components/TypeBadge"
 import { AoMessage, MSG_TYPES } from "@/types"
-import { CuMessage } from "@/utils/arweave-utils"
 import { TYPE_ICON_MAP, TYPE_PATH_MAP, truncateId } from "@/utils/data-utils"
 import { formatFullDate, formatRelative } from "@/utils/date-utils"
 import { formatNumber } from "@/utils/number-utils"
@@ -30,14 +28,13 @@ type EntityMessagesTableProps = Pick<AsyncTableProps, "fetchFunction" | "pageSiz
   entityId?: string
   hideBlockColumn?: boolean
   allowTypeFilter?: boolean
-  computeResultMsgs?: CuMessage[]
 }
 
 /**
  * TODO rename to AoTransactionsTable
  */
 export function EntityMessagesTable(props: EntityMessagesTableProps) {
-  const { entityId, hideBlockColumn, allowTypeFilter, computeResultMsgs, ...rest } = props
+  const { entityId, hideBlockColumn, allowTypeFilter, ...rest } = props
   const navigate = useNavigate()
 
   const [extraFilters, setExtraFilters] = useState<Record<string, string>>({})
@@ -137,13 +134,6 @@ export function EntityMessagesTable(props: EntityMessagesTableProps) {
       initialSortField="ingestedAt"
       headerCells={headerCells}
       renderRow={(item: AoMessage) => {
-        if (
-          computeResultMsgs &&
-          !computeResultMsgs.find((cuMessage) => isEqual(cuMessage.userTags, item.userTags))
-        ) {
-          return null
-        }
-
         return (
           <TableRow
             sx={{ cursor: "pointer" }}
