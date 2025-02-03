@@ -1,5 +1,5 @@
 import { useColorScheme } from "@mui/material"
-import { ArweaveWalletKit } from "arweave-wallet-kit"
+import { AOWalletKit } from "@project-kardeshev/ao-wallet-kit"
 import React from "react"
 
 import { MainFontFF } from "./fonts"
@@ -8,7 +8,7 @@ export function ArweaveProvider({ children }: { children: React.ReactNode }) {
   const { mode = "dark" } = useColorScheme()
 
   return (
-    <ArweaveWalletKit
+    <AOWalletKit
       theme={{
         displayTheme: mode === "dark" ? "dark" : "light",
         font: {
@@ -30,6 +30,6 @@ export function ArweaveProvider({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
-    </ArweaveWalletKit>
+    </AOWalletKit>
   )
 }

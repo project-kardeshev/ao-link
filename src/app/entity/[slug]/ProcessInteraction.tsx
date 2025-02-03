@@ -1,11 +1,11 @@
 import { Box, Button, CircularProgress, Paper, Stack, Typography } from "@mui/material"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
-import { createDataItemSigner, dryrun, message, result } from "@permaweb/aoconnect"
+import { dryrun, message, result } from "@permaweb/aoconnect"
 import { DryRunResult, MessageInput } from "@permaweb/aoconnect/dist/lib/dryrun"
 import { MessageResult } from "@permaweb/aoconnect/dist/lib/result"
 import { Asterisk } from "@phosphor-icons/react"
 
-import { useActiveAddress } from "arweave-wallet-kit"
+import { useActiveStrategy, useAddress } from "@project-kardeshev/ao-wallet-kit"
 import React, { useCallback, useState } from "react"
 
 import { CodeEditor } from "@/components/CodeEditor"
@@ -25,7 +25,9 @@ export function ProcessInteraction(props: ProcessInteractionProps) {
   const [response, setResponse] = useState("")
   const [msgId, setMsgId] = useState("")
   const [loading, setLoading] = useState(false)
-  const activeAddress = useActiveAddress()
+  const activeAddress = useAddress()
+
+  const strategy = useActiveStrategy()
 
   const [query, setQuery] = useState<string | undefined>(
     JSON.stringify(
@@ -54,7 +56,7 @@ export function ProcessInteraction(props: ProcessInteractionProps) {
       if (readOnly) {
         json = await dryrun(msg)
       } else {
-        let msgId = await message({ ...msg, signer: createDataItemSigner(window.arweaveWallet) })
+        let msgId = await message({ ...msg, signer: await strategy?.createDataItemSigner() })
         json = await result({
           message: msgId,
           process: processId,

@@ -13,7 +13,7 @@ import {
   Box,
 } from "@mui/material"
 import { Moon, Sun } from "@phosphor-icons/react"
-import { ConnectButton } from "arweave-wallet-kit"
+import { ConnectButton } from "@project-kardeshev/ao-wallet-kit"
 
 import { Link } from "react-router-dom"
 
@@ -166,7 +166,6 @@ const Header = () => {
                   id="connect-wallet-button"
                   showBalance={false}
                   showProfilePicture={false}
-                  useAns={false}
                 />
               </Box>
               <IconButton
