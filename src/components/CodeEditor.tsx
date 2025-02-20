@@ -28,7 +28,6 @@ export function CodeEditor(props: EditorProps) {
 
   return (
     <Editor
-      {...props}
       defaultLanguage="json"
       onMount={setCustomTheme}
       loading={
@@ -49,6 +48,7 @@ export function CodeEditor(props: EditorProps) {
         },
         overviewRulerLanes: 0,
       }}
+      {...props}
     />
   )
 }
